@@ -144,7 +144,7 @@ export function ChildProfile() {
         </div>
       ) : (
         letters.map((l) => (
-          <div className="letter" key={l.id} onClick={() => navigate('/result', { state: { result: l.analysis } })}>
+          <div className="letter" key={l.id} onClick={() => navigate('/result', { state: { result: l.analysis, photo: l.photo } })}>
             <div className={`ic ${l.analysis.action_required ? 'todo' : 'done'}`}>
               {l.analysis.action_required ? <PenLine size={19} strokeWidth={2.25} /> : <CheckCircle2 size={19} strokeWidth={2.25} />}
             </div>

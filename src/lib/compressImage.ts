@@ -1,14 +1,33 @@
-const MAX_BYTES = 1024 * 1024;
-const MAX_DIMENSION = 1600;
-
 export interface CompressedImage {
   base64: string;
   mediaType: 'image/jpeg';
 }
 
+interface CompressOptions {
+  maxDimension: number;
+  maxBytes: number;
+  minQuality: number;
+}
+
+/** Full-size copy sent to /api/analyze — large enough for the OCR/vision
+ * model to read small print reliably. */
+const ANALYZE_OPTIONS: CompressOptions = { maxDimension: 1600, maxBytes: 1024 * 1024, minQuality: 0.35 };
+
+/** Smaller copy kept alongside the letter so a parent can reopen the
+ * original later — display-only, so a much lower size budget is fine. */
+const STORAGE_OPTIONS: CompressOptions = { maxDimension: 1000, maxBytes: 220 * 1024, minQuality: 0.35 };
+
 export async function compressImage(source: Blob): Promise<CompressedImage> {
+  return compressTo(source, ANALYZE_OPTIONS);
+}
+
+export async function compressImageForStorage(source: Blob): Promise<CompressedImage> {
+  return compressTo(source, STORAGE_OPTIONS);
+}
+
+async function compressTo(source: Blob, { maxDimension, maxBytes, minQuality }: CompressOptions): Promise<CompressedImage> {
   const bitmap = await createImageBitmap(source);
-  const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
   const width = Math.round(bitmap.width * scale);
   const height = Math.round(bitmap.height * scale);
 
@@ -21,7 +40,7 @@ export async function compressImage(source: Blob): Promise<CompressedImage> {
 
   let quality = 0.8;
   let blob = await canvasToBlob(canvas, quality);
-  while (blob.size > MAX_BYTES && quality > 0.35) {
+  while (blob.size > maxBytes && quality > minQuality) {
     quality -= 0.1;
     blob = await canvasToBlob(canvas, quality);
   }

@@ -7,6 +7,7 @@ import {
   type CalendarEvent,
   type Payment,
   type StoredLetter,
+  type LetterPhoto,
   type TodoItem,
   type AppRating,
 } from '../types/data';
@@ -96,7 +97,7 @@ interface DataContextValue {
   rating: AppRating | null;
   addChild: (input: NewChildInput) => Child;
   deleteChild: (childId: string) => void;
-  addLetter: (childId: string, analysis: LetterAnalysis) => StoredLetter;
+  addLetter: (childId: string, analysis: LetterAnalysis, photo?: LetterPhoto) => StoredLetter;
   markPaymentPaid: (paymentId: string, paid: boolean) => void;
   addManualEvent: (childId: string, title: string, date: string) => CalendarEvent;
   updateEvent: (eventId: string, updates: { childId: string; title: string; date: string }) => void;
@@ -121,8 +122,13 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
   }, [state]);
 
   // Debounced so rapid edits (e.g. typing) don't fire a request per keystroke.
+  // Letter photos are stripped out: they're local-only (see StoredLetter.photo)
+  // since the backup API caps total payload size.
   useEffect(() => {
-    const timeout = setTimeout(() => syncToCloud(state), 800);
+    const timeout = setTimeout(() => {
+      const cloudState = { ...state, letters: state.letters.map(({ photo: _photo, ...l }) => l) };
+      syncToCloud(cloudState);
+    }, 800);
     return () => clearTimeout(timeout);
   }, [state]);
 
@@ -153,12 +159,13 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     }));
   }
 
-  function addLetter(childId: string, analysis: LetterAnalysis): StoredLetter {
+  function addLetter(childId: string, analysis: LetterAnalysis, photo?: LetterPhoto): StoredLetter {
     const letter: StoredLetter = {
       id: makeId(),
       childId,
       createdAt: new Date().toISOString(),
       analysis,
+      photo,
     };
 
     const newPayments: Payment[] = analysis.payments.map((p) => ({
