@@ -66,6 +66,9 @@ export interface TodoItem {
   done: boolean;
   createdAt: string;
   completedAt?: string;
+  /** YYYY-MM-DD. Optional — when set, the todo joins the same reminder
+   * pipeline (foreground fallback + push) as calendar events. */
+  dueDate?: string;
 }
 
 export interface AppRating {

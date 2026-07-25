@@ -71,6 +71,11 @@
   margin-inline-end: 6px;
 }
 
+.todo-due.overdue {
+  color: var(--red);
+  font-weight: 700;
+}
+
 .todo-delete {
   width: 32px;
   height: 32px;

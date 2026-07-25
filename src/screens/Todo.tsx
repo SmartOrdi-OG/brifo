@@ -16,7 +16,9 @@ export function Todo() {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [childId, setChildId] = useState<string>(ALL_CHILDREN);
+  const [dueDate, setDueDate] = useState('');
 
+  const today = new Date().toISOString().slice(0, 10);
   const pending = todos
     .filter((item) => !item.done)
     .slice()
@@ -32,9 +34,10 @@ export function Todo() {
 
   function submit() {
     if (!title.trim()) return;
-    addTodo(childId, title.trim());
+    addTodo(childId, title.trim(), dueDate || undefined);
     setTitle('');
     setChildId(ALL_CHILDREN);
+    setDueDate('');
     setShowForm(false);
   }
 
@@ -63,8 +66,18 @@ export function Todo() {
               ))}
             </select>
           </div>
+          <div className="field">
+            <label>{t('todo_due_date_label')}</label>
+            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+          </div>
           <div className="event-form-actions">
-            <button className="scan-btn" onClick={() => setShowForm(false)}>
+            <button
+              className="scan-btn"
+              onClick={() => {
+                setShowForm(false);
+                setDueDate('');
+              }}
+            >
               {t('cancel')}
             </button>
             <button className="scan-btn primary" onClick={submit}>
@@ -98,6 +111,9 @@ export function Todo() {
                     <p>
                       <span className="todo-dot" style={{ background: dotBackground(colorsForChildId(item.childId, children)) }} />
                       {isolateBidiRuns(childFor(item.childId)?.name ?? t('assign_all_children'))}
+                      {item.dueDate && (
+                        <span className={`todo-due nums${item.dueDate < today ? ' overdue' : ''}`}> · {item.dueDate}</span>
+                      )}
                     </p>
                   </div>
                   <button className="todo-delete" onClick={() => deleteTodo(item.id)} aria-label={t('todo_delete')}>
