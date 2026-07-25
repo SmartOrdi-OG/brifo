@@ -19,11 +19,21 @@ export interface Child {
 /** Special pseudo-id for letters/events that apply to the whole family rather than one child. */
 export const ALL_CHILDREN = 'all' as const;
 
+export interface LetterPhoto {
+  base64: string;
+  mediaType: 'image/jpeg';
+}
+
 export interface StoredLetter {
   id: string;
   childId: string;
   createdAt: string;
   analysis: LetterAnalysis;
+  /** Local-only: kept out of the cloud-sync payload (see DataContext's
+   * syncToCloud call) because the backup API caps total payload size and
+   * photos would blow that budget after a handful of letters. Present in
+   * localStorage and in manual JSON export/import. */
+  photo?: LetterPhoto;
 }
 
 export interface Payment {

@@ -78,3 +78,26 @@
 .result-cta {
   margin-top: 24px;
 }
+
+.original-photo-card {
+  padding: 14px;
+}
+
+.original-photo-toggle {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: transparent;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.original-photo-img {
+  width: 100%;
+  border-radius: 14px;
+  margin-top: 12px;
+  display: block;
+}

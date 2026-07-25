@@ -5,7 +5,7 @@ import { ChildForm, type ChildFormValues } from '../components/ChildForm';
 import { useLanguage } from '../context/LanguageContext';
 import { useData, findMatchingChild } from '../context/DataContext';
 import { ALL_CHILDREN, type Child } from '../types/data';
-import { compressImage } from '../lib/compressImage';
+import { compressImage, compressImageForStorage, type CompressedImage } from '../lib/compressImage';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
 import './Scan.css';
@@ -24,6 +24,7 @@ export function Scan() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [pendingResult, setPendingResult] = useState<LetterAnalysis | null>(null);
+  const [pendingPhoto, setPendingPhoto] = useState<CompressedImage | null>(null);
   const [assignMode, setAssignMode] = useState<AssignMode>(null);
   const [matchedChild, setMatchedChild] = useState<Child | null>(null);
 
@@ -128,7 +129,10 @@ export function Scan() {
     if (!capturedBlob) return;
     setState('analyzing');
     try {
-      const { base64, mediaType } = await compressImage(capturedBlob);
+      const [{ base64, mediaType }, storagePhoto] = await Promise.all([
+        compressImage(capturedBlob),
+        compressImageForStorage(capturedBlob),
+      ]);
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -141,6 +145,7 @@ export function Scan() {
       }
       const result: LetterAnalysis = await response.json();
       setPendingResult(result);
+      setPendingPhoto(storagePhoto);
 
       if (children.length === 0) {
         setAssignMode('create');
@@ -163,8 +168,8 @@ export function Scan() {
 
   function finalizeAssignment(childId: string) {
     if (!pendingResult) return;
-    addLetter(childId, pendingResult);
-    navigate('/result', { state: { result: pendingResult } });
+    addLetter(childId, pendingResult, pendingPhoto ?? undefined);
+    navigate('/result', { state: { result: pendingResult, photo: pendingPhoto } });
   }
 
   function handleCreateChild(values: ChildFormValues) {

@@ -1,16 +1,21 @@
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
+import type { LetterPhoto } from '../types/data';
 import './Result.css';
 
 export function Result() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const location = useLocation();
-  const result = (location.state as { result?: LetterAnalysis } | null)?.result;
+  const [showPhoto, setShowPhoto] = useState(false);
+  const state = location.state as { result?: LetterAnalysis; photo?: LetterPhoto | null } | null;
+  const result = state?.result;
+  const photo = state?.photo;
 
   return (
     <FlowLayout title={t('screen_result')}>
@@ -30,6 +35,15 @@ export function Result() {
               {result.action_required ? `⚠️ ${t('result_action_required')}` : `✅ ${t('result_no_action')}`}
             </p>
           </div>
+
+          {photo && (
+            <div className="card original-photo-card">
+              <button className="original-photo-toggle" onClick={() => setShowPhoto((v) => !v)}>
+                {showPhoto ? t('result_hide_original') : t('result_show_original')}
+              </button>
+              {showPhoto && <img src={`data:${photo.mediaType};base64,${photo.base64}`} alt="" className="original-photo-img" />}
+            </div>
+          )}
 
           {result.actions.length > 0 && (
             <>
