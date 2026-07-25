@@ -26,11 +26,17 @@ import { hasAcceptedPrivacyPolicy } from './lib/consent';
 
 function App() {
   const { t, lang } = useLanguage();
-  const { events } = useData();
+  const { events, todos } = useData();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
-  useReminderScheduler(events, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
-  usePushSync(events, lang);
+  const remindables = [
+    ...events,
+    ...todos
+      .filter((item) => !item.done && item.dueDate)
+      .map((item) => ({ id: item.id, title: item.title, date: item.dueDate! })),
+  ];
+  useReminderScheduler(remindables, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
+  usePushSync(remindables, lang);
 
   // The privacy policy must stay reachable even before acceptance (otherwise
   // there's no way to read it before agreeing), and Austrian law requires the

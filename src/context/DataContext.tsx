@@ -105,7 +105,7 @@ interface DataContextValue {
   lettersForChild: (childId: string) => StoredLetter[];
   paymentsForChild: (childId: string) => Payment[];
   eventsForChild: (childId: string) => CalendarEvent[];
-  addTodo: (childId: string, title: string) => TodoItem;
+  addTodo: (childId: string, title: string, dueDate?: string) => TodoItem;
   toggleTodo: (todoId: string) => void;
   deleteTodo: (todoId: string) => void;
   submitRating: (stars: number, comment: string) => void;
@@ -239,13 +239,14 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     return event;
   }
 
-  function addTodo(childId: string, title: string): TodoItem {
+  function addTodo(childId: string, title: string, dueDate?: string): TodoItem {
     const todo: TodoItem = {
       id: makeId(),
       childId,
       title,
       done: false,
       createdAt: new Date().toISOString(),
+      dueDate,
     };
     setState((prev) => ({ ...prev, todos: [...prev.todos, todo] }));
     return todo;

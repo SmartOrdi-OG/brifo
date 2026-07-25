@@ -1,6 +1,13 @@
 import { useEffect } from 'react';
-import type { CalendarEvent } from '../types/data';
 import { notifyDueReminders, getReminderOffsets, REMINDER_OFFSET_DAY_BEFORE, REMINDER_OFFSET_HOUR_BEFORE } from './reminders';
+
+/** Anything with a date can be reminded about — calendar events and
+ * due-dated todos both qualify. */
+export interface Remindable {
+  id: string;
+  title: string;
+  date: string;
+}
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000;
 const LOOKBACK_MS = 10 * 60 * 1000;
@@ -15,7 +22,7 @@ function eventAnchorMs(dateStr: string): number {
 /** Foreground fallback: fires a local notification the first time an
  * appointment becomes due at one of the user's chosen offsets, while the app
  * is open. Steps aside once push is active (see notifyDueReminders). */
-export function useReminderScheduler(events: CalendarEvent[], dayBeforeLabel: string, hourBeforeLabel: string, soonLabel: string) {
+export function useReminderScheduler(events: Remindable[], dayBeforeLabel: string, hourBeforeLabel: string, soonLabel: string) {
   useEffect(() => {
     function labelFor(offsetMin: number): string {
       if (offsetMin >= REMINDER_OFFSET_DAY_BEFORE) return dayBeforeLabel;
