@@ -1,0 +1,36 @@
+.search-box {
+  margin-bottom: 8px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-row {
+  padding: 14px;
+  cursor: pointer;
+}
+
+.search-row h4 {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.search-row p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}

@@ -143,6 +143,13 @@ const ar = {
 
   add_to_calendar: 'أضف لتقويم الموبايل',
 
+  search_label: 'بحث',
+  screen_search: 'بحث',
+  search_placeholder: 'دوّري برسالة أو دفعة...',
+  search_no_results: 'ما في نتائج مطابقة',
+  search_section_letters: 'رسائل',
+  search_section_payments: 'مدفوعات',
+
   screen_todo: 'المهام',
   todo_add: '+ إضافة مهمة',
   todo_title_label: 'المهمة',
@@ -377,6 +384,13 @@ const de: Record<keyof typeof ar, string> = {
   notifications_label: 'Benachrichtigungen',
 
   add_to_calendar: 'Zum Handy-Kalender hinzufügen',
+
+  search_label: 'Suche',
+  screen_search: 'Suche',
+  search_placeholder: 'Nach Brief oder Zahlung suchen...',
+  search_no_results: 'Keine passenden Treffer',
+  search_section_letters: 'Briefe',
+  search_section_payments: 'Zahlungen',
 
   screen_todo: 'Aufgaben',
   todo_add: '+ Aufgabe hinzufügen',
