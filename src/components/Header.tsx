@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Bell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Bell, Search } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { RemindersPanel } from './RemindersPanel';
@@ -7,6 +8,7 @@ import './Header.css';
 
 export function Header() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const { events } = useData();
   const [showReminders, setShowReminders] = useState(false);
 
@@ -22,12 +24,17 @@ export function Header() {
           Bri<span>fo</span>
         </div>
       </div>
-      <div style={{ position: 'relative' }}>
-        <button className="bell" aria-label={t('notifications_label')} onClick={() => setShowReminders((v) => !v)}>
-          <Bell size={20} strokeWidth={2.25} />
-          {upcomingCount > 0 && <i />}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <button className="bell" aria-label={t('search_label')} onClick={() => navigate('/search')}>
+          <Search size={20} strokeWidth={2.25} />
         </button>
-        {showReminders && <RemindersPanel onClose={() => setShowReminders(false)} />}
+        <div style={{ position: 'relative' }}>
+          <button className="bell" aria-label={t('notifications_label')} onClick={() => setShowReminders((v) => !v)}>
+            <Bell size={20} strokeWidth={2.25} />
+            {upcomingCount > 0 && <i />}
+          </button>
+          {showReminders && <RemindersPanel onClose={() => setShowReminders(false)} />}
+        </div>
       </div>
     </header>
   );
