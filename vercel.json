@@ -1,5 +1,15 @@
 {
   "rewrites": [
+    { "source": "/api/push-public-key", "destination": "/api/push?action=public-key" },
+    { "source": "/api/push-subscribe", "destination": "/api/push?action=subscribe" },
+    { "source": "/api/push-unsubscribe", "destination": "/api/push?action=unsubscribe" },
+    { "source": "/api/push-sync", "destination": "/api/push?action=sync" },
+    { "source": "/api/backup-sync", "destination": "/api/backup?action=sync" },
+    { "source": "/api/backup-restore", "destination": "/api/backup?action=restore" },
+    { "source": "/api/rating-submit", "destination": "/api/ratings?action=submit" },
+    { "source": "/api/admin/ratings", "destination": "/api/ratings?action=list" },
+    { "source": "/api/create-checkout-session", "destination": "/api/subscription?action=checkout" },
+    { "source": "/api/subscription-status", "destination": "/api/subscription?action=status" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "crons": [
