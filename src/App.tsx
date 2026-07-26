@@ -23,6 +23,7 @@ import { AuthGate } from './components/AuthGate';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
 import { useAuth } from './context/AuthContext';
+import { useSubscription } from './context/SubscriptionContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy } from './lib/consent';
@@ -31,6 +32,7 @@ function App() {
   const { t, lang } = useLanguage();
   const { events, todos } = useData();
   const { session, loading: authLoading } = useAuth();
+  const { loading: subLoading, active: subscriptionActive, trialExpired } = useSubscription();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
   const remindables = [
@@ -42,11 +44,12 @@ function App() {
   useReminderScheduler(remindables, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
   usePushSync(remindables, lang);
 
-  // The privacy policy and Impressum must stay reachable without a barrier —
-  // the former because there's otherwise no way to read it before agreeing
-  // (or before creating an account, which itself processes personal data),
-  // the latter because Austrian law requires it unconditionally.
-  const bypassesGate = location.pathname === '/datenschutz' || location.pathname === '/impressum';
+  // The privacy policy, Impressum, and AGB must stay reachable without a
+  // barrier — the first two because there's otherwise no way to read them
+  // before agreeing (Impressum unconditionally, per Austrian law), and AGB
+  // because the paywall itself links there for the withdrawal-rights terms.
+  const bypassesGate =
+    location.pathname === '/datenschutz' || location.pathname === '/impressum' || location.pathname === '/agb';
 
   if (authLoading) return null;
   if (!session && !bypassesGate) {
@@ -54,6 +57,9 @@ function App() {
   }
   if (!consented && !bypassesGate) {
     return <PrivacyConsentGate onAccept={() => setConsented(true)} />;
+  }
+  if (session && !subLoading && !subscriptionActive && trialExpired && !bypassesGate) {
+    return <Paywall />;
   }
 
   return (

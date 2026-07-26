@@ -249,7 +249,12 @@ const ar = {
   paywall_consent_label: 'موافق/ة إنه الاشتراك يبلش فوراً، وفاهم/ة إنه بهيك بفقد حقي بالرجوع خلال 14 يوم (حسب المادة 4 من شروط الاستخدام).',
   paywall_consent_link: 'اقرأ شروط الاستخدام',
   paywall_subscribe_button: 'اشترك الآن',
-  paywall_not_ready_note: 'وسيلة الدفع الفعلية لسا قيد الإعداد — رح تنفعّل قريباً، وما رح ينسحب أي مبلغ لحد هلق.',
+  paywall_trial_days_left: 'باقي {days} يوم من التجربة المجانية',
+  paywall_trial_ended: 'انتهت فترتك التجريبية — اشتركي للمتابعة',
+  paywall_already_active: 'اشتراكك فعّال ✓ — شكراً إلك',
+  paywall_redirecting: 'جاري التحويل...',
+  paywall_checkout_error: 'صار في مشكلة، جرّبي مرة ثانية',
+  paywall_checkout_cancelled: 'ألغيتي عملية الاشتراك',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -501,7 +506,12 @@ const de: Record<keyof typeof ar, string> = {
   paywall_consent_label: 'Ich stimme zu, dass die Leistung sofort beginnt, und weiß, dass ich dadurch mein 14-tägiges Widerrufsrecht verliere (gemäß §4 der AGB).',
   paywall_consent_link: 'AGB lesen',
   paywall_subscribe_button: 'Jetzt abonnieren',
-  paywall_not_ready_note: 'Die eigentliche Zahlungsabwicklung ist noch in Vorbereitung und wird bald aktiviert — es wird noch kein Betrag abgebucht.',
+  paywall_trial_days_left: 'Noch {days} Tage kostenlose Testphase',
+  paywall_trial_ended: 'Deine Testphase ist abgelaufen — abonniere, um weiterzumachen',
+  paywall_already_active: 'Dein Abo ist aktiv ✓ — danke dir',
+  paywall_redirecting: 'Weiterleitung...',
+  paywall_checkout_error: 'Es gab ein Problem, bitte versuch es noch mal',
+  paywall_checkout_cancelled: 'Du hast den Abo-Vorgang abgebrochen',
 };
 
 export const translations = { ar, de };

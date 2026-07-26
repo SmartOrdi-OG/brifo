@@ -2,7 +2,9 @@ import { defineConfig, loadEnv, type Plugin, type Connect } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-function jsonPostRoute(handler: (body: unknown) => Promise<{ status: number; body: unknown }>): Connect.SimpleHandleFunction {
+function jsonPostRoute(
+  handler: (body: unknown, req: import('node:http').IncomingMessage) => Promise<{ status: number; body: unknown }>,
+): Connect.SimpleHandleFunction {
   return (req, res) => {
     if (req.method !== 'POST') {
       res.statusCode = 405
@@ -16,7 +18,7 @@ function jsonPostRoute(handler: (body: unknown) => Promise<{ status: number; bod
       res.setHeader('Content-Type', 'application/json')
       try {
         const body = JSON.parse(raw || '{}')
-        const { status, body: responseBody } = await handler(body)
+        const { status, body: responseBody } = await handler(body, req)
         res.statusCode = status
         res.end(JSON.stringify(responseBody))
       } catch {
@@ -165,6 +167,39 @@ function apiDevMiddleware(): Plugin {
         }),
       )
 
+      server.middlewares.use(
+        '/api/create-checkout-session',
+        jsonPostRoute(async (body, req) => {
+          const { createCheckoutSession } = await import('./src/server/stripe.ts')
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const { ConfigError } = await import('./src/server/errors.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'unauthorized' } }
+          const { origin } = (body ?? {}) as { origin?: unknown }
+          const base = typeof origin === 'string' ? origin : ''
+          try {
+            const url = await createCheckoutSession(user.id, user.email ?? '', `${base}/paywall?checkout=success`, `${base}/paywall?checkout=cancelled`)
+            return { status: 200, body: { url } }
+          } catch (err) {
+            if (err instanceof ConfigError) return { status: 500, body: { error: `server misconfigured: ${err.message}` } }
+            console.error('create-checkout-session failed', err)
+            return { status: 500, body: { error: 'failed to create checkout session' } }
+          }
+        }),
+      )
+
+      server.middlewares.use(
+        '/api/subscription-status',
+        jsonPostRoute(async (_body, req) => {
+          const { getSubscriptionStatus } = await import('./src/server/stripe.ts')
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'unauthorized' } }
+          const status = await getSubscriptionStatus(user.id)
+          return { status: 200, body: status }
+        }),
+      )
+
       server.middlewares.use('/api/cron/send-reminders', async (_req, res) => {
         const { runDueReminders } = await import('./src/server/push.ts')
         res.setHeader('Content-Type', 'application/json')
@@ -194,6 +229,9 @@ export default defineConfig(({ mode }) => {
     'ADMIN_SECRET',
     'VITE_SUPABASE_URL',
     'VITE_SUPABASE_ANON_KEY',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_PRICE_ID',
+    'STRIPE_WEBHOOK_SECRET',
   ]
   for (const key of passthroughEnvVars) {
     // Assigning `undefined` to process.env[key] would coerce it to the
