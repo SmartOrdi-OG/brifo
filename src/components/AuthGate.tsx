@@ -8,18 +8,29 @@ export function AuthGate() {
   const { signInWithEmail, configured } = useAuth();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<'missing' | 'failed' | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!email.trim() || loading) return;
+    if (loading) return;
+    // Reads straight from the form instead of trusting React's `email`
+    // state — iOS Safari's autofill can update the input's DOM value
+    // without firing a React change event, which left the native
+    // `required` check (and this state) seeing an empty field even
+    // though the user had visibly typed an address.
+    const typed = new FormData(e.currentTarget).get('email');
+    const emailValue = typeof typed === 'string' ? typed.trim() : '';
+    if (!emailValue) {
+      setError('missing');
+      return;
+    }
     setLoading(true);
-    setError(false);
-    const { error } = await signInWithEmail(email.trim());
+    setError(null);
+    const { error } = await signInWithEmail(emailValue);
     setLoading(false);
     if (error) {
-      setError(true);
+      setError('failed');
       return;
     }
     setSent(true);
@@ -63,7 +74,7 @@ export function AuthGate() {
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro')}</p>
           <input
             type="email"
-            required
+            name="email"
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -78,7 +89,7 @@ export function AuthGate() {
               textAlign: 'center',
             }}
           />
-          {error && <p style={{ color: 'var(--red)', fontSize: 12.5 }}>{t('auth_error')}</p>}
+          {error && <p style={{ color: 'var(--red)', fontSize: 12.5 }}>{t(error === 'missing' ? 'auth_email_required' : 'auth_error')}</p>}
           <button
             type="submit"
             disabled={loading}
