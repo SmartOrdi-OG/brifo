@@ -5,13 +5,13 @@ import { useAuth } from '../context/AuthContext';
 
 export function AuthGate() {
   const { t } = useLanguage();
-  const { signInWithEmail, configured } = useAuth();
+  const { signInWithEmail, verifyEmailCode, configured } = useAuth();
   const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<'missing' | 'failed' | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [error, setError] = useState<'missing' | 'failed' | 'code' | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmitEmail(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (loading) return;
     // Reads straight from the form instead of trusting React's `email`
@@ -33,7 +33,28 @@ export function AuthGate() {
       setError('failed');
       return;
     }
-    setSent(true);
+    setEmail(emailValue);
+    setSentTo(emailValue);
+  }
+
+  async function handleSubmitCode(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (loading || !sentTo) return;
+    const typed = new FormData(e.currentTarget).get('code');
+    const codeValue = typeof typed === 'string' ? typed.trim() : '';
+    if (!codeValue) {
+      setError('missing');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error } = await verifyEmailCode(sentTo, codeValue);
+    setLoading(false);
+    if (error) {
+      setError('code');
+      return;
+    }
+    // On success, the session updates via onAuthStateChange and App re-renders past this gate.
   }
 
   return (
@@ -67,10 +88,68 @@ export function AuthGate() {
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
-      ) : sent ? (
-        <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_check_email')}</p>
+      ) : sentTo ? (
+        <form
+          key="code-step"
+          onSubmit={handleSubmitCode}
+          style={{ width: '100%', maxWidth: 320, display: 'flex', flexDirection: 'column', gap: 12 }}
+        >
+          <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_enter_code').replace('{email}', sentTo)}</p>
+          <input
+            type="text"
+            name="code"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            placeholder={t('auth_code_placeholder')}
+            style={{
+              padding: '12px 16px',
+              borderRadius: 14,
+              border: '1px solid var(--card-border)',
+              background: 'var(--card)',
+              color: 'var(--text)',
+              fontSize: 20,
+              letterSpacing: 4,
+              textAlign: 'center',
+            }}
+          />
+          {error && (
+            <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
+              {t(error === 'missing' ? 'auth_code_required' : error === 'code' ? 'auth_code_invalid' : 'auth_error')}
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              padding: '14px 32px',
+              borderRadius: 16,
+              border: 'none',
+              background: 'linear-gradient(135deg,var(--blue),var(--purple))',
+              color: '#fff',
+              fontWeight: 800,
+              fontSize: 15,
+              cursor: 'pointer',
+            }}
+          >
+            {t('auth_verify_code')}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSentTo(null);
+              setError(null);
+            }}
+            style={{ background: 'none', border: 'none', color: 'var(--blue)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+          >
+            {t('auth_use_different_email')}
+          </button>
+        </form>
       ) : (
-        <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 320, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <form
+          key="email-step"
+          onSubmit={handleSubmitEmail}
+          style={{ width: '100%', maxWidth: 320, display: 'flex', flexDirection: 'column', gap: 12 }}
+        >
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro')}</p>
           <input
             type="email"
