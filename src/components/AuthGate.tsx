@@ -8,7 +8,7 @@ export function AuthGate() {
   const { signInWithEmail, verifyEmailCode, configured } = useAuth();
   const [email, setEmail] = useState('');
   const [sentTo, setSentTo] = useState<string | null>(null);
-  const [error, setError] = useState<'missing' | 'failed' | 'code' | null>(null);
+  const [error, setError] = useState<{ kind: 'missing' | 'failed' | 'code'; detail?: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmitEmail(e: FormEvent<HTMLFormElement>) {
@@ -22,7 +22,7 @@ export function AuthGate() {
     const typed = new FormData(e.currentTarget).get('email');
     const emailValue = typeof typed === 'string' ? typed.trim() : '';
     if (!emailValue) {
-      setError('missing');
+      setError({ kind: 'missing' });
       return;
     }
     setLoading(true);
@@ -30,7 +30,7 @@ export function AuthGate() {
     const { error } = await signInWithEmail(emailValue);
     setLoading(false);
     if (error) {
-      setError('failed');
+      setError({ kind: 'failed', detail: error });
       return;
     }
     setEmail(emailValue);
@@ -43,7 +43,7 @@ export function AuthGate() {
     const typed = new FormData(e.currentTarget).get('code');
     const codeValue = typeof typed === 'string' ? typed.trim() : '';
     if (!codeValue) {
-      setError('missing');
+      setError({ kind: 'missing' });
       return;
     }
     setLoading(true);
@@ -51,7 +51,7 @@ export function AuthGate() {
     const { error } = await verifyEmailCode(sentTo, codeValue);
     setLoading(false);
     if (error) {
-      setError('code');
+      setError({ kind: 'code', detail: error });
       return;
     }
     // On success, the session updates via onAuthStateChange and App re-renders past this gate.
@@ -114,7 +114,8 @@ export function AuthGate() {
           />
           {error && (
             <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
-              {t(error === 'missing' ? 'auth_code_required' : error === 'code' ? 'auth_code_invalid' : 'auth_error')}
+              {t(error.kind === 'missing' ? 'auth_code_required' : error.kind === 'code' ? 'auth_code_invalid' : 'auth_error')}
+              {error.detail ? ` (${error.detail})` : ''}
             </p>
           )}
           <button
@@ -168,7 +169,12 @@ export function AuthGate() {
               textAlign: 'center',
             }}
           />
-          {error && <p style={{ color: 'var(--red)', fontSize: 12.5 }}>{t(error === 'missing' ? 'auth_email_required' : 'auth_error')}</p>}
+          {error && (
+            <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
+              {t(error.kind === 'missing' ? 'auth_email_required' : 'auth_error')}
+              {error.detail ? ` (${error.detail})` : ''}
+            </p>
+          )}
           <button
             type="submit"
             disabled={loading}
