@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { getSubscriptionStatus } from '../src/server/stripe.js';
 import { getUserFromRequest } from '../src/server/auth.js';
+import { isComplimentaryEmail } from '../src/server/freeAccounts.js';
 
 interface VercelRequest extends IncomingMessage {}
 
@@ -18,6 +19,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const user = await getUserFromRequest(req);
   if (!user) {
     res.status(401).json({ error: 'unauthorized' });
+    return;
+  }
+
+  if (isComplimentaryEmail(user.email)) {
+    res.status(200).json({ active: true, currentPeriodEnd: null });
     return;
   }
 

@@ -193,8 +193,10 @@ function apiDevMiddleware(): Plugin {
         jsonPostRoute(async (_body, req) => {
           const { getSubscriptionStatus } = await import('./src/server/stripe.ts')
           const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const { isComplimentaryEmail } = await import('./src/server/freeAccounts.ts')
           const user = await getUserFromRequest(req)
           if (!user) return { status: 401, body: { error: 'unauthorized' } }
+          if (isComplimentaryEmail(user.email)) return { status: 200, body: { active: true, currentPeriodEnd: null } }
           const status = await getSubscriptionStatus(user.id)
           return { status: 200, body: status }
         }),
@@ -232,6 +234,7 @@ export default defineConfig(({ mode }) => {
     'STRIPE_SECRET_KEY',
     'STRIPE_PRICE_ID',
     'STRIPE_WEBHOOK_SECRET',
+    'FREE_ACCOUNT_EMAILS',
   ]
   for (const key of passthroughEnvVars) {
     // Assigning `undefined` to process.env[key] would coerce it to the
