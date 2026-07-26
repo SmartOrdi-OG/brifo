@@ -7,6 +7,7 @@ import { LanguageProvider } from './context/LanguageContext'
 import { DataProvider } from './context/DataContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
+import { SubscriptionProvider } from './context/SubscriptionContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,9 +15,11 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
-            <DataProvider>
-              <App />
-            </DataProvider>
+            <SubscriptionProvider>
+              <DataProvider>
+                <App />
+              </DataProvider>
+            </SubscriptionProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
