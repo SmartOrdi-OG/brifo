@@ -192,6 +192,8 @@ export default defineConfig(({ mode }) => {
     'KV_REST_API_TOKEN',
     'CRON_SECRET',
     'ADMIN_SECRET',
+    'VITE_SUPABASE_URL',
+    'VITE_SUPABASE_ANON_KEY',
   ]
   for (const key of passthroughEnvVars) {
     // Assigning `undefined` to process.env[key] would coerce it to the

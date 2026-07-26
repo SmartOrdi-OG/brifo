@@ -36,6 +36,16 @@ const ar = {
 
   coming_soon: 'قريباً — هاي الصفحة تحت التطوير 🚧',
   back: 'رجوع',
+
+  auth_intro: 'سجّلي دخول بإيميلك عشان تبدئي تستخدمي Brifo. رح نبعتلك رابط دخول، بدون كلمة سر.',
+  auth_email_placeholder: 'إيميلك',
+  auth_send_link: 'إرسال رابط الدخول',
+  auth_check_email: 'بعتنالك رابط عإيميلك — افتحي الإيميل ودوسي عالرابط لتسجيل الدخول.',
+  auth_error: 'صار في مشكلة، جرّبي مرة ثانية',
+  auth_not_configured: 'نظام تسجيل الدخول لسا ما انظبط، جرّبي بعد شوي',
+  auth_sign_out: 'تسجيل خروج',
+  auth_signed_in_as: 'مسجلة دخول بـ',
+
   settings_language: 'اللغة',
   settings_theme: 'المظهر',
   theme_light: 'فاتح',
@@ -278,6 +288,16 @@ const de: Record<keyof typeof ar, string> = {
 
   coming_soon: 'Demnächst — diese Seite ist in Arbeit 🚧',
   back: 'Zurück',
+
+  auth_intro: 'Melde dich mit deiner E-Mail an, um Brifo zu nutzen. Wir schicken dir einen Anmeldelink — kein Passwort nötig.',
+  auth_email_placeholder: 'Deine E-Mail',
+  auth_send_link: 'Anmeldelink senden',
+  auth_check_email: 'Wir haben dir einen Link geschickt — öffne deine E-Mails und klick drauf, um dich anzumelden.',
+  auth_error: 'Es gab ein Problem, bitte versuch es noch mal',
+  auth_not_configured: 'Die Anmeldung ist noch nicht eingerichtet, bitte versuch es später',
+  auth_sign_out: 'Abmelden',
+  auth_signed_in_as: 'Angemeldet als',
+
   settings_language: 'Sprache',
   settings_theme: 'Erscheinungsbild',
   theme_light: 'Hell',
