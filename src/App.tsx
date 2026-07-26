@@ -19,8 +19,10 @@ import { Impressum } from './screens/Impressum';
 import { AGB } from './screens/AGB';
 import { Admin } from './screens/Admin';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
+import { AuthGate } from './components/AuthGate';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
+import { useAuth } from './context/AuthContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy } from './lib/consent';
@@ -28,6 +30,7 @@ import { hasAcceptedPrivacyPolicy } from './lib/consent';
 function App() {
   const { t, lang } = useLanguage();
   const { events, todos } = useData();
+  const { session, loading: authLoading } = useAuth();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
   const remindables = [
@@ -39,10 +42,16 @@ function App() {
   useReminderScheduler(remindables, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
   usePushSync(remindables, lang);
 
-  // The privacy policy must stay reachable even before acceptance (otherwise
-  // there's no way to read it before agreeing), and Austrian law requires the
-  // Impressum to be accessible without any barrier at all.
+  // The privacy policy and Impressum must stay reachable without a barrier —
+  // the former because there's otherwise no way to read it before agreeing
+  // (or before creating an account, which itself processes personal data),
+  // the latter because Austrian law requires it unconditionally.
   const bypassesGate = location.pathname === '/datenschutz' || location.pathname === '/impressum';
+
+  if (authLoading) return null;
+  if (!session && !bypassesGate) {
+    return <AuthGate />;
+  }
   if (!consented && !bypassesGate) {
     return <PrivacyConsentGate onAccept={() => setConsented(true)} />;
   }

@@ -24,6 +24,7 @@ import {
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { getOrCreateRecoveryCode, formatCodeForDisplay, restoreFromCloud } from '../lib/cloudBackup';
 import { submitRatingToServer } from '../lib/ratings';
+import { useAuth } from '../context/AuthContext';
 
 const OFFSET_OPTIONS = [
   { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
@@ -49,6 +50,7 @@ export function Settings() {
   const { t, lang, setLang } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
+  const { session, signOut } = useAuth();
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -171,6 +173,18 @@ export function Settings() {
       <div className="sec">
         <h3>{t('screen_settings')}</h3>
       </div>
+
+      {session?.user.email && (
+        <div className="card" style={{ padding: '16px', marginBottom: 12 }}>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 4 }}>{t('auth_signed_in_as')}</p>
+          <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }} className="nums">
+            {session.user.email}
+          </p>
+          <button className="scan-btn" style={{ width: '100%' }} onClick={() => signOut()}>
+            {t('auth_sign_out')}
+          </button>
+        </div>
+      )}
 
       <div className="card" style={{ padding: '16px' }}>
         <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>{t('settings_language')}</p>

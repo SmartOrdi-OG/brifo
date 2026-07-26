@@ -6,15 +6,18 @@ import App from './App.tsx'
 import { LanguageProvider } from './context/LanguageContext'
 import { DataProvider } from './context/DataContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { AuthProvider } from './context/AuthContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider>
         <LanguageProvider>
-          <DataProvider>
-            <App />
-          </DataProvider>
+          <AuthProvider>
+            <DataProvider>
+              <App />
+            </DataProvider>
+          </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
     </BrowserRouter>
