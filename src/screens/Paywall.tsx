@@ -10,6 +10,7 @@ export function Paywall() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { active, trialDaysLeft, refresh } = useSubscription();
+  const [plan, setPlan] = useState<'monthly' | 'annual'>('monthly');
   const [consented, setConsented] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -33,7 +34,7 @@ export function Paywall() {
   async function handleSubscribe() {
     setLoading(true);
     setError(false);
-    const url = await startCheckout();
+    const url = await startCheckout(plan);
     if (!url) {
       setError(true);
       setLoading(false);
@@ -50,10 +51,51 @@ export function Paywall() {
         ) : (
           <>
             <p style={{ fontSize: 17, fontWeight: 900 }}>{t('paywall_plan_name')}</p>
-            <p style={{ fontSize: 28, fontWeight: 900, marginTop: 8 }}>
-              {t('paywall_price')}{' '}
-              <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--muted)' }}>{t('paywall_price_period')}</span>
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+              <button
+                onClick={() => setPlan('monthly')}
+                style={{
+                  flex: 1,
+                  padding: '10px',
+                  borderRadius: 14,
+                  border: '1px solid var(--card-border)',
+                  background: plan === 'monthly' ? 'linear-gradient(135deg,var(--blue),var(--purple))' : 'transparent',
+                  color: plan === 'monthly' ? '#fff' : 'var(--text)',
+                  fontWeight: 700,
+                  fontSize: 13.5,
+                  cursor: 'pointer',
+                }}
+              >
+                {t('paywall_plan_monthly')}
+              </button>
+              <button
+                onClick={() => setPlan('annual')}
+                style={{
+                  flex: 1,
+                  padding: '10px',
+                  borderRadius: 14,
+                  border: '1px solid var(--card-border)',
+                  background: plan === 'annual' ? 'linear-gradient(135deg,var(--blue),var(--purple))' : 'transparent',
+                  color: plan === 'annual' ? '#fff' : 'var(--text)',
+                  fontWeight: 700,
+                  fontSize: 13.5,
+                  cursor: 'pointer',
+                }}
+              >
+                {t('paywall_plan_annual')}
+              </button>
+            </div>
+
+            <p style={{ fontSize: 28, fontWeight: 900, marginTop: 14 }}>
+              {plan === 'annual' ? t('paywall_price_annual') : t('paywall_price')}{' '}
+              <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--muted)' }}>
+                {plan === 'annual' ? t('paywall_price_annual_period') : t('paywall_price_period')}
+              </span>
             </p>
+            {plan === 'annual' && (
+              <p style={{ fontSize: 12.5, color: 'var(--green)', fontWeight: 700, marginTop: 4 }}>{t('paywall_annual_savings')}</p>
+            )}
             {trialDaysLeft > 0 ? (
               <p style={{ fontSize: 13, color: 'var(--amber)', fontWeight: 700, marginTop: 8 }}>
                 {t('paywall_trial_days_left').replace('{days}', String(trialDaysLeft))}
