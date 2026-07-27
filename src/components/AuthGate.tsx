@@ -63,7 +63,6 @@ const ERROR_MESSAGE_KEY: Record<ErrorKind, TranslationKey> = {
 export function AuthGate() {
   const { t } = useLanguage();
   const {
-    session,
     passwordPromptPending,
     signInWithEmail,
     verifyEmailCode,
@@ -207,7 +206,7 @@ export function AuthGate() {
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
-      ) : session && passwordPromptPending ? (
+      ) : passwordPromptPending ? (
         <form key="set-password-step" onSubmit={handleSetPassword} style={formStyle}>
           <h2 style={{ fontSize: 16, fontWeight: 800 }}>{t('auth_set_password_title')}</h2>
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_set_password_subtitle')}</p>
