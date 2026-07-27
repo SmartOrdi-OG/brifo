@@ -58,6 +58,12 @@ export interface CalendarEvent {
   date: string;
   /** HH:MM (24-hour), optional — an event with no time is treated as all-day. */
   time?: string;
+  /** With whom (e.g. doctor/provider name), optional. */
+  provider?: string;
+  /** Address/place of the appointment, optional. */
+  location?: string;
+  /** Reason for the visit, optional. */
+  reason?: string;
   source: CalendarEventSource;
   createdAt: string;
   updatedAt: string;

@@ -69,6 +69,9 @@ export function Calendar() {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [provider, setProvider] = useState('');
+  const [location, setLocation] = useState('');
+  const [reason, setReason] = useState('');
   const [childId, setChildId] = useState<string>(ALL_CHILDREN);
 
   const now = new Date();
@@ -89,6 +92,15 @@ export function Calendar() {
 
   function childFor(id: string) {
     return children.find((c) => c.id === id);
+  }
+
+  function eventDescription(e: CalendarEvent): string | undefined {
+    const lines = [
+      e.provider && `${t('calendar_event_provider_label')}: ${e.provider}`,
+      e.location && `${t('calendar_event_location_label')}: ${e.location}`,
+      e.reason && `${t('calendar_event_reason_label')}: ${e.reason}`,
+    ].filter(Boolean);
+    return lines.length > 0 ? lines.join('\n') : undefined;
   }
 
   function renderRow(e: CalendarEvent, showDate = true) {
@@ -114,9 +126,24 @@ export function Calendar() {
               child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
             )}
           </p>
+          {e.provider && (
+            <p className="calendar-detail">
+              {t('calendar_event_provider_label')}: {isolateBidiRuns(e.provider)}
+            </p>
+          )}
+          {e.location && (
+            <p className="calendar-detail">
+              {t('calendar_event_location_label')}: {isolateBidiRuns(e.location)}
+            </p>
+          )}
+          {e.reason && (
+            <p className="calendar-detail">
+              {t('calendar_event_reason_label')}: {isolateBidiRuns(e.reason)}
+            </p>
+          )}
         </div>
         <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
-        <AddToCalendarButton title={e.title} date={e.date} time={e.time} compact />
+        <AddToCalendarButton title={e.title} date={e.date} time={e.time} description={eventDescription(e)} compact />
         <button className="calendar-edit" onClick={() => startEdit(e)} aria-label={t('calendar_edit_event')}>
           <Pencil size={16} strokeWidth={2} />
         </button>
@@ -132,6 +159,9 @@ export function Calendar() {
     setTitle(e.title);
     setDate(e.date);
     setTime(e.time ?? '');
+    setProvider(e.provider ?? '');
+    setLocation(e.location ?? '');
+    setReason(e.reason ?? '');
     setChildId(e.childId);
     setShowForm(true);
   }
@@ -141,6 +171,9 @@ export function Calendar() {
     setTitle('');
     setDate('');
     setTime('');
+    setProvider('');
+    setLocation('');
+    setReason('');
     setChildId(ALL_CHILDREN);
     setShowForm(false);
   }
@@ -150,16 +183,25 @@ export function Calendar() {
     setTitle('');
     setDate(iso);
     setTime('');
+    setProvider('');
+    setLocation('');
+    setReason('');
     setChildId(ALL_CHILDREN);
     setShowForm(true);
   }
 
   function submit() {
     if (!title.trim() || !date) return;
+    const details = {
+      time: time || undefined,
+      provider: provider.trim() || undefined,
+      location: location.trim() || undefined,
+      reason: reason.trim() || undefined,
+    };
     if (editingId) {
-      updateEvent(editingId, { childId, title: title.trim(), date, time: time || undefined });
+      updateEvent(editingId, { childId, title: title.trim(), date, ...details });
     } else {
-      addManualEvent(childId, title.trim(), date, time || undefined);
+      addManualEvent(childId, title.trim(), date, details);
     }
     resetForm();
   }
@@ -224,6 +266,26 @@ export function Calendar() {
           <div className="field">
             <label>{t('calendar_event_time_label')}</label>
             <input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>{t('calendar_event_provider_label')}</label>
+            <input
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              placeholder={t('calendar_event_provider_placeholder')}
+            />
+          </div>
+          <div className="field">
+            <label>{t('calendar_event_location_label')}</label>
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder={t('calendar_event_location_placeholder')}
+            />
+          </div>
+          <div className="field">
+            <label>{t('calendar_event_reason_label')}</label>
+            <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t('calendar_event_reason_placeholder')} />
           </div>
           <div className="field">
             <label>{t('calendar_event_child_label')}</label>

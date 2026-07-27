@@ -10,16 +10,17 @@ interface AddToCalendarButtonProps {
   date: string;
   /** HH:MM (24-hour), optional — omit for an all-day event. */
   time?: string;
+  description?: string;
   /** Icon-only pill for tight layouts (e.g. horizontal deadline chips). */
   compact?: boolean;
 }
 
-export function AddToCalendarButton({ title, date, time, compact }: AddToCalendarButtonProps) {
+export function AddToCalendarButton({ title, date, time, description, compact }: AddToCalendarButtonProps) {
   const { t } = useLanguage();
 
   function handleClick(e: MouseEvent) {
     e.stopPropagation();
-    downloadIcsEvent({ title, date, time });
+    downloadIcsEvent({ title, date, time, description });
   }
 
   if (compact) {
