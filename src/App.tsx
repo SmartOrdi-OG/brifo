@@ -31,7 +31,7 @@ import { hasAcceptedPrivacyPolicy } from './lib/consent';
 function App() {
   const { t, lang } = useLanguage();
   const { events, todos } = useData();
-  const { session, loading: authLoading } = useAuth();
+  const { session, loading: authLoading, passwordPromptPending } = useAuth();
   const { loading: subLoading, active: subscriptionActive, trialExpired } = useSubscription();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
@@ -52,7 +52,7 @@ function App() {
     location.pathname === '/datenschutz' || location.pathname === '/impressum' || location.pathname === '/agb';
 
   if (authLoading) return null;
-  if (!session && !bypassesGate) {
+  if ((!session || passwordPromptPending) && !bypassesGate) {
     return <AuthGate />;
   }
   if (!consented && !bypassesGate) {
