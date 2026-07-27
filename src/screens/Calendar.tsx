@@ -46,11 +46,16 @@ function addDays(d: Date, n: number): Date {
   return copy;
 }
 
+/** 0 = Monday .. 6 = Sunday, to match WEEKDAY_KEYS order. */
+function weekdayIndex(d: Date): number {
+  return (d.getDay() + 6) % 7;
+}
+
 export function Calendar() {
   const { t, dir } = useLanguage();
   const { children, events, addManualEvent, updateEvent, deleteEvent } = useData();
 
-  const [viewMode, setViewMode] = useState<'list' | 'week'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'week' | 'day'>('list');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -60,6 +65,7 @@ export function Calendar() {
   const now = new Date();
   const today = toIsoDate(now);
   const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(now));
+  const [dayCursor, setDayCursor] = useState<Date>(now);
 
   const upcoming = events
     .filter((e) => e.date >= today)
@@ -152,6 +158,18 @@ export function Calendar() {
     setWeekStart(startOfWeek(new Date()));
   }
 
+  function goPrevDay() {
+    setDayCursor((prev) => addDays(prev, -1));
+  }
+
+  function goNextDay() {
+    setDayCursor((prev) => addDays(prev, 1));
+  }
+
+  function goToday() {
+    setDayCursor(new Date());
+  }
+
   const PrevIcon = dir === 'rtl' ? ChevronRight : ChevronLeft;
   const NextIcon = dir === 'rtl' ? ChevronLeft : ChevronRight;
 
@@ -169,6 +187,9 @@ export function Calendar() {
         </button>
         <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>
           {t('calendar_view_week')}
+        </button>
+        <button className={viewMode === 'day' ? 'active' : ''} onClick={() => setViewMode('day')}>
+          {t('calendar_view_day')}
         </button>
       </div>
 
@@ -204,7 +225,51 @@ export function Calendar() {
         </div>
       )}
 
-      {viewMode === 'list' ? (
+      {viewMode === 'day' ? (
+        <div className="day-view">
+          <div className="week-nav">
+            <button onClick={goPrevDay} aria-label={t('calendar_day_prev')}>
+              <PrevIcon size={18} strokeWidth={2} />
+            </button>
+            <a onClick={goToday}>{t('calendar_today_label')}</a>
+            <button onClick={goNextDay} aria-label={t('calendar_day_next')}>
+              <NextIcon size={18} strokeWidth={2} />
+            </button>
+          </div>
+
+          {(() => {
+            const iso = toIsoDate(dayCursor);
+            const isToday = iso === today;
+            const dayEvents = events
+              .filter((e) => e.date === iso)
+              .slice()
+              .sort((a, b) => a.title.localeCompare(b.title));
+            return (
+              <div className={isToday ? 'week-day-card today' : 'week-day-card'}>
+                <div className="week-day-head">
+                  <span className="week-day-name">{t(WEEKDAY_KEYS[weekdayIndex(dayCursor)])}</span>
+                  <span className="week-day-date nums">
+                    {iso.slice(8, 10)}.{iso.slice(5, 7)}.{iso.slice(0, 4)}
+                  </span>
+                  {isToday && <span className="week-today-badge">{t('calendar_today_label')}</span>}
+                  <button
+                    className="week-day-add"
+                    onClick={() => openFormForDate(iso)}
+                    aria-label={t('calendar_week_add_event')}
+                  >
+                    <Plus size={16} strokeWidth={2} />
+                  </button>
+                </div>
+                {dayEvents.length === 0 ? (
+                  <p className="week-day-empty">{t('calendar_no_events')}</p>
+                ) : (
+                  <div className="calendar-list">{dayEvents.map((e) => renderRow(e, false))}</div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      ) : viewMode === 'list' ? (
         <>
           {upcoming.length === 0 ? (
             <div className="empty-state actionable" onClick={() => setShowForm(true)}>
