@@ -248,6 +248,22 @@ export function AuthGate() {
         <Mail size={32} strokeWidth={2} />
       </div>
       <h1 style={{ fontSize: 21, fontWeight: 900 }}>Brifo</h1>
+      {configured && (
+        <p
+          style={{
+            fontSize: 12.5,
+            fontWeight: 700,
+            color: 'var(--muted)',
+            background: 'var(--card)',
+            border: '1px solid var(--card-border)',
+            borderRadius: 12,
+            padding: '8px 14px',
+            maxWidth: 320,
+          }}
+        >
+          {t('auth_pricing_note')}
+        </p>
+      )}
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
