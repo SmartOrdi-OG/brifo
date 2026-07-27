@@ -147,6 +147,22 @@ function apiDevMiddleware(): Plugin {
       )
 
       server.middlewares.use(
+        '/api/consent-accept',
+        jsonPostRoute(async (body, req) => {
+          const { saveConsentRecord } = await import('./src/server/consent.ts')
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'not signed in' } }
+          const { version, acceptedAt } = (body ?? {}) as { version?: unknown; acceptedAt?: unknown }
+          if (typeof version !== 'number' || typeof acceptedAt !== 'string' || Number.isNaN(Date.parse(acceptedAt))) {
+            return { status: 400, body: { error: 'invalid consent record' } }
+          }
+          await saveConsentRecord(user.id, { email: user.email, version, acceptedAt, recordedAt: new Date().toISOString() })
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
+      server.middlewares.use(
         '/api/rating-submit',
         jsonPostRoute(async (body) => {
           const { submitRating } = await import('./src/server/ratings.ts')
