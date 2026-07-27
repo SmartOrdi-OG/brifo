@@ -25,12 +25,12 @@ export async function fetchSubscriptionStatus(): Promise<SubscriptionStatus | nu
 
 /** Starts a Stripe Checkout session and returns its URL to redirect to, or
  * null on failure (network error, not signed in, server misconfigured). */
-export async function startCheckout(): Promise<string | null> {
+export async function startCheckout(plan: 'monthly' | 'annual' = 'monthly'): Promise<string | null> {
   try {
     const res = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: { ...(await authHeader()), 'content-type': 'application/json' },
-      body: JSON.stringify({ origin: window.location.origin }),
+      body: JSON.stringify({ origin: window.location.origin, plan }),
     });
     if (!res.ok) return null;
     const data = (await res.json()) as { url?: string };

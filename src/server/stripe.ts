@@ -5,13 +5,18 @@ import { ConfigError } from './errors.js';
 const subscriptionKey = (userId: string) => `stripe:subscription:${userId}`;
 const customerKey = (userId: string) => `stripe:customer:${userId}`;
 
-/** 2.90 EUR/month — see todo.md for the open decision on what exactly this gates. */
-const MONTHLY_PRICE_EUR_CENTS = 290;
+export type Plan = 'monthly' | 'annual';
 
-// Keyed by amount so a future price change here automatically creates (and
-// caches) a fresh Stripe Price instead of silently keeping checkouts on a
-// stale cached price_id from before the change.
-const priceIdCacheKey = () => `stripe:price_id:${MONTHLY_PRICE_EUR_CENTS}`;
+/** See todo.md for the open decision on what exactly a subscription gates. */
+const PLAN_CONFIG: Record<Plan, { unitAmount: number; interval: Stripe.PriceCreateParams.Recurring.Interval }> = {
+  monthly: { unitAmount: 290, interval: 'month' }, // 2.90 EUR/month
+  annual: { unitAmount: 2000, interval: 'year' }, // 20 EUR/year
+};
+
+// Keyed by plan + amount so a future price change here automatically creates
+// (and caches) a fresh Stripe Price instead of silently keeping checkouts on
+// a stale cached price_id from before the change.
+const priceIdCacheKey = (plan: Plan) => `stripe:price_id:${plan}:${PLAN_CONFIG[plan].unitAmount}`;
 
 let stripeClient: Stripe | null = null;
 
@@ -23,24 +28,27 @@ function getStripe(): Stripe {
   return stripeClient;
 }
 
-/** Creates the Product/Price once (on whichever request needs it first) and
- * caches the id in KV, so repeated checkouts reuse the same Price instead of
- * accumulating duplicates. Set STRIPE_PRICE_ID to skip this and pin an id
- * created by hand instead. */
-async function getOrCreatePriceId(stripe: Stripe): Promise<string> {
-  const pinned = process.env.STRIPE_PRICE_ID;
-  if (pinned) return pinned;
+/** Creates each plan's Product/Price once (on whichever request needs it
+ * first) and caches the id in KV, so repeated checkouts reuse the same Price
+ * instead of accumulating duplicates. Set STRIPE_PRICE_ID to skip this and
+ * pin the monthly plan to an id created by hand instead. */
+async function getOrCreatePriceId(stripe: Stripe, plan: Plan): Promise<string> {
+  if (plan === 'monthly') {
+    const pinned = process.env.STRIPE_PRICE_ID;
+    if (pinned) return pinned;
+  }
 
-  const cacheKey = priceIdCacheKey();
+  const cacheKey = priceIdCacheKey(plan);
   const cached = await kvGet<string>(cacheKey);
   if (cached) return cached;
 
-  const product = await stripe.products.create({ name: 'Brifo Premium' });
+  const { unitAmount, interval } = PLAN_CONFIG[plan];
+  const product = await stripe.products.create({ name: plan === 'annual' ? 'Brifo Premium (jährlich)' : 'Brifo Premium' });
   const price = await stripe.prices.create({
     product: product.id,
     currency: 'eur',
-    unit_amount: MONTHLY_PRICE_EUR_CENTS,
-    recurring: { interval: 'month' },
+    unit_amount: unitAmount,
+    recurring: { interval },
   });
   await kvSet(cacheKey, price.id);
   return price.id;
@@ -60,9 +68,13 @@ export async function createCheckoutSession(
   email: string,
   successUrl: string,
   cancelUrl: string,
+  plan: Plan = 'monthly',
 ): Promise<string> {
   const stripe = getStripe();
-  const [priceId, customerId] = await Promise.all([getOrCreatePriceId(stripe), getOrCreateCustomerId(stripe, userId, email)]);
+  const [priceId, customerId] = await Promise.all([
+    getOrCreatePriceId(stripe, plan),
+    getOrCreateCustomerId(stripe, userId, email),
+  ]);
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',

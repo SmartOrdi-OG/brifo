@@ -195,10 +195,17 @@ function apiDevMiddleware(): Plugin {
           const { ConfigError } = await import('./src/server/errors.ts')
           const user = await getUserFromRequest(req)
           if (!user) return { status: 401, body: { error: 'unauthorized' } }
-          const { origin } = (body ?? {}) as { origin?: unknown }
+          const { origin, plan } = (body ?? {}) as { origin?: unknown; plan?: unknown }
           const base = typeof origin === 'string' ? origin : ''
+          const selectedPlan = plan === 'annual' ? 'annual' : 'monthly'
           try {
-            const url = await createCheckoutSession(user.id, user.email ?? '', `${base}/paywall?checkout=success`, `${base}/paywall?checkout=cancelled`)
+            const url = await createCheckoutSession(
+              user.id,
+              user.email ?? '',
+              `${base}/paywall?checkout=success`,
+              `${base}/paywall?checkout=cancelled`,
+              selectedPlan,
+            )
             return { status: 200, body: { url } }
           } catch (err) {
             if (err instanceof ConfigError) return { status: 500, body: { error: `server misconfigured: ${err.message}` } }

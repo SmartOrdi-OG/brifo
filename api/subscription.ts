@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { createCheckoutSession, getSubscriptionStatus } from '../src/server/stripe.js';
+import { createCheckoutSession, getSubscriptionStatus, type Plan } from '../src/server/stripe.js';
 import { getUserFromRequest } from '../src/server/auth.js';
 import { isComplimentaryEmail } from '../src/server/freeAccounts.js';
 import { ConfigError } from '../src/server/errors.js';
@@ -32,14 +32,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (action === 'checkout') {
-    const { origin } = (req.body ?? {}) as { origin?: unknown };
+    const { origin, plan } = (req.body ?? {}) as { origin?: unknown; plan?: unknown };
     const base = typeof origin === 'string' ? origin : '';
+    const selectedPlan: Plan = plan === 'annual' ? 'annual' : 'monthly';
     try {
       const url = await createCheckoutSession(
         user.id,
         user.email ?? '',
         `${base}/paywall?checkout=success`,
         `${base}/paywall?checkout=cancelled`,
+        selectedPlan,
       );
       res.status(200).json({ url });
     } catch (err) {
