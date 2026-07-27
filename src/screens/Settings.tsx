@@ -73,7 +73,7 @@ export function Settings() {
 
   function upcomingSyncEvents(): SyncablePushEvent[] {
     const today = new Date().toISOString().slice(0, 10);
-    const dueEvents = events.filter((e) => e.date >= today).map((e) => ({ id: e.id, title: e.title, date: e.date }));
+    const dueEvents = events.filter((e) => e.date >= today).map((e) => ({ id: e.id, title: e.title, date: e.date, time: e.time }));
     const dueTodos = todos
       .filter((item) => !item.done && item.dueDate && item.dueDate >= today)
       .map((item) => ({ id: item.id, title: item.title, date: item.dueDate! }));

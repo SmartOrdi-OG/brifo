@@ -17,6 +17,8 @@ export interface ReminderEvent {
   title: string;
   /** YYYY-MM-DD */
   date: string;
+  /** HH:MM (24-hour), optional. */
+  time?: string;
 }
 
 interface DeviceReminders {
@@ -80,12 +82,14 @@ function viennaOffsetMinutes(dateStr: string): number {
   return Math.round((asUtc - probe.getTime()) / 60000);
 }
 
-/** Calendar events only carry a date, not a time — 08:00 Europe/Vienna is
- * used as every event's assumed appointment time so "an hour before" means
- * something. Exported for the cron route's own due-window math. */
-export function eventAnchorUtcMs(dateStr: string): number {
+/** Uses the event's own time when it has one; falls back to 08:00
+ * Europe/Vienna (as every event used to be treated before events could carry
+ * a time) so "an hour before" still means something for all-day items.
+ * Exported for the cron route's own due-window math. */
+export function eventAnchorUtcMs(dateStr: string, timeStr?: string): number {
   const offsetMin = viennaOffsetMinutes(dateStr);
-  return Date.parse(`${dateStr}T00:00:00Z`) + (8 * 60 - offsetMin) * 60000;
+  const [hour, minute] = timeStr ? timeStr.split(':').map(Number) : [8, 0];
+  return Date.parse(`${dateStr}T00:00:00Z`) + (hour * 60 + minute - offsetMin) * 60000;
 }
 
 function offsetLabel(offsetMin: number, lang: 'ar' | 'de'): string {
@@ -139,7 +143,7 @@ export async function runDueReminders(windowMinutes: number): Promise<RunDueRemi
     let deviceGone = false;
     for (const event of reminders.events) {
       if (deviceGone) break;
-      const anchor = eventAnchorUtcMs(event.date);
+      const anchor = eventAnchorUtcMs(event.date, event.time);
       for (const offsetMin of reminders.offsets) {
         checked++;
         const fireAt = anchor - offsetMin * 60000;

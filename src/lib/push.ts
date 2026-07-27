@@ -91,6 +91,8 @@ export interface SyncablePushEvent {
   title: string;
   /** YYYY-MM-DD */
   date: string;
+  /** HH:MM (24-hour), optional. */
+  time?: string;
 }
 
 export async function syncPushReminders(events: SyncablePushEvent[], offsets: number[], lang: 'ar' | 'de'): Promise<void> {

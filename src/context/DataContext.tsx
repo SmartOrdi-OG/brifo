@@ -86,8 +86,8 @@ interface DataContextValue {
   addLetter: (childId: string, analysis: LetterAnalysis, photo?: LetterPhoto) => StoredLetter;
   deleteLetter: (letterId: string) => void;
   markPaymentPaid: (paymentId: string, paid: boolean) => void;
-  addManualEvent: (childId: string, title: string, date: string) => CalendarEvent;
-  updateEvent: (eventId: string, updates: { childId: string; title: string; date: string }) => void;
+  addManualEvent: (childId: string, title: string, date: string, time?: string) => CalendarEvent;
+  updateEvent: (eventId: string, updates: { childId: string; title: string; date: string; time?: string }) => void;
   deleteEvent: (eventId: string) => void;
   lettersForChild: (childId: string) => StoredLetter[];
   paymentsForChild: (childId: string) => Payment[];
@@ -281,20 +281,21 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     }));
   }
 
-  function updateEvent(eventId: string, updates: { childId: string; title: string; date: string }) {
+  function updateEvent(eventId: string, updates: { childId: string; title: string; date: string; time?: string }) {
     setState((prev) => ({
       ...prev,
       events: prev.events.map((e) => (e.id === eventId ? { ...e, ...updates, updatedAt: new Date().toISOString() } : e)),
     }));
   }
 
-  function addManualEvent(childId: string, title: string, date: string): CalendarEvent {
+  function addManualEvent(childId: string, title: string, date: string, time?: string): CalendarEvent {
     const now = new Date().toISOString();
     const event: CalendarEvent = {
       id: makeId(),
       childId,
       title,
       date,
+      time,
       source: 'manual',
       createdAt: now,
       updatedAt: now,

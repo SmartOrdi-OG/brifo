@@ -124,9 +124,12 @@ export function ChildProfile() {
         <div className="deadlines">
           {deadlines.map((d) => (
             <div className="dl soon" key={d.id}>
-              <span className="when nums">{d.date}</span>
+              <span className="when nums">
+                {d.date}
+                {d.time ? ` ${d.time}` : ''}
+              </span>
               <h4>{isolateBidiRuns(d.title)}</h4>
-              <AddToCalendarButton title={d.title} date={d.date} />
+              <AddToCalendarButton title={d.title} date={d.date} time={d.time} />
             </div>
           ))}
         </div>

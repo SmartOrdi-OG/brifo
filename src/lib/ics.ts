@@ -1,4 +1,5 @@
-/** Minimal RFC5545 .ics builder for a single all-day event with a 1-day-before alarm. */
+/** Minimal RFC5545 .ics builder for a single event (all-day, or timed with a
+ * one-hour default duration) with a 1-day-before alarm. */
 
 function escapeIcsText(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
@@ -18,15 +19,28 @@ function icsTimestamp(): string {
   return `${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`;
 }
 
+/** Floating (no timezone) local date-time, one hour after `time`. */
+function addOneHour(time: string): string {
+  const [h, m] = time.split(':').map(Number);
+  const total = (h * 60 + m + 60) % 1440;
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}${String(total % 60).padStart(2, '0')}00`;
+}
+
 export interface IcsEventInput {
   title: string;
   /** YYYY-MM-DD */
   date: string;
+  /** HH:MM (24-hour), optional — omit for an all-day event. */
+  time?: string;
   description?: string;
 }
 
-export function buildIcsContent({ title, date, description }: IcsEventInput): string {
+export function buildIcsContent({ title, date, time, description }: IcsEventInput): string {
   const uid = `brifo-${Date.now()}-${Math.random().toString(36).slice(2, 9)}@brifo.app`;
+  const timePart = time ? time.replace(':', '') + '00' : null;
+  const dtLines = timePart
+    ? [`DTSTART:${toIcsDate(date)}T${timePart}`, `DTEND:${toIcsDate(date)}T${addOneHour(time!)}`]
+    : [`DTSTART;VALUE=DATE:${toIcsDate(date)}`, `DTEND;VALUE=DATE:${toIcsDate(addDays(date, 1))}`];
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -35,8 +49,7 @@ export function buildIcsContent({ title, date, description }: IcsEventInput): st
     'BEGIN:VEVENT',
     `UID:${uid}`,
     `DTSTAMP:${icsTimestamp()}`,
-    `DTSTART;VALUE=DATE:${toIcsDate(date)}`,
-    `DTEND;VALUE=DATE:${toIcsDate(addDays(date, 1))}`,
+    ...dtLines,
     `SUMMARY:${escapeIcsText(title)}`,
     ...(description ? [`DESCRIPTION:${escapeIcsText(description)}`] : []),
     'BEGIN:VALARM',
