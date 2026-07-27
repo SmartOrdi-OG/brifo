@@ -121,22 +121,26 @@ function apiDevMiddleware(): Plugin {
 
       server.middlewares.use(
         '/api/backup-sync',
-        jsonPostRoute(async (body) => {
-          const { saveCloudBackup, isValidRecoveryCode } = await import('./src/server/backup.ts')
-          const { code, data } = (body ?? {}) as { code?: unknown; data?: unknown }
-          if (!isValidRecoveryCode(code) || !data || typeof data !== 'object') return { status: 400, body: { error: 'invalid request' } }
-          await saveCloudBackup(code, data)
+        jsonPostRoute(async (body, req) => {
+          const { saveCloudBackup } = await import('./src/server/backup.ts')
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'not signed in' } }
+          const { data } = (body ?? {}) as { data?: unknown }
+          if (!data || typeof data !== 'object') return { status: 400, body: { error: 'invalid request' } }
+          await saveCloudBackup(user.id, data)
           return { status: 200, body: { ok: true } }
         }),
       )
 
       server.middlewares.use(
         '/api/backup-restore',
-        jsonPostRoute(async (body) => {
-          const { loadCloudBackup, isValidRecoveryCode } = await import('./src/server/backup.ts')
-          const { code } = (body ?? {}) as { code?: unknown }
-          if (!isValidRecoveryCode(code)) return { status: 400, body: { error: 'invalid request' } }
-          const backup = await loadCloudBackup(code)
+        jsonPostRoute(async (_body, req) => {
+          const { loadCloudBackup } = await import('./src/server/backup.ts')
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'not signed in' } }
+          const backup = await loadCloudBackup(user.id)
           if (!backup) return { status: 404, body: { error: 'not found' } }
           return { status: 200, body: backup }
         }),

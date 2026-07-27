@@ -16,6 +16,7 @@ import type { LetterAnalysis } from '../types/analysis';
 import { normalizeState, type RestorableState } from '../lib/backup';
 import { syncToCloud, fetchCloudBackup } from '../lib/cloudBackup';
 import { mergeStoredState } from '../lib/mergeState';
+import { useAuth } from './AuthContext';
 
 const STORAGE_KEY = 'brifo_data';
 const EMPTY_STATE: RestorableState = { children: [], letters: [], payments: [], events: [], todos: [], rating: null, tombstones: [] };
@@ -100,6 +101,7 @@ interface DataContextValue {
 const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children: reactChildren }: { children: ReactNode }) {
+  const { session } = useAuth();
   const [state, setState] = useState<StoredState>(loadInitialState);
 
   useEffect(() => {
@@ -108,22 +110,26 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
 
   // Debounced so rapid edits (e.g. typing) don't fire a request per keystroke.
   // Letter photos are stripped out: they're local-only (see StoredLetter.photo)
-  // since the backup API caps total payload size.
+  // since the backup API caps total payload size. Re-runs when `session`
+  // appears so the account's cloud copy gets seeded from this device right
+  // after sign-in, not only on the next edit.
   useEffect(() => {
+    if (!session) return;
     const timeout = setTimeout(() => {
       const cloudState = { ...state, letters: state.letters.map(({ photo: _photo, ...l }) => l) };
       syncToCloud(cloudState);
     }, 800);
     return () => clearTimeout(timeout);
-  }, [state]);
+  }, [state, session]);
 
-  // Two devices (e.g. both parents) can share one recovery code, so this
+  // Two devices (e.g. both parents) signed into the same account, so this
   // device's own edits alone aren't the whole picture — periodically pull the
   // cloud copy and reconcile it with local state (see lib/mergeState) instead
-  // of only ever pushing. Runs on mount, on an interval, and whenever the app
-  // regains visibility (the realistic moment to catch up: reopening after the
-  // other parent made changes).
+  // of only ever pushing. Runs on sign-in, on an interval, and whenever the
+  // app regains visibility (the realistic moment to catch up: reopening after
+  // the other parent made changes).
   useEffect(() => {
+    if (!session) return;
     let cancelled = false;
 
     async function pullAndMerge() {
@@ -148,7 +154,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
-  }, []);
+  }, [session]);
 
   function addChild(input: NewChildInput): Child {
     const child: Child = {

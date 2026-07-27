@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { saveCloudBackup, loadCloudBackup, isValidRecoveryCode } from '../src/server/backup.js';
+import { saveCloudBackup, loadCloudBackup } from '../src/server/backup.js';
+import { getUserFromRequest } from '../src/server/auth.js';
 
 // Consolidates backup-sync/backup-restore into one function — see push.ts
 // for why (Vercel's Hobby plan caps a deployment at 12 serverless functions).
@@ -25,12 +26,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  const user = await getUserFromRequest(req);
+  if (!user) {
+    res.status(401).json({ error: 'not signed in' });
+    return;
+  }
+
   if (action === 'sync') {
-    const { code, data } = (req.body ?? {}) as { code?: unknown; data?: unknown };
-    if (!isValidRecoveryCode(code)) {
-      res.status(400).json({ error: 'invalid code' });
-      return;
-    }
+    const { data } = (req.body ?? {}) as { data?: unknown };
     if (!data || typeof data !== 'object') {
       res.status(400).json({ error: 'invalid data' });
       return;
@@ -40,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     try {
-      await saveCloudBackup(code, data);
+      await saveCloudBackup(user.id, data);
       res.status(200).json({ ok: true });
     } catch (err) {
       console.error('[api/backup:sync] failed:', err);
@@ -50,15 +53,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (action === 'restore') {
-    // The code is a bearer secret (whoever has it gets the family's data), so
-    // it travels in the body rather than a query string / URL.
-    const { code } = (req.body ?? {}) as { code?: unknown };
-    if (!isValidRecoveryCode(code)) {
-      res.status(400).json({ error: 'invalid code' });
-      return;
-    }
     try {
-      const backup = await loadCloudBackup(code);
+      const backup = await loadCloudBackup(user.id);
       if (!backup) {
         res.status(404).json({ error: 'not found' });
         return;
