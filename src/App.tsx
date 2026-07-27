@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Home } from './screens/Home';
 import { Onboarding } from './screens/Onboarding';
@@ -26,7 +26,7 @@ import { useAuth } from './context/AuthContext';
 import { useSubscription } from './context/SubscriptionContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
-import { hasAcceptedPrivacyPolicy } from './lib/consent';
+import { hasAcceptedPrivacyPolicy, syncConsentToServer } from './lib/consent';
 
 function App() {
   const { t, lang } = useLanguage();
@@ -43,6 +43,10 @@ function App() {
   ];
   useReminderScheduler(remindables, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
   usePushSync(remindables, lang);
+
+  useEffect(() => {
+    if (session) syncConsentToServer();
+  }, [session]);
 
   // The privacy policy, Impressum, and AGB must stay reachable without a
   // barrier — the first two because there's otherwise no way to read them

@@ -1,9 +1,11 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { saveCloudBackup, loadCloudBackup } from '../src/server/backup.js';
+import { saveConsentRecord } from '../src/server/consent.js';
 import { getUserFromRequest } from '../src/server/auth.js';
 
-// Consolidates backup-sync/backup-restore into one function — see push.ts
-// for why (Vercel's Hobby plan caps a deployment at 12 serverless functions).
+// Consolidates backup-sync/backup-restore/consent-accept into one function —
+// see push.ts for why (Vercel's Hobby plan caps a deployment at 12
+// serverless functions).
 interface VercelRequest extends IncomingMessage {
   body?: unknown;
   query?: Record<string, string | string[]>;
@@ -63,6 +65,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (err) {
       console.error('[api/backup:restore] failed:', err);
       res.status(500).json({ error: 'failed to load backup' });
+    }
+    return;
+  }
+
+  if (action === 'consent') {
+    const { version, acceptedAt } = (req.body ?? {}) as { version?: unknown; acceptedAt?: unknown };
+    if (typeof version !== 'number' || typeof acceptedAt !== 'string' || Number.isNaN(Date.parse(acceptedAt))) {
+      res.status(400).json({ error: 'invalid consent record' });
+      return;
+    }
+    try {
+      await saveConsentRecord(user.id, { email: user.email, version, acceptedAt, recordedAt: new Date().toISOString() });
+      res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error('[api/backup:consent] failed:', err);
+      res.status(500).json({ error: 'failed to save consent record' });
     }
     return;
   }
