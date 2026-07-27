@@ -1,26 +1,118 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type CSSProperties, type FormEvent } from 'react';
 import { Mail } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import type { TranslationKey } from '../context/translations';
+
+type ErrorKind = 'missing' | 'failed' | 'code' | 'password' | 'password_missing' | 'mismatch' | 'too_short';
+
+const inputStyle: CSSProperties = {
+  padding: '12px 16px',
+  borderRadius: 14,
+  border: '1px solid var(--card-border)',
+  background: 'var(--card)',
+  color: 'var(--text)',
+  fontSize: 15,
+  textAlign: 'center',
+};
+
+const codeInputStyle: CSSProperties = {
+  ...inputStyle,
+  fontSize: 20,
+  letterSpacing: 4,
+};
+
+const buttonStyle: CSSProperties = {
+  padding: '14px 32px',
+  borderRadius: 16,
+  border: 'none',
+  background: 'linear-gradient(135deg,var(--blue),var(--purple))',
+  color: '#fff',
+  fontWeight: 800,
+  fontSize: 15,
+  cursor: 'pointer',
+};
+
+const linkStyle: CSSProperties = {
+  background: 'none',
+  border: 'none',
+  color: 'var(--blue)',
+  fontSize: 13,
+  fontWeight: 700,
+  cursor: 'pointer',
+};
+
+const formStyle: CSSProperties = {
+  width: '100%',
+  maxWidth: 320,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+};
+
+const ERROR_MESSAGE_KEY: Record<ErrorKind, TranslationKey> = {
+  missing: 'auth_email_required',
+  failed: 'auth_error',
+  code: 'auth_code_invalid',
+  password: 'auth_password_error',
+  password_missing: 'auth_password_required',
+  mismatch: 'auth_password_mismatch',
+  too_short: 'auth_password_too_short',
+};
 
 export function AuthGate() {
   const { t } = useLanguage();
-  const { signInWithEmail, verifyEmailCode, configured } = useAuth();
-  const [email, setEmail] = useState('');
+  const {
+    session,
+    passwordPromptPending,
+    signInWithEmail,
+    verifyEmailCode,
+    signInWithPassword,
+    setPassword,
+    skipPasswordPrompt,
+    configured,
+  } = useAuth();
+
+  const [mode, setMode] = useState<'password' | 'code'>('password');
+  const [lastEmail, setLastEmail] = useState('');
   const [sentTo, setSentTo] = useState<string | null>(null);
-  const [error, setError] = useState<{ kind: 'missing' | 'failed' | 'code'; detail?: string } | null>(null);
+  const [error, setError] = useState<{ kind: ErrorKind; detail?: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmitEmail(e: FormEvent<HTMLFormElement>) {
+  async function handlePasswordLogin(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (loading) return;
-    // Reads straight from the form instead of trusting React's `email`
-    // state — iOS Safari's autofill can update the input's DOM value
-    // without firing a React change event, which left the native
-    // `required` check (and this state) seeing an empty field even
-    // though the user had visibly typed an address.
+    // Reads straight from the form instead of trusting React state — iOS
+    // Safari's autofill can update an input's DOM value without firing a
+    // React change event.
+    const form = new FormData(e.currentTarget);
+    const emailValue = typeof form.get('email') === 'string' ? (form.get('email') as string).trim() : '';
+    const passwordValue = typeof form.get('password') === 'string' ? (form.get('password') as string) : '';
+    setLastEmail(emailValue);
+    if (!emailValue) {
+      setError({ kind: 'missing' });
+      return;
+    }
+    if (!passwordValue) {
+      setError({ kind: 'password_missing' });
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error } = await signInWithPassword(emailValue, passwordValue);
+    setLoading(false);
+    if (error) {
+      setError({ kind: 'password', detail: error });
+    }
+    // On success, the session updates via onAuthStateChange and App re-renders past this gate.
+  }
+
+  async function handleSendCode(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (loading) return;
     const typed = new FormData(e.currentTarget).get('email');
     const emailValue = typeof typed === 'string' ? typed.trim() : '';
+    setLastEmail(emailValue);
     if (!emailValue) {
       setError({ kind: 'missing' });
       return;
@@ -33,11 +125,10 @@ export function AuthGate() {
       setError({ kind: 'failed', detail: error });
       return;
     }
-    setEmail(emailValue);
     setSentTo(emailValue);
   }
 
-  async function handleSubmitCode(e: FormEvent<HTMLFormElement>) {
+  async function handleVerifyCode(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (loading || !sentTo) return;
     const typed = new FormData(e.currentTarget).get('code');
@@ -52,9 +143,37 @@ export function AuthGate() {
     setLoading(false);
     if (error) {
       setError({ kind: 'code', detail: error });
+    }
+    // On success, passwordPromptPending flips on and this component re-renders
+    // into the "set a password" step below, without ever unmounting.
+  }
+
+  async function handleSetPassword(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (loading) return;
+    const form = new FormData(e.currentTarget);
+    const passwordValue = typeof form.get('password') === 'string' ? (form.get('password') as string) : '';
+    const confirmValue = typeof form.get('confirm') === 'string' ? (form.get('confirm') as string) : '';
+    if (!passwordValue || !confirmValue) {
+      setError({ kind: 'password_missing' });
       return;
     }
-    // On success, the session updates via onAuthStateChange and App re-renders past this gate.
+    if (passwordValue.length < 6) {
+      setError({ kind: 'too_short' });
+      return;
+    }
+    if (passwordValue !== confirmValue) {
+      setError({ kind: 'mismatch' });
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error } = await setPassword(passwordValue);
+    setLoading(false);
+    if (error) {
+      setError({ kind: 'failed', detail: error });
+    }
+    // On success, passwordPromptPending flips off and App renders past this gate.
   }
 
   return (
@@ -88,108 +207,138 @@ export function AuthGate() {
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
-      ) : sentTo ? (
-        <form
-          key="code-step"
-          onSubmit={handleSubmitCode}
-          style={{ width: '100%', maxWidth: 320, display: 'flex', flexDirection: 'column', gap: 12 }}
-        >
-          <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_enter_code').replace('{email}', sentTo)}</p>
+      ) : session && passwordPromptPending ? (
+        <form key="set-password-step" onSubmit={handleSetPassword} style={formStyle}>
+          <h2 style={{ fontSize: 16, fontWeight: 800 }}>{t('auth_set_password_title')}</h2>
+          <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_set_password_subtitle')}</p>
+          <input type="password" name="password" autoComplete="new-password" placeholder={t('auth_password_placeholder')} style={inputStyle} />
           <input
-            type="text"
-            name="code"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            placeholder={t('auth_code_placeholder')}
-            style={{
-              padding: '12px 16px',
-              borderRadius: 14,
-              border: '1px solid var(--card-border)',
-              background: 'var(--card)',
-              color: 'var(--text)',
-              fontSize: 20,
-              letterSpacing: 4,
-              textAlign: 'center',
-            }}
+            type="password"
+            name="confirm"
+            autoComplete="new-password"
+            placeholder={t('auth_password_confirm_placeholder')}
+            style={inputStyle}
           />
           {error && (
             <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
-              {t(error.kind === 'missing' ? 'auth_code_required' : error.kind === 'code' ? 'auth_code_invalid' : 'auth_error')}
+              {t(ERROR_MESSAGE_KEY[error.kind])}
               {error.detail ? ` (${error.detail})` : ''}
             </p>
           )}
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: '14px 32px',
-              borderRadius: 16,
-              border: 'none',
-              background: 'linear-gradient(135deg,var(--blue),var(--purple))',
-              color: '#fff',
-              fontWeight: 800,
-              fontSize: 15,
-              cursor: 'pointer',
-            }}
-          >
-            {t('auth_verify_code')}
+          <button type="submit" disabled={loading} style={buttonStyle}>
+            {t('auth_set_password_button')}
           </button>
           <button
             type="button"
             onClick={() => {
-              setSentTo(null);
+              skipPasswordPrompt();
               setError(null);
             }}
-            style={{ background: 'none', border: 'none', color: 'var(--blue)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+            style={linkStyle}
           >
-            {t('auth_use_different_email')}
+            {t('auth_skip_password')}
           </button>
         </form>
+      ) : mode === 'code' ? (
+        sentTo ? (
+          <form key="code-step" onSubmit={handleVerifyCode} style={formStyle}>
+            <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_enter_code').replace('{email}', sentTo)}</p>
+            <input
+              type="text"
+              name="code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              placeholder={t('auth_code_placeholder')}
+              style={codeInputStyle}
+            />
+            {error && (
+              <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
+                {t(error.kind === 'missing' ? 'auth_code_required' : ERROR_MESSAGE_KEY[error.kind])}
+                {error.detail ? ` (${error.detail})` : ''}
+              </p>
+            )}
+            <button type="submit" disabled={loading} style={buttonStyle}>
+              {t('auth_verify_code')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSentTo(null);
+                setError(null);
+              }}
+              style={linkStyle}
+            >
+              {t('auth_use_different_email')}
+            </button>
+          </form>
+        ) : (
+          <form key="email-code-step" onSubmit={handleSendCode} style={formStyle}>
+            <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro')}</p>
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              defaultValue={lastEmail}
+              placeholder={t('auth_email_placeholder')}
+              style={inputStyle}
+            />
+            {error && (
+              <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
+                {t(error.kind === 'missing' ? 'auth_email_required' : 'auth_error')}
+                {error.detail ? ` (${error.detail})` : ''}
+              </p>
+            )}
+            <button type="submit" disabled={loading} style={buttonStyle}>
+              {t('auth_send_link')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('password');
+                setError(null);
+              }}
+              style={linkStyle}
+            >
+              {t('auth_back_to_password_link')}
+            </button>
+          </form>
+        )
       ) : (
-        <form
-          key="email-step"
-          onSubmit={handleSubmitEmail}
-          style={{ width: '100%', maxWidth: 320, display: 'flex', flexDirection: 'column', gap: 12 }}
-        >
-          <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro')}</p>
+        <form key="password-step" onSubmit={handlePasswordLogin} style={formStyle}>
+          <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro_password')}</p>
           <input
             type="email"
             name="email"
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            defaultValue={lastEmail}
             placeholder={t('auth_email_placeholder')}
-            style={{
-              padding: '12px 16px',
-              borderRadius: 14,
-              border: '1px solid var(--card-border)',
-              background: 'var(--card)',
-              color: 'var(--text)',
-              fontSize: 15,
-              textAlign: 'center',
-            }}
+            style={inputStyle}
+          />
+          <input
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            placeholder={t('auth_password_placeholder')}
+            style={inputStyle}
           />
           {error && (
             <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
-              {t(error.kind === 'missing' ? 'auth_email_required' : 'auth_error')}
+              {t(ERROR_MESSAGE_KEY[error.kind])}
               {error.detail ? ` (${error.detail})` : ''}
             </p>
           )}
+          <button type="submit" disabled={loading} style={buttonStyle}>
+            {t('auth_login_password_button')}
+          </button>
           <button
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: '14px 32px',
-              borderRadius: 16,
-              border: 'none',
-              background: 'linear-gradient(135deg,var(--blue),var(--purple))',
-              color: '#fff',
-              fontWeight: 800,
-              fontSize: 15,
-              cursor: 'pointer',
+            type="button"
+            onClick={() => {
+              setMode('code');
+              setError(null);
             }}
+            style={linkStyle}
           >
-            {t('auth_send_link')}
+            {t('auth_use_code_link')}
           </button>
         </form>
       )}

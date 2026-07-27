@@ -7,8 +7,13 @@ interface AuthContextValue {
   loading: boolean;
   /** False when VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY aren't set. */
   configured: boolean;
+  /** True right after a code-based sign-in, until the user sets or skips a password. */
+  passwordPromptPending: boolean;
   signInWithEmail: (email: string) => Promise<{ error: string | null }>;
   verifyEmailCode: (email: string, code: string) => Promise<{ error: string | null }>;
+  signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
+  setPassword: (password: string) => Promise<{ error: string | null }>;
+  skipPasswordPrompt: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -17,6 +22,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [passwordPromptPending, setPasswordPromptPending] = useState(false);
 
   useEffect(() => {
     if (!supabase) {
@@ -48,7 +54,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function verifyEmailCode(email: string, code: string): Promise<{ error: string | null }> {
     if (!supabase) return { error: 'not configured' };
     const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
+    if (!error) setPasswordPromptPending(true);
     return { error: error?.message ?? null };
+  }
+
+  async function signInWithPassword(email: string, password: string): Promise<{ error: string | null }> {
+    if (!supabase) return { error: 'not configured' };
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error?.message ?? null };
+  }
+
+  async function setPassword(password: string): Promise<{ error: string | null }> {
+    if (!supabase) return { error: 'not configured' };
+    const { error } = await supabase.auth.updateUser({ password });
+    if (!error) setPasswordPromptPending(false);
+    return { error: error?.message ?? null };
+  }
+
+  function skipPasswordPrompt(): void {
+    setPasswordPromptPending(false);
   }
 
   async function signOut(): Promise<void> {
@@ -56,7 +80,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, loading, configured: !!supabase, signInWithEmail, verifyEmailCode, signOut }}>
+    <AuthContext.Provider
+      value={{
+        session,
+        loading,
+        configured: !!supabase,
+        passwordPromptPending,
+        signInWithEmail,
+        verifyEmailCode,
+        signInWithPassword,
+        setPassword,
+        skipPasswordPrompt,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
