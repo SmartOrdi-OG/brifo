@@ -52,11 +52,11 @@ function App() {
     location.pathname === '/datenschutz' || location.pathname === '/impressum' || location.pathname === '/agb';
 
   if (authLoading) return null;
-  if ((!session || passwordPromptPending) && !bypassesGate) {
-    return <AuthGate />;
-  }
   if (!consented && !bypassesGate) {
     return <PrivacyConsentGate onAccept={() => setConsented(true)} />;
+  }
+  if ((!session || passwordPromptPending) && !bypassesGate) {
+    return <AuthGate />;
   }
   if (session && !subLoading && !subscriptionActive && trialExpired && !bypassesGate) {
     return <Paywall />;
