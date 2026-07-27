@@ -207,7 +207,7 @@ export function AuthGate() {
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
       ) : passwordPromptPending ? (
-        <form key="set-password-step" onSubmit={handleSetPassword} style={formStyle}>
+        <form key="set-password-step" onSubmit={handleSetPassword} noValidate style={formStyle}>
           <h2 style={{ fontSize: 16, fontWeight: 800 }}>{t('auth_set_password_title')}</h2>
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_set_password_subtitle')}</p>
           <input type="password" name="password" autoComplete="new-password" placeholder={t('auth_password_placeholder')} style={inputStyle} />
@@ -240,7 +240,7 @@ export function AuthGate() {
         </form>
       ) : mode === 'code' ? (
         sentTo ? (
-          <form key="code-step" onSubmit={handleVerifyCode} style={formStyle}>
+          <form key="code-step" onSubmit={handleVerifyCode} noValidate style={formStyle}>
             <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_enter_code').replace('{email}', sentTo)}</p>
             <input
               type="text"
@@ -271,7 +271,7 @@ export function AuthGate() {
             </button>
           </form>
         ) : (
-          <form key="email-code-step" onSubmit={handleSendCode} style={formStyle}>
+          <form key="email-code-step" onSubmit={handleSendCode} noValidate style={formStyle}>
             <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro')}</p>
             <input
               type="email"
@@ -303,7 +303,7 @@ export function AuthGate() {
           </form>
         )
       ) : (
-        <form key="password-step" onSubmit={handlePasswordLogin} style={formStyle}>
+        <form key="password-step" onSubmit={handlePasswordLogin} noValidate style={formStyle}>
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_intro_password')}</p>
           <input
             type="email"
