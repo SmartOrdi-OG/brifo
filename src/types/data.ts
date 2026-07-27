@@ -56,6 +56,8 @@ export interface CalendarEvent {
   childId: string;
   title: string;
   date: string;
+  /** HH:MM (24-hour), optional — an event with no time is treated as all-day. */
+  time?: string;
   source: CalendarEventSource;
   createdAt: string;
   updatedAt: string;

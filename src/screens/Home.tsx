@@ -120,8 +120,11 @@ export function Home() {
               return (
                 <div className="dl soon" key={e.id}>
                   <div className="dl-top">
-                    <span className="when nums">{e.date}</span>
-                    <AddToCalendarButton title={e.title} date={e.date} compact />
+                    <span className="when nums">
+                      {e.date}
+                      {e.time ? ` ${e.time}` : ''}
+                    </span>
+                    <AddToCalendarButton title={e.title} date={e.date} time={e.time} compact />
                   </div>
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>

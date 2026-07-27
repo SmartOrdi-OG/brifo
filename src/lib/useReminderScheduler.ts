@@ -7,16 +7,18 @@ export interface Remindable {
   id: string;
   title: string;
   date: string;
+  /** HH:MM (24-hour), optional — calendar events may carry one, todos don't. */
+  time?: string;
 }
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000;
 const LOOKBACK_MS = 10 * 60 * 1000;
 
-/** Calendar events only carry a date — 08:00 in the device's own local time
- * zone is treated as every event's assumed appointment time, same convention
- * the server-side scheduler uses for Europe/Vienna (see src/server/push.ts). */
-function eventAnchorMs(dateStr: string): number {
-  return new Date(`${dateStr}T08:00:00`).getTime();
+/** Uses the item's own time when it has one; 08:00 in the device's own local
+ * time zone is the assumed appointment time otherwise, same convention the
+ * server-side scheduler uses for Europe/Vienna (see src/server/push.ts). */
+function eventAnchorMs(dateStr: string, timeStr?: string): number {
+  return new Date(`${dateStr}T${timeStr ?? '08:00'}:00`).getTime();
 }
 
 /** Foreground fallback: fires a local notification the first time an
@@ -34,7 +36,7 @@ export function useReminderScheduler(events: Remindable[], dayBeforeLabel: strin
       const now = Date.now();
       const offsets = getReminderOffsets();
       const due = events.flatMap((e) => {
-        const anchor = eventAnchorMs(e.date);
+        const anchor = eventAnchorMs(e.date, e.time);
         return offsets
           .filter((offsetMin) => {
             const fireAt = anchor - offsetMin * 60000;

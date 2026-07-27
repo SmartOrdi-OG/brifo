@@ -11,7 +11,7 @@ export function usePushSync(events: Remindable[], lang: Lang) {
   useEffect(() => {
     if (!pushEnabled()) return;
     const today = new Date().toISOString().slice(0, 10);
-    const upcoming = events.filter((e) => e.date >= today).map((e) => ({ id: e.id, title: e.title, date: e.date }));
+    const upcoming = events.filter((e) => e.date >= today).map((e) => ({ id: e.id, title: e.title, date: e.date, time: e.time }));
 
     const timeout = setTimeout(() => {
       syncPushReminders(upcoming, getReminderOffsets(), lang);

@@ -25,6 +25,7 @@ interface VercelResponse extends ServerResponse {
 
 const MAX_EVENTS = 300;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 function isValidSubscription(value: unknown): value is PushSubscriptionInput {
   if (!value || typeof value !== 'object') return false;
@@ -37,7 +38,10 @@ function isValidSubscription(value: unknown): value is PushSubscriptionInput {
 function isValidEvent(value: unknown): value is ReminderEvent {
   if (!value || typeof value !== 'object') return false;
   const ev = value as Record<string, unknown>;
-  return typeof ev.id === 'string' && typeof ev.title === 'string' && typeof ev.date === 'string' && DATE_RE.test(ev.date);
+  if (typeof ev.id !== 'string' || typeof ev.title !== 'string' || typeof ev.date !== 'string' || !DATE_RE.test(ev.date)) {
+    return false;
+  }
+  return ev.time === undefined || (typeof ev.time === 'string' && TIME_RE.test(ev.time));
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

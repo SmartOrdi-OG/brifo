@@ -51,6 +51,14 @@ function weekdayIndex(d: Date): number {
   return (d.getDay() + 6) % 7;
 }
 
+/** Untimed (all-day) events sort before timed ones, then earliest first. */
+function compareByTime(a: CalendarEvent, b: CalendarEvent): number {
+  if (!a.time && !b.time) return a.title.localeCompare(b.title);
+  if (!a.time) return -1;
+  if (!b.time) return 1;
+  return a.time.localeCompare(b.time);
+}
+
 export function Calendar() {
   const { t, dir } = useLanguage();
   const { children, events, addManualEvent, updateEvent, deleteEvent } = useData();
@@ -60,6 +68,7 @@ export function Calendar() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [childId, setChildId] = useState<string>(ALL_CHILDREN);
 
   const now = new Date();
@@ -70,11 +79,11 @@ export function Calendar() {
   const upcoming = events
     .filter((e) => e.date >= today)
     .slice()
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date) || compareByTime(a, b));
   const expired = events
     .filter((e) => e.date < today)
     .slice()
-    .sort((a, b) => b.date.localeCompare(a.date));
+    .sort((a, b) => b.date.localeCompare(a.date) || compareByTime(a, b));
 
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
@@ -84,15 +93,21 @@ export function Calendar() {
 
   function renderRow(e: CalendarEvent, showDate = true) {
     const child = childFor(e.childId);
+    const showMeta = showDate || e.time;
     return (
       <div className="card calendar-row" key={e.id}>
         <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
         <div className="calendar-info">
           <h4>{isolateBidiRuns(e.title)}</h4>
           <p>
-            {showDate && (
+            {showMeta && (
               <>
-                <span className="nums">{e.date}</span> ·{' '}
+                <span className="nums">
+                  {showDate ? e.date : ''}
+                  {showDate && e.time ? ' ' : ''}
+                  {e.time ?? ''}
+                </span>{' '}
+                ·{' '}
               </>
             )}
             {isolateBidiRuns(
@@ -101,7 +116,7 @@ export function Calendar() {
           </p>
         </div>
         <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
-        <AddToCalendarButton title={e.title} date={e.date} compact />
+        <AddToCalendarButton title={e.title} date={e.date} time={e.time} compact />
         <button className="calendar-edit" onClick={() => startEdit(e)} aria-label={t('calendar_edit_event')}>
           <Pencil size={16} strokeWidth={2} />
         </button>
@@ -116,6 +131,7 @@ export function Calendar() {
     setEditingId(e.id);
     setTitle(e.title);
     setDate(e.date);
+    setTime(e.time ?? '');
     setChildId(e.childId);
     setShowForm(true);
   }
@@ -124,6 +140,7 @@ export function Calendar() {
     setEditingId(null);
     setTitle('');
     setDate('');
+    setTime('');
     setChildId(ALL_CHILDREN);
     setShowForm(false);
   }
@@ -132,6 +149,7 @@ export function Calendar() {
     setEditingId(null);
     setTitle('');
     setDate(iso);
+    setTime('');
     setChildId(ALL_CHILDREN);
     setShowForm(true);
   }
@@ -139,9 +157,9 @@ export function Calendar() {
   function submit() {
     if (!title.trim() || !date) return;
     if (editingId) {
-      updateEvent(editingId, { childId, title: title.trim(), date });
+      updateEvent(editingId, { childId, title: title.trim(), date, time: time || undefined });
     } else {
-      addManualEvent(childId, title.trim(), date);
+      addManualEvent(childId, title.trim(), date, time || undefined);
     }
     resetForm();
   }
@@ -204,6 +222,10 @@ export function Calendar() {
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="field">
+            <label>{t('calendar_event_time_label')}</label>
+            <input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+          </div>
+          <div className="field">
             <label>{t('calendar_event_child_label')}</label>
             <select value={childId} onChange={(e) => setChildId(e.target.value)}>
               <option value={ALL_CHILDREN}>{t('assign_all_children')}</option>
@@ -243,7 +265,7 @@ export function Calendar() {
             const dayEvents = events
               .filter((e) => e.date === iso)
               .slice()
-              .sort((a, b) => a.title.localeCompare(b.title));
+              .sort(compareByTime);
             return (
               <div className={isToday ? 'week-day-card today' : 'week-day-card'}>
                 <div className="week-day-head">
@@ -309,7 +331,7 @@ export function Calendar() {
             const dayEvents = events
               .filter((e) => e.date === iso)
               .slice()
-              .sort((a, b) => a.title.localeCompare(b.title));
+              .sort(compareByTime);
             return (
               <div className={isToday ? 'week-day-card today' : 'week-day-card'} key={iso}>
                 <div className="week-day-head">
