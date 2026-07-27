@@ -73,6 +73,13 @@ interface NewChildInput {
   consentGiven: boolean;
 }
 
+interface ManualEventDetails {
+  time?: string;
+  provider?: string;
+  location?: string;
+  reason?: string;
+}
+
 interface DataContextValue {
   children: Child[];
   letters: StoredLetter[];
@@ -86,8 +93,8 @@ interface DataContextValue {
   addLetter: (childId: string, analysis: LetterAnalysis, photo?: LetterPhoto) => StoredLetter;
   deleteLetter: (letterId: string) => void;
   markPaymentPaid: (paymentId: string, paid: boolean) => void;
-  addManualEvent: (childId: string, title: string, date: string, time?: string) => CalendarEvent;
-  updateEvent: (eventId: string, updates: { childId: string; title: string; date: string; time?: string }) => void;
+  addManualEvent: (childId: string, title: string, date: string, details?: ManualEventDetails) => CalendarEvent;
+  updateEvent: (eventId: string, updates: { childId: string; title: string; date: string } & ManualEventDetails) => void;
   deleteEvent: (eventId: string) => void;
   lettersForChild: (childId: string) => StoredLetter[];
   paymentsForChild: (childId: string) => Payment[];
@@ -281,21 +288,21 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     }));
   }
 
-  function updateEvent(eventId: string, updates: { childId: string; title: string; date: string; time?: string }) {
+  function updateEvent(eventId: string, updates: { childId: string; title: string; date: string } & ManualEventDetails) {
     setState((prev) => ({
       ...prev,
       events: prev.events.map((e) => (e.id === eventId ? { ...e, ...updates, updatedAt: new Date().toISOString() } : e)),
     }));
   }
 
-  function addManualEvent(childId: string, title: string, date: string, time?: string): CalendarEvent {
+  function addManualEvent(childId: string, title: string, date: string, details?: ManualEventDetails): CalendarEvent {
     const now = new Date().toISOString();
     const event: CalendarEvent = {
       id: makeId(),
       childId,
       title,
       date,
-      time,
+      ...details,
       source: 'manual',
       createdAt: now,
       updatedAt: now,

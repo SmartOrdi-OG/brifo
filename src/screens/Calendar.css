@@ -60,6 +60,12 @@
   margin-top: 2px;
 }
 
+.calendar-info p.calendar-detail {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
 .calendar-source {
   font-size: 11px;
   color: var(--muted);
