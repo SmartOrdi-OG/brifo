@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarX2, Pencil, Trash2 } from 'lucide-react';
+import { CalendarX2, ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
@@ -8,6 +8,7 @@ import { useData } from '../context/DataContext';
 import { ALL_CHILDREN, type CalendarEvent } from '../types/data';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { colorsForChildId, dotBackground } from '../lib/childColors';
+import type { TranslationKey } from '../context/translations';
 import './Calendar.css';
 
 const SOURCE_LABEL_KEY = {
@@ -16,17 +17,50 @@ const SOURCE_LABEL_KEY = {
   manual: 'calendar_source_manual',
 } as const;
 
+const WEEKDAY_KEYS: TranslationKey[] = [
+  'weekday_mon',
+  'weekday_tue',
+  'weekday_wed',
+  'weekday_thu',
+  'weekday_fri',
+  'weekday_sat',
+  'weekday_sun',
+];
+
+function toIsoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+/** Monday of the week containing `d`. */
+function startOfWeek(d: Date): Date {
+  const copy = new Date(d);
+  const day = copy.getDay(); // 0 = Sunday .. 6 = Saturday
+  const diff = day === 0 ? -6 : 1 - day;
+  copy.setDate(copy.getDate() + diff);
+  return copy;
+}
+
+function addDays(d: Date, n: number): Date {
+  const copy = new Date(d);
+  copy.setDate(copy.getDate() + n);
+  return copy;
+}
+
 export function Calendar() {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
   const { children, events, addManualEvent, updateEvent, deleteEvent } = useData();
 
+  const [viewMode, setViewMode] = useState<'list' | 'week'>('list');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [childId, setChildId] = useState<string>(ALL_CHILDREN);
 
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = toIsoDate(now);
+  const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(now));
+
   const upcoming = events
     .filter((e) => e.date >= today)
     .slice()
@@ -36,11 +70,13 @@ export function Calendar() {
     .slice()
     .sort((a, b) => b.date.localeCompare(a.date));
 
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
   function childFor(id: string) {
     return children.find((c) => c.id === id);
   }
 
-  function renderRow(e: CalendarEvent) {
+  function renderRow(e: CalendarEvent, showDate = true) {
     const child = childFor(e.childId);
     return (
       <div className="card calendar-row" key={e.id}>
@@ -48,7 +84,11 @@ export function Calendar() {
         <div className="calendar-info">
           <h4>{isolateBidiRuns(e.title)}</h4>
           <p>
-            <span className="nums">{e.date}</span> ·{' '}
+            {showDate && (
+              <>
+                <span className="nums">{e.date}</span> ·{' '}
+              </>
+            )}
             {isolateBidiRuns(
               child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
             )}
@@ -82,6 +122,14 @@ export function Calendar() {
     setShowForm(false);
   }
 
+  function openFormForDate(iso: string) {
+    setEditingId(null);
+    setTitle('');
+    setDate(iso);
+    setChildId(ALL_CHILDREN);
+    setShowForm(true);
+  }
+
   function submit() {
     if (!title.trim() || !date) return;
     if (editingId) {
@@ -92,12 +140,36 @@ export function Calendar() {
     resetForm();
   }
 
+  function goPrevWeek() {
+    setWeekStart((prev) => addDays(prev, -7));
+  }
+
+  function goNextWeek() {
+    setWeekStart((prev) => addDays(prev, 7));
+  }
+
+  function goCurrentWeek() {
+    setWeekStart(startOfWeek(new Date()));
+  }
+
+  const PrevIcon = dir === 'rtl' ? ChevronRight : ChevronLeft;
+  const NextIcon = dir === 'rtl' ? ChevronLeft : ChevronRight;
+
   return (
     <TabLayout>
       <Header />
       <div className="sec">
         <h3>{t('screen_calendar')}</h3>
         <a onClick={() => (showForm ? resetForm() : setShowForm(true))}>{t('calendar_add_event')}</a>
+      </div>
+
+      <div className="calendar-view-toggle">
+        <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>
+          {t('calendar_view_list')}
+        </button>
+        <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>
+          {t('calendar_view_week')}
+        </button>
       </div>
 
       {showForm && (
@@ -132,24 +204,70 @@ export function Calendar() {
         </div>
       )}
 
-      {upcoming.length === 0 ? (
-        <div className="empty-state actionable" onClick={() => setShowForm(true)}>
-          <div className="empty-state-icon">
-            <CalendarX2 size={26} strokeWidth={2} />
-          </div>
-          <p>{t('calendar_no_events')}</p>
-        </div>
-      ) : (
-        <div className="calendar-list">{upcoming.map(renderRow)}</div>
-      )}
-
-      {expired.length > 0 && (
+      {viewMode === 'list' ? (
         <>
-          <div className="sec">
-            <h3>{t('calendar_expired_title')}</h3>
-          </div>
-          <div className="calendar-list">{expired.map(renderRow)}</div>
+          {upcoming.length === 0 ? (
+            <div className="empty-state actionable" onClick={() => setShowForm(true)}>
+              <div className="empty-state-icon">
+                <CalendarX2 size={26} strokeWidth={2} />
+              </div>
+              <p>{t('calendar_no_events')}</p>
+            </div>
+          ) : (
+            <div className="calendar-list">{upcoming.map((e) => renderRow(e))}</div>
+          )}
+
+          {expired.length > 0 && (
+            <>
+              <div className="sec">
+                <h3>{t('calendar_expired_title')}</h3>
+              </div>
+              <div className="calendar-list">{expired.map((e) => renderRow(e))}</div>
+            </>
+          )}
         </>
+      ) : (
+        <div className="week-view">
+          <div className="week-nav">
+            <button onClick={goPrevWeek} aria-label={t('calendar_week_prev')}>
+              <PrevIcon size={18} strokeWidth={2} />
+            </button>
+            <a onClick={goCurrentWeek}>{t('calendar_today_label')}</a>
+            <button onClick={goNextWeek} aria-label={t('calendar_week_next')}>
+              <NextIcon size={18} strokeWidth={2} />
+            </button>
+          </div>
+
+          {weekDays.map((day, i) => {
+            const iso = toIsoDate(day);
+            const isToday = iso === today;
+            const dayEvents = events
+              .filter((e) => e.date === iso)
+              .slice()
+              .sort((a, b) => a.title.localeCompare(b.title));
+            return (
+              <div className={isToday ? 'week-day-card today' : 'week-day-card'} key={iso}>
+                <div className="week-day-head">
+                  <span className="week-day-name">{t(WEEKDAY_KEYS[i])}</span>
+                  <span className="week-day-date nums">{iso.slice(8, 10)}.{iso.slice(5, 7)}</span>
+                  {isToday && <span className="week-today-badge">{t('calendar_today_label')}</span>}
+                  <button
+                    className="week-day-add"
+                    onClick={() => openFormForDate(iso)}
+                    aria-label={t('calendar_week_add_event')}
+                  >
+                    <Plus size={16} strokeWidth={2} />
+                  </button>
+                </div>
+                {dayEvents.length === 0 ? (
+                  <p className="week-day-empty">{t('calendar_no_events')}</p>
+                ) : (
+                  <div className="calendar-list">{dayEvents.map((e) => renderRow(e, false))}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </TabLayout>
   );
