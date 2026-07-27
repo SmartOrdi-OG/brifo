@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Camera, Plus, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
+import { Camera, Plus, PenLine, CheckCircle2, BookOpen, Trash2 } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
@@ -12,7 +12,7 @@ import './Home.css';
 export function Home() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { children, letters, payments, events, eventsForChild } = useData();
+  const { children, letters, payments, events, eventsForChild, deleteLetter } = useData();
 
   const today = new Date().toISOString().slice(0, 10);
   const monthPrefix = today.slice(0, 7);
@@ -154,6 +154,16 @@ export function Home() {
               <span className={`tag ${l.analysis.action_required ? 'a' : 'g'}`}>
                 {l.analysis.action_required ? t('tag_reply_needed') : t('tag_done')}
               </span>
+              <button
+                className="letter-delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteLetter(l.id);
+                }}
+                aria-label={t('letter_delete')}
+              >
+                <Trash2 size={16} strokeWidth={2} />
+              </button>
             </div>
           ))}
         </>

@@ -142,6 +142,7 @@ const ar = {
   child_no_letters: 'ما في رسائل بعد',
   child_no_payments: 'ما في مدفوعات مطلوبة 🎉',
   child_no_deadlines: 'ما في مواعيد قادمة',
+  letter_delete: 'حذف الرسالة',
 
   payment_mark_paid: 'تم الدفع ✅',
   payment_paid_label: 'مدفوع',
@@ -428,6 +429,7 @@ const de: Record<keyof typeof ar, string> = {
   child_no_letters: 'Noch keine Briefe',
   child_no_payments: 'Keine offenen Zahlungen 🎉',
   child_no_deadlines: 'Keine anstehenden Termine',
+  letter_delete: 'Brief löschen',
 
   payment_mark_paid: 'Bezahlt ✅',
   payment_paid_label: 'Bezahlt',

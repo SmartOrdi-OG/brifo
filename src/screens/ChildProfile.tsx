@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail } from 'lucide-react';
+import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail, Trash2 } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
@@ -12,7 +12,7 @@ export function ChildProfile() {
   const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { children, lettersForChild, paymentsForChild, eventsForChild, deleteChild, markPaymentPaid } = useData();
+  const { children, lettersForChild, paymentsForChild, eventsForChild, deleteChild, deleteLetter, markPaymentPaid } = useData();
   const [deleted, setDeleted] = useState(false);
 
   const child = children.find((c) => c.id === id);
@@ -152,6 +152,16 @@ export function ChildProfile() {
               <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
               <p className="nums">{l.createdAt.slice(0, 10)}</p>
             </div>
+            <button
+              className="letter-delete"
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteLetter(l.id);
+              }}
+              aria-label={t('letter_delete')}
+            >
+              <Trash2 size={16} strokeWidth={2} />
+            </button>
           </div>
         ))
       )}
