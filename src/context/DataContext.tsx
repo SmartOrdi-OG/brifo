@@ -84,6 +84,7 @@ interface DataContextValue {
   addChild: (input: NewChildInput) => Child;
   deleteChild: (childId: string) => void;
   addLetter: (childId: string, analysis: LetterAnalysis, photo?: LetterPhoto) => StoredLetter;
+  deleteLetter: (letterId: string) => void;
   markPaymentPaid: (paymentId: string, paid: boolean) => void;
   addManualEvent: (childId: string, title: string, date: string) => CalendarEvent;
   updateEvent: (eventId: string, updates: { childId: string; title: string; date: string }) => void;
@@ -192,6 +193,21 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         payments: prev.payments.filter((p) => p.childId !== childId),
         events: prev.events.filter((e) => e.childId !== childId),
         todos: prev.todos.filter((item) => item.childId !== childId),
+        tombstones: [...prev.tombstones, ...cascadedIds.map(tombstone)],
+      };
+    });
+  }
+
+  // Payments carry a letterId, so they cascade; calendar events created from a
+  // letter don't (see CalendarEvent), so any left over stay and can still be
+  // removed individually from the Calendar screen.
+  function deleteLetter(letterId: string) {
+    setState((prev) => {
+      const cascadedIds = [letterId, ...prev.payments.filter((p) => p.letterId === letterId).map((p) => p.id)];
+      return {
+        ...prev,
+        letters: prev.letters.filter((l) => l.id !== letterId),
+        payments: prev.payments.filter((p) => p.letterId !== letterId),
         tombstones: [...prev.tombstones, ...cascadedIds.map(tombstone)],
       };
     });
@@ -365,6 +381,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         addChild,
         deleteChild,
         addLetter,
+        deleteLetter,
         markPaymentPaid,
         addManualEvent,
         updateEvent,
