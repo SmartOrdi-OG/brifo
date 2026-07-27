@@ -67,6 +67,8 @@ const ar = {
   auth_skip_password: 'لاحقاً',
   auth_password_mismatch: 'كلمتا السر مو متطابقتين',
   auth_password_too_short: 'كلمة السر لازم تكون 6 أحرف عالأقل',
+  auth_show_password: 'إظهار كلمة السر',
+  auth_hide_password: 'إخفاء كلمة السر',
 
   settings_language: 'اللغة',
   settings_theme: 'المظهر',
@@ -362,6 +364,8 @@ const de: Record<keyof typeof ar, string> = {
   auth_skip_password: 'Später',
   auth_password_mismatch: 'Die Passwörter stimmen nicht überein',
   auth_password_too_short: 'Das Passwort muss mindestens 6 Zeichen haben',
+  auth_show_password: 'Passwort anzeigen',
+  auth_hide_password: 'Passwort verbergen',
 
   settings_language: 'Sprache',
   settings_theme: 'Erscheinungsbild',

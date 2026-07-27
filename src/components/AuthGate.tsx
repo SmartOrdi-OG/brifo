@@ -1,5 +1,5 @@
 import { useState, type CSSProperties, type FormEvent } from 'react';
-import { Mail } from 'lucide-react';
+import { Eye, EyeOff, Mail } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import type { TranslationKey } from '../context/translations';
@@ -59,6 +59,51 @@ const ERROR_MESSAGE_KEY: Record<ErrorKind, TranslationKey> = {
   mismatch: 'auth_password_mismatch',
   too_short: 'auth_password_too_short',
 };
+
+function PasswordField({
+  name,
+  autoComplete,
+  placeholder,
+}: {
+  name: string;
+  autoComplete: string;
+  placeholder: string;
+}) {
+  const { t } = useLanguage();
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <input
+        type={visible ? 'text' : 'password'}
+        name={name}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', paddingInlineEnd: 44 }}
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((v) => !v)}
+        aria-label={t(visible ? 'auth_hide_password' : 'auth_show_password')}
+        style={{
+          position: 'absolute',
+          insetInlineEnd: 12,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'none',
+          border: 'none',
+          color: 'var(--muted)',
+          cursor: 'pointer',
+          padding: 0,
+          display: 'grid',
+          placeItems: 'center',
+        }}
+      >
+        {visible ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
+      </button>
+    </div>
+  );
+}
 
 export function AuthGate() {
   const { t } = useLanguage();
@@ -210,14 +255,8 @@ export function AuthGate() {
         <form key="set-password-step" onSubmit={handleSetPassword} noValidate style={formStyle}>
           <h2 style={{ fontSize: 16, fontWeight: 800 }}>{t('auth_set_password_title')}</h2>
           <p style={{ color: 'var(--muted)', fontSize: 14 }}>{t('auth_set_password_subtitle')}</p>
-          <input type="password" name="password" autoComplete="new-password" placeholder={t('auth_password_placeholder')} style={inputStyle} />
-          <input
-            type="password"
-            name="confirm"
-            autoComplete="new-password"
-            placeholder={t('auth_password_confirm_placeholder')}
-            style={inputStyle}
-          />
+          <PasswordField name="password" autoComplete="new-password" placeholder={t('auth_password_placeholder')} />
+          <PasswordField name="confirm" autoComplete="new-password" placeholder={t('auth_password_confirm_placeholder')} />
           {error && (
             <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
               {t(ERROR_MESSAGE_KEY[error.kind])}
@@ -313,13 +352,7 @@ export function AuthGate() {
             placeholder={t('auth_email_placeholder')}
             style={inputStyle}
           />
-          <input
-            type="password"
-            name="password"
-            autoComplete="current-password"
-            placeholder={t('auth_password_placeholder')}
-            style={inputStyle}
-          />
+          <PasswordField name="password" autoComplete="current-password" placeholder={t('auth_password_placeholder')} />
           {error && (
             <p style={{ color: 'var(--red)', fontSize: 12.5 }}>
               {t(ERROR_MESSAGE_KEY[error.kind])}
