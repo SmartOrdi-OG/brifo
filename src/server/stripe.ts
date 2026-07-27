@@ -2,12 +2,16 @@ import Stripe from 'stripe';
 import { kvGet, kvSet } from './kv.js';
 import { ConfigError } from './errors.js';
 
-const PRICE_ID_CACHE_KEY = 'stripe:price_id';
 const subscriptionKey = (userId: string) => `stripe:subscription:${userId}`;
 const customerKey = (userId: string) => `stripe:customer:${userId}`;
 
-/** 1.90 EUR/month — see todo.md for the open decision on what exactly this gates. */
-const MONTHLY_PRICE_EUR_CENTS = 190;
+/** 2.90 EUR/month — see todo.md for the open decision on what exactly this gates. */
+const MONTHLY_PRICE_EUR_CENTS = 290;
+
+// Keyed by amount so a future price change here automatically creates (and
+// caches) a fresh Stripe Price instead of silently keeping checkouts on a
+// stale cached price_id from before the change.
+const priceIdCacheKey = () => `stripe:price_id:${MONTHLY_PRICE_EUR_CENTS}`;
 
 let stripeClient: Stripe | null = null;
 
@@ -27,7 +31,8 @@ async function getOrCreatePriceId(stripe: Stripe): Promise<string> {
   const pinned = process.env.STRIPE_PRICE_ID;
   if (pinned) return pinned;
 
-  const cached = await kvGet<string>(PRICE_ID_CACHE_KEY);
+  const cacheKey = priceIdCacheKey();
+  const cached = await kvGet<string>(cacheKey);
   if (cached) return cached;
 
   const product = await stripe.products.create({ name: 'Brifo Premium' });
@@ -37,7 +42,7 @@ async function getOrCreatePriceId(stripe: Stripe): Promise<string> {
     unit_amount: MONTHLY_PRICE_EUR_CENTS,
     recurring: { interval: 'month' },
   });
-  await kvSet(PRICE_ID_CACHE_KEY, price.id);
+  await kvSet(cacheKey, price.id);
   return price.id;
 }
 

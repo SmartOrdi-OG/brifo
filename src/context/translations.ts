@@ -280,7 +280,7 @@ const ar = {
   settings_impressum_link: 'بيان الهوية القانونية (Impressum)',
 
   paywall_plan_name: 'Brifo Premium',
-  paywall_price: '1.90 €',
+  paywall_price: '2.90 €',
   paywall_price_period: 'بالشهر',
   paywall_features_note: 'رح نحدد الميزات المدفوعة بالتفصيل قريباً — هاي معاينة أولية للاشتراك.',
   paywall_consent_label: 'موافق/ة إنه الاشتراك يبلش فوراً، وفاهم/ة إنه بهيك بفقد حقي بالرجوع خلال 14 يوم (حسب المادة 4 من شروط الاستخدام).',
@@ -574,7 +574,7 @@ const de: Record<keyof typeof ar, string> = {
   settings_impressum_link: 'Impressum',
 
   paywall_plan_name: 'Brifo Premium',
-  paywall_price: '1,90 €',
+  paywall_price: '2,90 €',
   paywall_price_period: 'pro Monat',
   paywall_features_note: 'Die genauen Premium-Funktionen legen wir demnächst fest — dies ist eine erste Vorschau des Abos.',
   paywall_consent_label: 'Ich stimme zu, dass die Leistung sofort beginnt, und weiß, dass ich dadurch mein 14-tägiges Widerrufsrecht verliere (gemäß §4 der AGB).',
