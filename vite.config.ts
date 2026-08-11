@@ -216,6 +216,27 @@ function apiDevMiddleware(): Plugin {
       )
 
       server.middlewares.use(
+        '/api/create-portal-session',
+        jsonPostRoute(async (body, req) => {
+          const { createBillingPortalSession } = await import('./src/server/stripe.ts')
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const { ConfigError } = await import('./src/server/errors.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'unauthorized' } }
+          const { origin } = (body ?? {}) as { origin?: unknown }
+          const base = typeof origin === 'string' ? origin : ''
+          try {
+            const url = await createBillingPortalSession(user.id, user.email ?? '', `${base}/settings`)
+            return { status: 200, body: { url } }
+          } catch (err) {
+            if (err instanceof ConfigError) return { status: 500, body: { error: `server misconfigured: ${err.message}` } }
+            console.error('create-portal-session failed', err)
+            return { status: 500, body: { error: 'failed to create billing portal session' } }
+          }
+        }),
+      )
+
+      server.middlewares.use(
         '/api/subscription-status',
         jsonPostRoute(async (_body, req) => {
           const { getSubscriptionStatus } = await import('./src/server/stripe.ts')

@@ -40,3 +40,22 @@ export async function startCheckout(plan: 'monthly' | 'annual' = 'monthly'): Pro
     return null;
   }
 }
+
+/** Opens Stripe's hosted billing portal, where the user can update payment
+ * details or cancel their subscription. Returns the URL to redirect to, or
+ * null on failure. */
+export async function startBillingPortal(): Promise<string | null> {
+  try {
+    const res = await fetch('/api/create-portal-session', {
+      method: 'POST',
+      headers: { ...(await authHeader()), 'content-type': 'application/json' },
+      body: JSON.stringify({ origin: window.location.origin }),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { url?: string };
+    return data.url ?? null;
+  } catch (err) {
+    console.error('[subscription] portal start failed:', err);
+    return null;
+  }
+}
