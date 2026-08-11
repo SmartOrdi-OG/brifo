@@ -23,7 +23,9 @@ import {
 } from '../lib/reminders';
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { submitRatingToServer } from '../lib/ratings';
+import { startBillingPortal } from '../lib/subscription';
 import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../context/SubscriptionContext';
 
 const OFFSET_OPTIONS = [
   { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
@@ -50,6 +52,7 @@ export function Settings() {
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
   const { session, signOut } = useAuth();
+  const { active: subscriptionActive } = useSubscription();
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -58,6 +61,8 @@ export function Settings() {
   const [stars, setStars] = useState(rating?.stars ?? 0);
   const [comment, setComment] = useState(rating?.comment ?? '');
   const [ratingSaved, setRatingSaved] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState(false);
 
   const backupFileInputRef = useRef<HTMLInputElement>(null);
   const [pendingRestore, setPendingRestore] = useState<RestorableState | null>(null);
@@ -143,6 +148,18 @@ export function Settings() {
     setRestoreDone(true);
   }
 
+  async function handleManageSubscription() {
+    setPortalLoading(true);
+    setPortalError(false);
+    const url = await startBillingPortal();
+    if (url) {
+      window.location.href = url;
+      return;
+    }
+    setPortalError(true);
+    setPortalLoading(false);
+  }
+
   return (
     <TabLayout>
       <Header />
@@ -156,6 +173,17 @@ export function Settings() {
           <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }} className="nums">
             {session.user.email}
           </p>
+          {subscriptionActive && (
+            <button
+              className="scan-btn"
+              style={{ width: '100%', marginBottom: 10 }}
+              onClick={handleManageSubscription}
+              disabled={portalLoading}
+            >
+              {portalLoading ? t('settings_manage_subscription_loading') : t('settings_manage_subscription')}
+            </button>
+          )}
+          {portalError && <p style={{ fontSize: 12.5, color: 'var(--red)', fontWeight: 700, marginBottom: 10 }}>{t('settings_manage_subscription_error')}</p>}
           <button className="scan-btn" style={{ width: '100%' }} onClick={() => signOut()}>
             {t('auth_sign_out')}
           </button>

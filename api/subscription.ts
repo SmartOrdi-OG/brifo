@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { createCheckoutSession, getSubscriptionStatus, type Plan } from '../src/server/stripe.js';
+import { createCheckoutSession, createBillingPortalSession, getSubscriptionStatus, type Plan } from '../src/server/stripe.js';
 import { getUserFromRequest } from '../src/server/auth.js';
 import { isComplimentaryEmail } from '../src/server/freeAccounts.js';
 import { ConfigError } from '../src/server/errors.js';
@@ -52,6 +52,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       console.error('[api/subscription:checkout] failed:', err);
       res.status(500).json({ error: 'failed to create checkout session' });
+    }
+    return;
+  }
+
+  if (action === 'portal') {
+    const { origin } = (req.body ?? {}) as { origin?: unknown };
+    const base = typeof origin === 'string' ? origin : '';
+    try {
+      const url = await createBillingPortalSession(user.id, user.email ?? '', `${base}/settings`);
+      res.status(200).json({ url });
+    } catch (err) {
+      if (err instanceof ConfigError) {
+        console.error('[api/subscription:portal] config error:', err.message);
+        res.status(500).json({ error: `server misconfigured: ${err.message}` });
+        return;
+      }
+      console.error('[api/subscription:portal] failed:', err);
+      res.status(500).json({ error: 'failed to create billing portal session' });
     }
     return;
   }

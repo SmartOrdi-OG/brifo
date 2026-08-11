@@ -53,6 +53,9 @@ const ar = {
   auth_not_configured: 'نظام تسجيل الدخول لسا ما انظبط، جرّبي بعد شوي',
   auth_sign_out: 'تسجيل خروج',
   auth_signed_in_as: 'مسجلة دخول بـ',
+  settings_manage_subscription: 'إدارة الاشتراك / إلغاء الاشتراك',
+  settings_manage_subscription_loading: 'لحظة...',
+  settings_manage_subscription_error: 'صار في مشكلة، جرّبي مرة ثانية',
 
   auth_intro_password: 'سجّلي دخول بإيميلك وكلمة السر الخاصة فيك.',
   auth_password_placeholder: 'كلمة السر',
@@ -353,6 +356,9 @@ const de: Record<keyof typeof ar, string> = {
   auth_not_configured: 'Die Anmeldung ist noch nicht eingerichtet, bitte versuch es später',
   auth_sign_out: 'Abmelden',
   auth_signed_in_as: 'Angemeldet als',
+  settings_manage_subscription: 'Abo verwalten / kündigen',
+  settings_manage_subscription_loading: 'Einen Moment...',
+  settings_manage_subscription_error: 'Es gab ein Problem, bitte versuch es noch mal',
 
   auth_intro_password: 'Melde dich mit deiner E-Mail und deinem Passwort an.',
   auth_password_placeholder: 'Passwort',

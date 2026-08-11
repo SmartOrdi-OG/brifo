@@ -89,6 +89,23 @@ export async function createCheckoutSession(
   return session.url;
 }
 
+/** Stripe's own hosted page for an existing customer to view their
+ * subscription, update payment details, or cancel — no custom cancellation
+ * UI/logic needed on our side. Requires the customer to already exist (i.e.
+ * they've been through checkout at least once), which is why the caller
+ * gates this on an active subscription. */
+export async function createBillingPortalSession(userId: string, email: string, returnUrl: string): Promise<string> {
+  const stripe = getStripe();
+  const customerId = await getOrCreateCustomerId(stripe, userId, email);
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: returnUrl,
+  });
+
+  return session.url;
+}
+
 export interface SubscriptionStatus {
   active: boolean;
   currentPeriodEnd: string | null;
