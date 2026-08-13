@@ -79,6 +79,7 @@ function PasswordField({
         name={name}
         autoComplete={autoComplete}
         placeholder={placeholder}
+        dir="ltr"
         style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', paddingInlineEnd: 44 }}
       />
       <button
@@ -303,6 +304,7 @@ export function AuthGate() {
               inputMode="numeric"
               autoComplete="one-time-code"
               placeholder={t('auth_code_placeholder')}
+              dir="ltr"
               style={codeInputStyle}
             />
             {error && (
@@ -334,6 +336,7 @@ export function AuthGate() {
               autoComplete="email"
               defaultValue={lastEmail}
               placeholder={t('auth_email_placeholder')}
+              dir="ltr"
               style={inputStyle}
             />
             {error && (
@@ -366,6 +369,7 @@ export function AuthGate() {
             autoComplete="email"
             defaultValue={lastEmail}
             placeholder={t('auth_email_placeholder')}
+            dir="ltr"
             style={inputStyle}
           />
           <PasswordField name="password" autoComplete="current-password" placeholder={t('auth_password_placeholder')} />
