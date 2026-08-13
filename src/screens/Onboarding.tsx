@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Mailbox } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export function Onboarding() {
@@ -26,11 +27,11 @@ export function Onboarding() {
           background: 'linear-gradient(135deg,var(--blue),var(--purple))',
           display: 'grid',
           placeItems: 'center',
-          fontSize: 40,
+          color: '#fff',
           boxShadow: '0 14px 34px rgba(109,92,231,.45)',
         }}
       >
-        📬
+        <Mailbox size={40} strokeWidth={2} />
       </div>
       <h1 style={{ fontSize: 26, fontWeight: 900 }}>{t('screen_onboarding')}</h1>
       <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('scan_subtitle')}</p>

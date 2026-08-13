@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { AlertTriangle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
@@ -32,14 +33,24 @@ export function Result() {
             <span className="urgency-badge">{t(`urgency_${result.urgency}`)}</span>
             <p className="summary-text">{isolateBidiRuns(result.summary)}</p>
             <p className="action-flag">
-              {result.action_required ? `⚠️ ${t('result_action_required')}` : `✅ ${t('result_no_action')}`}
+              <span className="btn-icon-label">
+                {result.action_required ? (
+                  <AlertTriangle size={15} strokeWidth={2.25} />
+                ) : (
+                  <CheckCircle2 size={15} strokeWidth={2.25} />
+                )}
+                {result.action_required ? t('result_action_required') : t('result_no_action')}
+              </span>
             </p>
           </div>
 
           {photo && (
             <div className="card original-photo-card">
               <button className="original-photo-toggle" onClick={() => setShowPhoto((v) => !v)}>
-                {showPhoto ? t('result_hide_original') : t('result_show_original')}
+                <span className="btn-icon-label">
+                  {showPhoto ? <EyeOff size={16} strokeWidth={2.25} /> : <Eye size={16} strokeWidth={2.25} />}
+                  {showPhoto ? t('result_hide_original') : t('result_show_original')}
+                </span>
               </button>
               {showPhoto && <img src={`data:${photo.mediaType};base64,${photo.base64}`} alt="" className="original-photo-img" />}
             </div>

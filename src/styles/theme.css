@@ -191,6 +191,16 @@ blockquote {
   transform: scale(0.97);
 }
 
+/* Aligns an icon with its label inside a button whose other siblings are
+   plain text (e.g. .scan-btn) — scoped to a span so it doesn't affect
+   buttons that don't use it. */
+.btn-icon-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
 .scan-btn.primary {
   background: linear-gradient(135deg, var(--blue), var(--purple));
   border: none;
