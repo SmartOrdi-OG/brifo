@@ -38,7 +38,7 @@ const ar = {
   back: 'رجوع',
 
   auth_intro: 'سجّلي دخول بإيميلك عشان تبدئي تستخدمي Brifo. رح نبعتلك كود تكتبيه هون، بدون كلمة سر.',
-  auth_pricing_note: '7 أيام تجربة مجانية، وبعدها 2.90 € بالشهر أو 20 € بالسنة — تقدري تلغي وقت ما بدك.',
+  auth_pricing_note: 'Brifo مجاني (الدليل، التقويم، المهام، التذكيرات). تصوير رسائل المدرسة وتحليلها بالذكاء الاصطناعي، وتوليد الردود، بحاجة اشتراك بعد 7 أيام تجربة مجانية — 2.90 € بالشهر أو 20 € بالسنة، تقدري تلغي وقت ما بدك.',
   auth_email_placeholder: 'إيميلك',
   auth_send_link: 'إرسال الكود',
   auth_check_email: 'بعتنالك رابط عإيميلك — افتحي الإيميل ودوسي عالرابط لتسجيل الدخول.',
@@ -341,7 +341,7 @@ const de: Record<keyof typeof ar, string> = {
   back: 'Zurück',
 
   auth_intro: 'Melde dich mit deiner E-Mail an, um Brifo zu nutzen. Wir schicken dir einen Code, den du hier eingibst — kein Passwort nötig.',
-  auth_pricing_note: '7 Tage kostenlos testen, danach 2,90 €/Monat oder 20 €/Jahr — jederzeit kündbar.',
+  auth_pricing_note: 'Brifo ist kostenlos (Ratgeber, Kalender, Aufgaben, Erinnerungen). Das Fotografieren und KI-Analysieren von Schulbriefen sowie das Verfassen von Antworten erfordert nach 7 Tagen kostenloser Testphase ein Abo — 2,90 €/Monat oder 20 €/Jahr, jederzeit kündbar.',
   auth_email_placeholder: 'Deine E-Mail',
   auth_send_link: 'Code senden',
   auth_check_email: 'Wir haben dir einen Link geschickt — öffne deine E-Mails und klick drauf, um dich anzumelden.',
