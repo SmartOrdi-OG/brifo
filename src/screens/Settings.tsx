@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, Bell } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
@@ -227,7 +227,18 @@ export function Settings() {
             </button>
             {remindersDenied && <p style={{ fontSize: 12.5, color: 'var(--red)', marginTop: 8 }}>{t('reminders_permission_denied')}</p>}
             {remindersOn && (
-              <p style={{ fontSize: 12.5, color: pushActive ? 'var(--green)' : 'var(--amber)', fontWeight: 700, marginTop: 8 }}>
+              <p
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontSize: 12.5,
+                  color: pushActive ? 'var(--green)' : 'var(--amber)',
+                  fontWeight: 700,
+                  marginTop: 8,
+                }}
+              >
+                {pushActive && <Bell size={14} strokeWidth={2.5} />}
                 {pushActive ? t('reminders_push_active') : t('reminders_push_fallback')}
               </p>
             )}

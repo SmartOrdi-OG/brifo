@@ -21,6 +21,7 @@ export function ChildProfile() {
     return (
       <FlowLayout title="">
         <div className="card" style={{ padding: 32, textAlign: 'center' }}>
+          <CheckCircle2 size={28} strokeWidth={2} style={{ marginBottom: 10, color: 'var(--green)' }} />
           <p>{t('child_delete_confirm')}</p>
         </div>
       </FlowLayout>
@@ -91,7 +92,9 @@ export function ChildProfile() {
                   {p.amount} {p.currency}
                 </span>
                 <button className="scan-btn" onClick={() => markPaymentPaid(p.id, true)}>
-                  {t('payment_mark_paid')}
+                  <span className="btn-icon-label">
+                    <CheckCircle2 size={16} strokeWidth={2.5} /> {t('payment_mark_paid')}
+                  </span>
                 </button>
                 <AddToCalendarButton title={p.reason} date={p.dueDate} compact />
               </div>
@@ -170,7 +173,9 @@ export function ChildProfile() {
       )}
 
       <button className="scan-btn delete-btn" onClick={handleDelete}>
-        🗑️ {t('child_delete')}
+        <span className="btn-icon-label">
+          <Trash2 size={16} strokeWidth={2.5} /> {t('child_delete')}
+        </span>
       </button>
     </FlowLayout>
   );

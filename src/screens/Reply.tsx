@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ThermometerSun, CalendarDays, CheckCircle2, HelpCircle, PenLine, Share2, type LucideIcon } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -8,11 +9,11 @@ import './Reply.css';
 type ScreenState = 'form' | 'generating' | 'result' | 'error';
 
 const INTENTS: ReplyIntent[] = ['entschuldigung', 'termin', 'zustimmung', 'frage'];
-const INTENT_ICON: Record<ReplyIntent, string> = {
-  entschuldigung: '🤒',
-  termin: '📅',
-  zustimmung: '✅',
-  frage: '❓',
+const INTENT_ICON: Record<ReplyIntent, LucideIcon> = {
+  entschuldigung: ThermometerSun,
+  termin: CalendarDays,
+  zustimmung: CheckCircle2,
+  frage: HelpCircle,
 };
 
 export function Reply() {
@@ -78,16 +79,21 @@ export function Reply() {
             <h3>{t('reply_intent_title')}</h3>
           </div>
           <div className="intent-grid">
-            {INTENTS.map((i) => (
-              <button
-                key={i}
-                className={`intent-chip${intent === i ? ' selected' : ''}`}
-                onClick={() => setIntent(i)}
-              >
-                <span className="intent-icon">{INTENT_ICON[i]}</span>
-                {t(`reply_intent_${i}`)}
-              </button>
-            ))}
+            {INTENTS.map((i) => {
+              const Icon = INTENT_ICON[i];
+              return (
+                <button
+                  key={i}
+                  className={`intent-chip${intent === i ? ' selected' : ''}`}
+                  onClick={() => setIntent(i)}
+                >
+                  <span className="intent-icon">
+                    <Icon size={20} strokeWidth={2} />
+                  </span>
+                  {t(`reply_intent_${i}`)}
+                </button>
+              );
+            })}
           </div>
 
           <div className="field">
@@ -109,7 +115,9 @@ export function Reply() {
           </div>
 
           <button className="scan-btn primary reply-generate-btn" disabled={!canGenerate} onClick={generate}>
-            ✍️ {t('reply_generate')}
+            <span className="btn-icon-label">
+              <PenLine size={16} strokeWidth={2.5} /> {t('reply_generate')}
+            </span>
           </button>
         </div>
       )}
@@ -142,7 +150,9 @@ export function Reply() {
                 {copied === 'german' ? t('reply_copied') : t('reply_copy')}
               </button>
               <button className="scan-btn primary" onClick={() => shareWhatsApp(letter.german)}>
-                📤 {t('reply_share_whatsapp')}
+                <span className="btn-icon-label">
+                  <Share2 size={16} strokeWidth={2.5} /> {t('reply_share_whatsapp')}
+                </span>
               </button>
             </div>
           </div>

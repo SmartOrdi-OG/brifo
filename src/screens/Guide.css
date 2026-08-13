@@ -28,8 +28,8 @@
   border-radius: 14px;
   display: grid;
   place-items: center;
-  font-size: 21px;
   flex-shrink: 0;
+  color: var(--blue);
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(139, 92, 246, 0.18));
 }
 

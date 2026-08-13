@@ -7,8 +7,8 @@ const ar = {
   nav_guide: 'الدليل',
   nav_settings: 'الإعدادات',
 
-  greeting_title_named: 'أهلاً أم {name} 👋',
-  greeting_title_generic: 'أهلاً 👋',
+  greeting_title_named: 'أهلاً أم {name}',
+  greeting_title_generic: 'أهلاً',
   greeting_subtitle: 'عندك موعد مهم هالأسبوع — كل شي تحت السيطرة',
 
   scan_title: 'صوّر رسالة المدرسة',
@@ -34,7 +34,7 @@ const ar = {
   screen_settings: 'الإعدادات',
   screen_onboarding: 'أهلاً بك في Brifo',
 
-  coming_soon: 'قريباً — هاي الصفحة تحت التطوير 🚧',
+  coming_soon: 'قريباً — هاي الصفحة تحت التطوير',
   back: 'رجوع',
 
   auth_intro: 'سجّلي دخول بإيميلك عشان تبدئي تستخدمي Brifo. رح نبعتلك كود تكتبيه هون، بدون كلمة سر.',
@@ -98,7 +98,7 @@ const ar = {
   result_actions_title: 'المطلوب منك',
   result_deadlines_title: 'المواعيد',
   result_scan_another: 'صوّر رسالة جديدة',
-  result_show_original: '📄 عرض الرسالة الأصلية',
+  result_show_original: 'عرض الرسالة الأصلية',
   result_hide_original: 'إخفاء الرسالة الأصلية',
   urgency_high: 'عاجل',
   urgency_medium: 'قريب',
@@ -139,16 +139,16 @@ const ar = {
   member_type_child: 'طفل',
   member_type_adult: 'بالغ',
   child_delete: 'حذف الملف وكل بياناته',
-  child_delete_confirm: 'تم حذف الملف وكل بياناته 🗑️',
+  child_delete_confirm: 'تم حذف الملف وكل بياناته',
   child_profile_letters: 'الرسائل',
   child_profile_payments: 'المطلوب دفعه',
   child_profile_deadlines: 'المواعيد',
   child_no_letters: 'ما في رسائل بعد',
-  child_no_payments: 'ما في مدفوعات مطلوبة 🎉',
+  child_no_payments: 'ما في مدفوعات مطلوبة',
   child_no_deadlines: 'ما في مواعيد قادمة',
   letter_delete: 'حذف الرسالة',
 
-  payment_mark_paid: 'تم الدفع ✅',
+  payment_mark_paid: 'تم الدفع',
   payment_paid_label: 'مدفوع',
   payment_due_label: 'موعد الدفع',
 
@@ -159,7 +159,7 @@ const ar = {
   home_deadlines_count: 'مواعيد',
 
   assign_confirm_prefix: 'هاي ورقة لـ',
-  assign_confirm_yes: 'ايه، صح ✅',
+  assign_confirm_yes: 'ايه، صح',
   assign_confirm_no: 'لا، مو هيك',
   assign_picker_title: 'لمين هالورقة؟',
   assign_all_children: 'الكل',
@@ -237,7 +237,7 @@ const ar = {
   reminders_off: 'تفعيل الإشعارات',
   reminders_permission_denied: 'لازم تسمحي بالإشعارات من إعدادات المتصفح أو الموبايل',
   reminders_unsupported: 'الإشعارات مو مدعومة على هالجهاز',
-  reminders_push_active: 'رح توصلك التذكيرات حتى لو Brifo مسكّر 🔔',
+  reminders_push_active: 'رح توصلك التذكيرات حتى لو Brifo مسكّر',
   reminders_push_fallback: 'رح توصلك التذكيرات بس والتطبيق مفتوح فقط',
   reminders_offsets_label: 'وقت التذكير',
   reminders_offset_day: 'قبل يوم',
@@ -310,8 +310,8 @@ const de: Record<keyof typeof ar, string> = {
   nav_guide: 'Ratgeber',
   nav_settings: 'Einstellungen',
 
-  greeting_title_named: 'Hallo Umm {name} 👋',
-  greeting_title_generic: 'Hallo 👋',
+  greeting_title_named: 'Hallo Umm {name}',
+  greeting_title_generic: 'Hallo',
   greeting_subtitle: 'Diese Woche steht ein wichtiger Termin an — alles im Griff',
 
   scan_title: 'Schulbrief fotografieren',
@@ -337,7 +337,7 @@ const de: Record<keyof typeof ar, string> = {
   screen_settings: 'Einstellungen',
   screen_onboarding: 'Willkommen bei Brifo',
 
-  coming_soon: 'Demnächst — diese Seite ist in Arbeit 🚧',
+  coming_soon: 'Demnächst — diese Seite ist in Arbeit',
   back: 'Zurück',
 
   auth_intro: 'Melde dich mit deiner E-Mail an, um Brifo zu nutzen. Wir schicken dir einen Code, den du hier eingibst — kein Passwort nötig.',
@@ -401,7 +401,7 @@ const de: Record<keyof typeof ar, string> = {
   result_actions_title: 'Was zu tun ist',
   result_deadlines_title: 'Termine',
   result_scan_another: 'Neuen Brief fotografieren',
-  result_show_original: '📄 Originalbrief anzeigen',
+  result_show_original: 'Originalbrief anzeigen',
   result_hide_original: 'Originalbrief ausblenden',
   urgency_high: 'Dringend',
   urgency_medium: 'Bald',
@@ -442,16 +442,16 @@ const de: Record<keyof typeof ar, string> = {
   member_type_child: 'Kind',
   member_type_adult: 'Erwachsene(r)',
   child_delete: 'Profil und alle Daten löschen',
-  child_delete_confirm: 'Profil und alle Daten wurden gelöscht 🗑️',
+  child_delete_confirm: 'Profil und alle Daten wurden gelöscht',
   child_profile_letters: 'Briefe',
   child_profile_payments: 'Zu zahlen',
   child_profile_deadlines: 'Termine',
   child_no_letters: 'Noch keine Briefe',
-  child_no_payments: 'Keine offenen Zahlungen 🎉',
+  child_no_payments: 'Keine offenen Zahlungen',
   child_no_deadlines: 'Keine anstehenden Termine',
   letter_delete: 'Brief löschen',
 
-  payment_mark_paid: 'Bezahlt ✅',
+  payment_mark_paid: 'Bezahlt',
   payment_paid_label: 'Bezahlt',
   payment_due_label: 'Fällig am',
 
@@ -462,7 +462,7 @@ const de: Record<keyof typeof ar, string> = {
   home_deadlines_count: 'Termine',
 
   assign_confirm_prefix: 'Ist das ein Brief für',
-  assign_confirm_yes: 'Ja, richtig ✅',
+  assign_confirm_yes: 'Ja, richtig',
   assign_confirm_no: 'Nein, nicht richtig',
   assign_picker_title: 'Für wen ist dieser Brief?',
   assign_all_children: 'Alle',
@@ -540,7 +540,7 @@ const de: Record<keyof typeof ar, string> = {
   reminders_off: 'Benachrichtigungen aktivieren',
   reminders_permission_denied: 'Bitte Benachrichtigungen in den Browser- oder Systemeinstellungen erlauben',
   reminders_unsupported: 'Benachrichtigungen werden auf diesem Gerät nicht unterstützt',
-  reminders_push_active: 'Erinnerungen erreichen dich auch, wenn Brifo geschlossen ist 🔔',
+  reminders_push_active: 'Erinnerungen erreichen dich auch, wenn Brifo geschlossen ist',
   reminders_push_fallback: 'Erinnerungen funktionieren nur, solange die App geöffnet ist',
   reminders_offsets_label: 'Erinnerungszeitpunkt',
   reminders_offset_day: 'Einen Tag vorher',

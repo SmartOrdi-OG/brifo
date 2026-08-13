@@ -38,7 +38,7 @@
 }
 
 .intent-icon {
-  font-size: 24px;
+  display: inline-flex;
 }
 
 .field {

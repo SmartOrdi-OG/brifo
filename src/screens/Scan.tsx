@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Camera, Image, Users, CheckCircle2 } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { ChildForm, type ChildFormValues } from '../components/ChildForm';
 import { useLanguage } from '../context/LanguageContext';
@@ -192,10 +193,14 @@ export function Scan() {
       {state === 'idle' && (
         <div className="scan-actions">
           <button className="scan-btn primary" onClick={openCamera}>
-            📸 {t('scan_open_camera')}
+            <span className="btn-icon-label">
+              <Camera size={16} strokeWidth={2.5} /> {t('scan_open_camera')}
+            </span>
           </button>
           <button className="scan-btn" onClick={() => galleryInputRef.current?.click()}>
-            🖼️ {t('scan_choose_gallery')}
+            <span className="btn-icon-label">
+              <Image size={16} strokeWidth={2.5} /> {t('scan_choose_gallery')}
+            </span>
           </button>
         </div>
       )}
@@ -265,7 +270,9 @@ export function Scan() {
           </p>
           <div className="assign-confirm-actions">
             <button className="scan-btn primary" onClick={() => finalizeAssignment(matchedChild.id)}>
-              {t('assign_confirm_yes')}
+              <span className="btn-icon-label">
+                <CheckCircle2 size={16} strokeWidth={2.5} /> {t('assign_confirm_yes')}
+              </span>
             </button>
             <button className="scan-btn" onClick={() => setAssignMode('pick')}>
               {t('assign_confirm_no')}
@@ -287,7 +294,9 @@ export function Scan() {
               </button>
             ))}
             <button className="assign-child-btn" onClick={() => finalizeAssignment(ALL_CHILDREN)}>
-              👨‍👩‍👧‍👦 {t('assign_all_children')}
+              <span className="btn-icon-label">
+                <Users size={16} strokeWidth={2.5} /> {t('assign_all_children')}
+              </span>
             </button>
             <button className="assign-child-btn new-child" onClick={() => setAssignMode('create')}>
               + {t('child_new_title')}

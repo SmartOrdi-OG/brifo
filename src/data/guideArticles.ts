@@ -2,7 +2,6 @@ import type { Lang } from '../context/translations';
 
 export interface GuideArticle {
   id: string;
-  icon: string;
   title: string;
   teaser: string;
   paragraphs: string[];
@@ -11,7 +10,6 @@ export interface GuideArticle {
 const ar: GuideArticle[] = [
   {
     id: 'school-types',
-    icon: '🏫',
     title: 'أنواع المدارس بالنمسا',
     teaser: 'Volksschule، Mittelschule، Gymnasium... شو الفرق؟',
     paragraphs: [
@@ -24,7 +22,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'grading-system',
-    icon: '📊',
     title: 'نظام العلامات والشهادات',
     teaser: 'من 1 (ممتاز) لـ 5 (راسب) — وشو معنى كل رقم',
     paragraphs: [
@@ -39,7 +36,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'sprechstunde',
-    icon: '🗣️',
     title: 'Sprechstunde: كيف تحكي مع المعلم',
     teaser: 'وقت مخصص للأهل يحكوا مباشرة مع المعلم',
     paragraphs: [
@@ -51,7 +47,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
-    icon: '⚖️',
     title: 'حقوق وواجبات الأهل',
     teaser: 'شو إلك كأهل، وشو المطلوب منك',
     paragraphs: [
@@ -62,7 +57,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
-    icon: '🚨',
     title: 'Frühwarnung: شو يعني وشو تعمل',
     teaser: '"إنذار مبكر" — مو معناها رسوب أكيد',
     paragraphs: [
@@ -74,7 +68,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'enrollment',
-    icon: '📝',
     title: 'كيف تسجّلي طفلك بالمدرسة (Schulanmeldung)',
     teaser: 'الأوراق المطلوبة، ومدرسة المنطقة (Sprengelschule)',
     paragraphs: [
@@ -86,7 +79,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
-    icon: '🗨️',
     title: 'صف دعم اللغة الألمانية (Deutschförderklasse)',
     teaser: 'لو طفلك لسا ما بيحكي ألماني منيح',
     paragraphs: [
@@ -98,7 +90,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'school-holidays',
-    icon: '🏖️',
     title: 'العطل المدرسية بالنمسا',
     teaser: 'الصيفية، عيد الميلاد، السيميستر... شو الفرق',
     paragraphs: [
@@ -111,7 +102,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'school-costs',
-    icon: '💶',
     title: 'تكاليف المدرسة: شو مجاني وشو لأ',
     teaser: 'الكتب المدرسية مجانية، بس في مصاريف تانية',
     paragraphs: [
@@ -123,7 +113,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'nachmittagsbetreuung',
-    icon: '🕓',
     title: 'الدوام الممتد ورعاية بعد الدوام',
     teaser: 'لو الأهل شغّالين ومحتاجين حل لبعد الدوام',
     paragraphs: [
@@ -134,7 +123,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'elternverein',
-    icon: '🤝',
     title: 'كيف تشاركي بحياة المدرسة',
     teaser: 'Elternabend، Elternverein، وممثل الأهل',
     paragraphs: [
@@ -146,7 +134,6 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'uebertritt',
-    icon: '🔀',
     title: 'الانتقال من مرحلة لمرحلة',
     teaser: 'من Volksschule لـ Mittelschule أو Gymnasium',
     paragraphs: [
@@ -160,7 +147,6 @@ const ar: GuideArticle[] = [
 const de: GuideArticle[] = [
   {
     id: 'school-types',
-    icon: '🏫',
     title: 'Schularten in Österreich',
     teaser: 'Volksschule, Mittelschule, Gymnasium — was ist der Unterschied?',
     paragraphs: [
@@ -173,7 +159,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'grading-system',
-    icon: '📊',
     title: 'Notensystem und Zeugnisse',
     teaser: 'Von 1 (sehr gut) bis 5 (nicht genügend)',
     paragraphs: [
@@ -184,7 +169,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'sprechstunde',
-    icon: '🗣️',
     title: 'Sprechstunde: Wie man mit der Lehrperson spricht',
     teaser: 'Eine feste Zeit für ein direktes Gespräch',
     paragraphs: [
@@ -196,7 +180,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
-    icon: '⚖️',
     title: 'Rechte und Pflichten der Eltern',
     teaser: 'Was Eltern dürfen — und was von ihnen erwartet wird',
     paragraphs: [
@@ -207,7 +190,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
-    icon: '🚨',
     title: 'Frühwarnung: Was sie bedeutet und was zu tun ist',
     teaser: 'Eine "frühe Warnung" — kein sicheres Sitzenbleiben',
     paragraphs: [
@@ -219,7 +201,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'enrollment',
-    icon: '📝',
     title: 'Schulanmeldung: So meldest du dein Kind an',
     teaser: 'Benötigte Unterlagen und die Sprengelschule',
     paragraphs: [
@@ -231,7 +212,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
-    icon: '🗨️',
     title: 'Deutschförderklasse',
     teaser: 'Wenn dein Kind noch nicht gut Deutsch spricht',
     paragraphs: [
@@ -243,7 +223,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'school-holidays',
-    icon: '🏖️',
     title: 'Schulferien in Österreich',
     teaser: 'Sommer, Weihnachten, Semester — was ist wann',
     paragraphs: [
@@ -256,7 +235,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'school-costs',
-    icon: '💶',
     title: 'Schulkosten: Was kostenlos ist und was nicht',
     teaser: 'Schulbücher sind gratis — aber es gibt weitere Kosten',
     paragraphs: [
@@ -268,7 +246,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'nachmittagsbetreuung',
-    icon: '🕓',
     title: 'Ganztagsschule und Nachmittagsbetreuung',
     teaser: 'Eine Lösung für berufstätige Eltern',
     paragraphs: [
@@ -279,7 +256,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'elternverein',
-    icon: '🤝',
     title: 'Am Schulleben teilnehmen',
     teaser: 'Elternabend, Elternverein und Klassenelternvertreter',
     paragraphs: [
@@ -291,7 +267,6 @@ const de: GuideArticle[] = [
   },
   {
     id: 'uebertritt',
-    icon: '🔀',
     title: 'Der Übertritt zwischen den Schulstufen',
     teaser: 'Von der Volksschule zu Mittelschule oder Gymnasium',
     paragraphs: [
