@@ -65,6 +65,11 @@
 html,
 body {
   height: 100%;
+  /* Stops the page from rubber-band-bouncing sideways on a touch swipe near
+     the edges (reads as "the screen shifts left/right") — there's never a
+     legitimate reason for this app to scroll horizontally. */
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 body {
