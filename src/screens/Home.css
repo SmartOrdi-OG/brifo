@@ -42,7 +42,7 @@
   position: relative;
   width: 64px;
   height: 64px;
-  margin: 0 auto 8px;
+  margin: 0 auto 12px;
 }
 
 .child-card-avatar {
@@ -59,7 +59,7 @@
 
 .child-card-badge {
   position: absolute;
-  bottom: -6px;
+  bottom: -11px;
   inset-inline: 0;
   margin-inline: auto;
   width: fit-content;

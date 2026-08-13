@@ -108,48 +108,52 @@ export function Calendar() {
     const showMeta = showDate || e.time;
     return (
       <div className="card calendar-row" key={e.id}>
-        <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
-        <div className="calendar-info">
-          <h4>{isolateBidiRuns(e.title)}</h4>
-          <p>
-            {showMeta && (
-              <>
-                <span className="nums">
-                  {showDate ? e.date : ''}
-                  {showDate && e.time ? ' ' : ''}
-                  {e.time ?? ''}
-                </span>{' '}
-                ·{' '}
-              </>
+        <div className="calendar-row-main">
+          <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
+          <div className="calendar-info">
+            <h4>{isolateBidiRuns(e.title)}</h4>
+            <p>
+              {showMeta && (
+                <>
+                  <span className="nums">
+                    {showDate ? e.date : ''}
+                    {showDate && e.time ? ' ' : ''}
+                    {e.time ?? ''}
+                  </span>{' '}
+                  ·{' '}
+                </>
+              )}
+              {isolateBidiRuns(
+                child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
+              )}
+            </p>
+            {e.provider && (
+              <p className="calendar-detail">
+                {t('calendar_event_provider_label')}: {isolateBidiRuns(e.provider)}
+              </p>
             )}
-            {isolateBidiRuns(
-              child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
+            {e.location && (
+              <p className="calendar-detail">
+                {t('calendar_event_location_label')}: {isolateBidiRuns(e.location)}
+              </p>
             )}
-          </p>
-          {e.provider && (
-            <p className="calendar-detail">
-              {t('calendar_event_provider_label')}: {isolateBidiRuns(e.provider)}
-            </p>
-          )}
-          {e.location && (
-            <p className="calendar-detail">
-              {t('calendar_event_location_label')}: {isolateBidiRuns(e.location)}
-            </p>
-          )}
-          {e.reason && (
-            <p className="calendar-detail">
-              {t('calendar_event_reason_label')}: {isolateBidiRuns(e.reason)}
-            </p>
-          )}
+            {e.reason && (
+              <p className="calendar-detail">
+                {t('calendar_event_reason_label')}: {isolateBidiRuns(e.reason)}
+              </p>
+            )}
+          </div>
         </div>
-        <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
-        <AddToCalendarButton title={e.title} date={e.date} time={e.time} description={eventDescription(e)} compact />
-        <button className="calendar-edit" onClick={() => startEdit(e)} aria-label={t('calendar_edit_event')}>
-          <Pencil size={16} strokeWidth={2} />
-        </button>
-        <button className="calendar-delete" onClick={() => deleteEvent(e.id)} aria-label={t('calendar_delete_event')}>
-          <Trash2 size={16} strokeWidth={2} />
-        </button>
+        <div className="calendar-row-actions">
+          <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
+          <AddToCalendarButton title={e.title} date={e.date} time={e.time} description={eventDescription(e)} compact />
+          <button className="calendar-edit" onClick={() => startEdit(e)} aria-label={t('calendar_edit_event')}>
+            <Pencil size={16} strokeWidth={2} />
+          </button>
+          <button className="calendar-delete" onClick={() => deleteEvent(e.id)} aria-label={t('calendar_delete_event')}>
+            <Trash2 size={16} strokeWidth={2} />
+          </button>
+        </div>
       </div>
     );
   }
