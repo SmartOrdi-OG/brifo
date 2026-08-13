@@ -53,6 +53,7 @@ export function Admin() {
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleFetch()}
             placeholder={t('admin_password_placeholder')}
+            dir="ltr"
             style={{
               flex: 1,
               padding: '10px 14px',
