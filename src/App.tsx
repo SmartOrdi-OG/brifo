@@ -20,10 +20,10 @@ import { AGB } from './screens/AGB';
 import { Admin } from './screens/Admin';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
 import { AuthGate } from './components/AuthGate';
+import { PremiumGate } from './components/PremiumGate';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
 import { useAuth } from './context/AuthContext';
-import { useSubscription } from './context/SubscriptionContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy, syncConsentToServer } from './lib/consent';
@@ -32,7 +32,6 @@ function App() {
   const { t, lang } = useLanguage();
   const { events, todos } = useData();
   const { session, loading: authLoading, passwordPromptPending } = useAuth();
-  const { loading: subLoading, active: subscriptionActive, trialExpired } = useSubscription();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
   const remindables = [
@@ -62,17 +61,28 @@ function App() {
   if ((!session || passwordPromptPending) && !bypassesGate) {
     return <AuthGate />;
   }
-  if (session && !subLoading && !subscriptionActive && trialExpired && !bypassesGate) {
-    return <Paywall />;
-  }
 
   return (
     <Routes>
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/" element={<Home />} />
-      <Route path="/scan" element={<Scan />} />
+      <Route
+        path="/scan"
+        element={
+          <PremiumGate>
+            <Scan />
+          </PremiumGate>
+        }
+      />
       <Route path="/result" element={<Result />} />
-      <Route path="/reply" element={<Reply />} />
+      <Route
+        path="/reply"
+        element={
+          <PremiumGate>
+            <Reply />
+          </PremiumGate>
+        }
+      />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/guide" element={<Guide />} />
       <Route path="/guide/:id" element={<GuideArticle />} />
