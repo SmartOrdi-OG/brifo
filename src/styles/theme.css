@@ -140,7 +140,7 @@ blockquote {
 .app {
   width: 100%;
   max-width: 430px;
-  padding: 20px 20px 110px;
+  padding: calc(20px + env(safe-area-inset-top)) 20px 110px;
   position: relative;
 }
 
