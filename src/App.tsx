@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Home } from './screens/Home';
 import { Onboarding } from './screens/Onboarding';
 import { Scan } from './screens/Scan';
@@ -96,6 +96,9 @@ function App() {
       <Route path="/impressum" element={<Impressum />} />
       <Route path="/agb" element={<AGB />} />
       <Route path="/admin" element={<Admin />} />
+      {/* A stray/mistyped/stale URL otherwise renders nothing at all — React
+          Router doesn't fall back to anything without an explicit wildcard. */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
