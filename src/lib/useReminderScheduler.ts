@@ -26,9 +26,14 @@ function eventAnchorMs(dateStr: string, timeStr?: string): number {
  * is open. Steps aside once push is active (see notifyDueReminders). */
 export function useReminderScheduler(events: Remindable[], dayBeforeLabel: string, hourBeforeLabel: string, soonLabel: string) {
   useEffect(() => {
-    function labelFor(offsetMin: number): string {
-      if (offsetMin >= REMINDER_OFFSET_DAY_BEFORE) return dayBeforeLabel;
-      if (offsetMin >= REMINDER_OFFSET_HOUR_BEFORE) return hourBeforeLabel;
+    // Labels from how much time is actually left at fire time, not from which
+    // offset bucket the reminder was originally requested for — a check that's
+    // late (e.g. the tab was backgrounded past LOOKBACK_MS) would otherwise
+    // keep claiming "tomorrow" for something now only an hour out (see the
+    // identical fix on the server side, src/server/push.ts).
+    function labelFor(actualMinutesLeft: number): string {
+      if (actualMinutesLeft >= REMINDER_OFFSET_DAY_BEFORE) return dayBeforeLabel;
+      if (actualMinutesLeft >= REMINDER_OFFSET_HOUR_BEFORE) return hourBeforeLabel;
       return soonLabel;
     }
 
@@ -37,12 +42,13 @@ export function useReminderScheduler(events: Remindable[], dayBeforeLabel: strin
       const offsets = getReminderOffsets();
       const due = events.flatMap((e) => {
         const anchor = eventAnchorMs(e.date, e.time);
+        if (anchor < now) return []; // already happened — nothing to remind about
         return offsets
           .filter((offsetMin) => {
             const fireAt = anchor - offsetMin * 60000;
             return fireAt <= now && fireAt > now - LOOKBACK_MS;
           })
-          .map((offsetMin) => ({ id: e.id, title: e.title, offsetMin }));
+          .map((offsetMin) => ({ id: e.id, title: e.title, offsetMin, actualMinutesLeft: Math.round((anchor - now) / 60000) }));
       });
       notifyDueReminders(due, labelFor);
     }
