@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Bell } from 'lucide-react';
+import { Plus, Bell, Share2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
@@ -24,6 +24,7 @@ import {
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { submitRatingToServer } from '../lib/ratings';
 import { startBillingPortal } from '../lib/subscription';
+import { referralLinkFor, REFERRAL_BONUS_DAYS } from '../lib/referral';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 
@@ -52,7 +53,8 @@ export function Settings() {
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
   const { session, signOut } = useAuth();
-  const { active: subscriptionActive } = useSubscription();
+  const { active: subscriptionActive, bonusTrialDays } = useSubscription();
+  const [referralCopied, setReferralCopied] = useState(false);
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -160,6 +162,19 @@ export function Settings() {
     setPortalLoading(false);
   }
 
+  async function handleCopyReferralLink() {
+    if (!session) return;
+    await navigator.clipboard.writeText(referralLinkFor(session.user.id));
+    setReferralCopied(true);
+    setTimeout(() => setReferralCopied(false), 2000);
+  }
+
+  function handleShareReferralLink() {
+    if (!session) return;
+    const text = `${t('referral_whatsapp_message')} ${referralLinkFor(session.user.id)}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+  }
+
   return (
     <TabLayout>
       <Header />
@@ -187,6 +202,30 @@ export function Settings() {
           <button className="scan-btn" style={{ width: '100%' }} onClick={() => signOut()}>
             {t('auth_sign_out')}
           </button>
+        </div>
+      )}
+
+      {session && (
+        <div className="card" style={{ padding: '16px', marginBottom: 12 }}>
+          <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 4 }}>{t('referral_title')}</p>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 12 }}>
+            {t('referral_subtitle').replace('{days}', String(REFERRAL_BONUS_DAYS))}
+          </p>
+          {bonusTrialDays > 0 && (
+            <p style={{ fontSize: 12.5, color: 'var(--green)', fontWeight: 700, marginBottom: 12 }}>
+              {t('referral_bonus_earned').replace('{days}', String(bonusTrialDays))}
+            </p>
+          )}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="scan-btn" style={{ flex: 1 }} onClick={handleCopyReferralLink}>
+              {referralCopied ? t('referral_copied') : t('referral_copy_link')}
+            </button>
+            <button className="scan-btn primary" style={{ flex: 1 }} onClick={handleShareReferralLink}>
+              <span className="btn-icon-label">
+                <Share2 size={16} strokeWidth={2.5} /> {t('referral_share_whatsapp')}
+              </span>
+            </button>
+          </div>
         </div>
       )}
 

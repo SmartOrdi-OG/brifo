@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createCheckoutSession, createBillingPortalSession, getSubscriptionStatus, type Plan } from '../src/server/stripe.js';
 import { getUserFromRequest } from '../src/server/auth.js';
 import { isComplimentaryEmail } from '../src/server/freeAccounts.js';
+import { getBonusTrialDays, redeemReferral } from '../src/server/referral.js';
 import { ConfigError } from '../src/server/errors.js';
 
 // Consolidates create-checkout-session/subscription-status into one function
@@ -75,16 +76,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (action === 'status') {
+    const bonusTrialDays = await getBonusTrialDays(user.id);
     if (isComplimentaryEmail(user.email)) {
-      res.status(200).json({ active: true, currentPeriodEnd: null });
+      res.status(200).json({ active: true, currentPeriodEnd: null, bonusTrialDays });
       return;
     }
     try {
       const status = await getSubscriptionStatus(user.id);
-      res.status(200).json(status);
+      res.status(200).json({ ...status, bonusTrialDays });
     } catch (err) {
       console.error('[api/subscription:status] failed:', err);
       res.status(500).json({ error: 'failed to load subscription status' });
+    }
+    return;
+  }
+
+  // Called once, right after a brand-new account's first sign-in, with the
+  // referrer's user id (see lib/referral.ts's stashed ?ref= code) — grants
+  // bonus trial days to both sides. Safe to call more than once per account:
+  // redeemReferral is idempotent.
+  if (action === 'redeem-referral') {
+    const { referrerId } = (req.body ?? {}) as { referrerId?: unknown };
+    if (typeof referrerId !== 'string' || !referrerId) {
+      res.status(400).json({ error: 'missing referrerId' });
+      return;
+    }
+    try {
+      const result = await redeemReferral(user.id, referrerId);
+      res.status(200).json(result);
+    } catch (err) {
+      console.error('[api/subscription:redeem-referral] failed:', err);
+      res.status(500).json({ error: 'failed to redeem referral' });
     }
     return;
   }

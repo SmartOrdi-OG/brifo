@@ -27,6 +27,7 @@ import { useAuth } from './context/AuthContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy, syncConsentToServer } from './lib/consent';
+import { captureReferralCodeFromUrl } from './lib/referral';
 
 function App() {
   const { t, lang } = useLanguage();
@@ -46,6 +47,13 @@ function App() {
   useEffect(() => {
     if (session) syncConsentToServer();
   }, [session]);
+
+  // Must run before any gate below gets a chance to strip ?ref= off via a
+  // redirect/navigation, and before sign-up — captured once, it survives in
+  // localStorage through privacy consent and the whole auth flow.
+  useEffect(() => {
+    captureReferralCodeFromUrl();
+  }, []);
 
   // The privacy policy, Impressum, and AGB must stay reachable without a
   // barrier — the first two because there's otherwise no way to read them

@@ -242,11 +242,27 @@ function apiDevMiddleware(): Plugin {
           const { getSubscriptionStatus } = await import('./src/server/stripe.ts')
           const { getUserFromRequest } = await import('./src/server/auth.ts')
           const { isComplimentaryEmail } = await import('./src/server/freeAccounts.ts')
+          const { getBonusTrialDays } = await import('./src/server/referral.ts')
           const user = await getUserFromRequest(req)
           if (!user) return { status: 401, body: { error: 'unauthorized' } }
-          if (isComplimentaryEmail(user.email)) return { status: 200, body: { active: true, currentPeriodEnd: null } }
+          const bonusTrialDays = await getBonusTrialDays(user.id)
+          if (isComplimentaryEmail(user.email)) return { status: 200, body: { active: true, currentPeriodEnd: null, bonusTrialDays } }
           const status = await getSubscriptionStatus(user.id)
-          return { status: 200, body: status }
+          return { status: 200, body: { ...status, bonusTrialDays } }
+        }),
+      )
+
+      server.middlewares.use(
+        '/api/redeem-referral',
+        jsonPostRoute(async (body, req) => {
+          const { getUserFromRequest } = await import('./src/server/auth.ts')
+          const { redeemReferral } = await import('./src/server/referral.ts')
+          const user = await getUserFromRequest(req)
+          if (!user) return { status: 401, body: { error: 'unauthorized' } }
+          const { referrerId } = (body ?? {}) as { referrerId?: unknown }
+          if (typeof referrerId !== 'string' || !referrerId) return { status: 400, body: { error: 'missing referrerId' } }
+          const result = await redeemReferral(user.id, referrerId)
+          return { status: 200, body: result }
         }),
       )
 

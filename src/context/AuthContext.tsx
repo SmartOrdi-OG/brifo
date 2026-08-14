@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
+import { getStashedReferralCode, clearStashedReferralCode } from '../lib/referral';
+import { redeemReferral } from '../lib/subscription';
+
+const NEWLY_CREATED_WINDOW_MS = 5 * 60 * 1000;
 
 interface AuthContextValue {
   session: Session | null;
@@ -53,9 +57,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // without ever leaving the app they started from.
   async function verifyEmailCode(email: string, code: string): Promise<{ error: string | null }> {
     if (!supabase) return { error: 'not configured' };
-    const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
-    if (!error) setPasswordPromptPending(true);
+    const { data, error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
+    if (!error) {
+      setPasswordPromptPending(true);
+      await maybeRedeemReferral(data.user?.id, data.user?.created_at);
+    }
     return { error: error?.message ?? null };
+  }
+
+  // Existing users also use the code path (it doubles as "forgot password"),
+  // so redeeming unconditionally here would let a returning user who happens
+  // to have an old stashed ?ref= code claim a reward they were never meant
+  // to get. created_at is set the instant signInWithOtp auto-creates a new
+  // account, so "very recently created" is a reliable enough signal that
+  // this really is a first-time sign-up, not a password-recovery code entry.
+  async function maybeRedeemReferral(userId: string | undefined, createdAt: string | undefined): Promise<void> {
+    const referrerId = getStashedReferralCode();
+    if (!referrerId || !userId || !createdAt) return;
+    const isNewAccount = Date.now() - new Date(createdAt).getTime() < NEWLY_CREATED_WINDOW_MS;
+    if (isNewAccount) await redeemReferral(referrerId);
+    clearStashedReferralCode();
   }
 
   async function signInWithPassword(email: string, password: string): Promise<{ error: string | null }> {

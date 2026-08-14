@@ -57,6 +57,14 @@ const ar = {
   settings_manage_subscription_loading: 'لحظة...',
   settings_manage_subscription_error: 'صار في مشكلة، جرّبي مرة ثانية',
 
+  referral_title: 'ادعي صديقة',
+  referral_subtitle: 'شاركي الرابط، وياخد كل واحدة فيكن {days} أيام تجربة إضافية لما تسجّل صديقتك حساب جديد.',
+  referral_bonus_earned: 'عندك {days} يوم إضافي من الدعوات ✓',
+  referral_copy_link: 'نسخ الرابط',
+  referral_copied: 'تم النسخ ✓',
+  referral_share_whatsapp: 'شارك عبر واتساب',
+  referral_whatsapp_message: 'جربي تطبيق Brifo، بيساعد بفهم رسائل مدرسة ولادك بالعربي 🙌',
+
   auth_intro_password: 'سجّلي دخول بإيميلك وكلمة السر الخاصة فيك.',
   auth_password_placeholder: 'كلمة السر',
   auth_login_password_button: 'تسجيل الدخول',
@@ -360,6 +368,14 @@ const de: Record<keyof typeof ar, string> = {
   settings_manage_subscription: 'Abo verwalten / kündigen',
   settings_manage_subscription_loading: 'Einen Moment...',
   settings_manage_subscription_error: 'Es gab ein Problem, bitte versuch es noch mal',
+
+  referral_title: 'Freundin einladen',
+  referral_subtitle: 'Teile den Link — ihr bekommt beide {days} zusätzliche Testtage, sobald deine Freundin ein neues Konto erstellt.',
+  referral_bonus_earned: 'Du hast {days} zusätzliche Tage durch Einladungen ✓',
+  referral_copy_link: 'Link kopieren',
+  referral_copied: 'Kopiert ✓',
+  referral_share_whatsapp: 'Über WhatsApp teilen',
+  referral_whatsapp_message: 'Probier die App Brifo aus — sie hilft, Schulbriefe auf Arabisch zu verstehen 🙌',
 
   auth_intro_password: 'Melde dich mit deiner E-Mail und deinem Passwort an.',
   auth_password_placeholder: 'Passwort',

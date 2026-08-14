@@ -3,6 +3,7 @@ import { supabase } from './supabaseClient';
 export interface SubscriptionStatus {
   active: boolean;
   currentPeriodEnd: string | null;
+  bonusTrialDays: number;
 }
 
 async function authHeader(): Promise<Record<string, string>> {
@@ -57,5 +58,21 @@ export async function startBillingPortal(): Promise<string | null> {
   } catch (err) {
     console.error('[subscription] portal start failed:', err);
     return null;
+  }
+}
+
+/** Grants bonus trial days to both this (brand-new) account and the referrer
+ * — safe to call more than once, the server only ever honors it the first
+ * time per account. Best-effort: failures are swallowed since there's
+ * nothing useful to show the user if it doesn't go through. */
+export async function redeemReferral(referrerId: string): Promise<void> {
+  try {
+    await fetch('/api/redeem-referral', {
+      method: 'POST',
+      headers: { ...(await authHeader()), 'content-type': 'application/json' },
+      body: JSON.stringify({ referrerId }),
+    });
+  } catch (err) {
+    console.error('[subscription] referral redeem failed:', err);
   }
 }
