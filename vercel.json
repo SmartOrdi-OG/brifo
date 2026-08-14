@@ -12,6 +12,7 @@
     { "source": "/api/create-checkout-session", "destination": "/api/subscription?action=checkout" },
     { "source": "/api/create-portal-session", "destination": "/api/subscription?action=portal" },
     { "source": "/api/subscription-status", "destination": "/api/subscription?action=status" },
+    { "source": "/api/redeem-referral", "destination": "/api/subscription?action=redeem-referral" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "crons": [
