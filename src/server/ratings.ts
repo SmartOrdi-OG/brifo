@@ -10,11 +10,11 @@ export interface StoredRating {
   id: string;
   stars: number;
   comment: string;
-  lang: 'ar' | 'de';
+  lang: 'ar' | 'de' | 'tr';
   createdAt: string;
 }
 
-export async function submitRating(stars: number, comment: string, lang: 'ar' | 'de'): Promise<void> {
+export async function submitRating(stars: number, comment: string, lang: 'ar' | 'de' | 'tr'): Promise<void> {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   const entry: StoredRating = { id, stars, comment, lang, createdAt: new Date().toISOString() };
   await kvSet(ratingKey(id), entry);

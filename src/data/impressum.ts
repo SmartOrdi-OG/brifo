@@ -52,3 +52,26 @@ export const impressumAr: PolicySection[] = [
     body: 'Brifo بيساعدك تفهمي رسائل المدرسة عبر تحليل بالذكاء الاصطناعي. النتائج مش استشارة قانونية أو رسمية أو تربوية، وما بتغني عن مراجعة الرسالة الأصلية بنفسك. ما منضمن اكتمال أو دقة الملخصات المولّدة آلياً بشكل كامل.',
   },
 ];
+
+export const impressumTr: PolicySection[] = [
+  {
+    heading: '§ 5 ECG uyarınca bilgiler',
+    body: 'Smartordi OG\nSteingasse 6A\nLinz, Avusturya\n\nE-posta: team@smartordi.eu\nTicaret sicil numarası: FN 675586 i\nTicaret sicil mahkemesi: Landesgericht Linz [onay bekleniyor]\nKDV numarası (UID): [eklenecek]\nŞirket faaliyet konusu: Yazılım geliştirme ve dijital hizmet sunumu',
+  },
+  {
+    heading: 'Temsile yetkili kişi(ler)',
+    body: '[Temsile yetkili ortağın adı eklenecek]',
+  },
+  {
+    heading: 'Üyelikler',
+    body: 'Avusturya Ekonomi Odası (WKO) üyesi [geçerliyse, onay bekleniyor]. Avusturya\'nın ticaret hukuku düzenlemeleri geçerlidir, www.ris.bka.gv.at adresinden erişilebilir.',
+  },
+  {
+    heading: 'AB uyuşmazlık çözümü',
+    body: 'Avrupa Komisyonu bir çevrimiçi uyuşmazlık çözüm (ODR) platformu sunar: https://ec.europa.eu/consumers/odr. Bir tüketici uyuşmazlık çözüm kurulu önünde bir uyuşmazlık çözüm sürecine katılma zorunluluğumuz ve isteğimiz yoktur.',
+  },
+  {
+    heading: 'İçerik sorumluluğu',
+    body: 'Brifo, yapay zeka destekli analiz yoluyla okul mektuplarını değerlendirmenize yardımcı olur. Sonuçlar hukuki, resmi veya pedagojik bir danışmanlık teşkil etmez ve orijinal mektubun incelenmesinin yerini tutmaz. Otomatik olarak oluşturulan özetlerin eksiksizliği veya doğruluğu için garanti vermiyoruz.',
+  },
+];

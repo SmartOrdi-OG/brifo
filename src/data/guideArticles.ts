@@ -277,6 +277,141 @@ const de: GuideArticle[] = [
   },
 ];
 
+const tr: GuideArticle[] = [
+  {
+    id: 'school-types',
+    title: 'Avusturya\'da okul türleri',
+    teaser: 'Volksschule, Mittelschule, Gymnasium — aralarındaki fark ne?',
+    paragraphs: [
+      'Volksschule (ilkokul): 6-10 yaş arası, dört sınıf, okuma, yazma ve temel matematik öğretilir.',
+      'Mittelschule (ortaokul): 10-14 yaş arası, öğrenciyi bir sonraki aşamaya (akademik veya mesleki) hazırlar.',
+      'Gymnasium/AHS: 10 yaşından itibaren (veya Mittelschule\'den sonra 14 yaşında), daha yüksek akademik seviye, Matura\'dan sonra doğrudan üniversiteye açılan yol.',
+      'Berufsschule / Lehre (meslek okulu ve çıraklık): bir işverende gerçek çalışmayla paralel yürüyen mesleki eğitim.',
+      '14 yaşından sonra, ebeveyn ve öğrenci birlikte çocuğun ilgi ve becerilerine en uygun yolu seçer.',
+    ],
+  },
+  {
+    id: 'grading-system',
+    title: 'Not sistemi ve karneler',
+    teaser: '1 (pekiyi) ile 5 (kaldı) arası — her rakam ne anlama gelir',
+    paragraphs: [
+      'Avusturya\'da notlar 1 ile 5 arasındadır, 1 en iyi nottur.',
+      '1 = Sehr gut (pekiyi), 2 = Gut (iyi), 3 = Befriedigend (orta), 4 = Genügend (geçer), 5 = Nicht genügend (kaldı).',
+      'Karne (Zeugnis) yılda iki kez verilir: yarıyıl karnesi (Semesterzeugnis) ve yıl sonu karnesi (Jahreszeugnis). Öğrencinin bir üst sınıfa geçip geçmeyeceğine yıl sonu karnesi karar verir.',
+    ],
+  },
+  {
+    id: 'sprechstunde',
+    title: 'Sprechstunde: Öğretmenle nasıl görüşülür',
+    teaser: 'Ebeveynler için öğretmenle birebir görüşme zamanı',
+    paragraphs: [
+      'Sprechstunde nedir? Ebeveynlerin randevu alıp öğretmenle çocuklarının durumu hakkında yüz yüze konuşabildiği haftalık sabit bir zaman dilimi.',
+      'Randevu nasıl alınır? Genellikle not defteri (Mitteilungsheft), okul e-postası veya Schoolfox gibi bir uygulama üzerinden.',
+      'Randevu öncesi ne hazırlanmalı? Sorularınızı önceden yazın, önemli belgeleri hazırlayın; Almancanız yetersizse yanınıza tercüme edebilecek birini alabilirsiniz.',
+      'Görüşmede ne sorulmalı? Çocuğunuzun sınıftaki performansı, bir gelişme var mı yoksa dikkat gerektiren bir durum mu var, ve evde nasıl destek olabileceğiniz.',
+    ],
+  },
+  {
+    id: 'parent-rights',
+    title: 'Ebeveynlerin hakları ve sorumlulukları',
+    teaser: 'Ebeveyn olarak hakların neler, senden ne bekleniyor',
+    paragraphs: [
+      'Ebeveyn hakları: çocuğunuzun okul durumu hakkında düzenli bilgi almak, sınıf toplantısına (Elternabend) katılmak, ve tüm ebeveynler adına konuşan bir temsilci (Elternverein / Klassenelternvertreter) seçmek.',
+      'Ebeveyn sorumlulukları: çocuğunuzun düzenli okula devamını sağlamak (her devamsızlığın resmi bir mazereti olmalı), okuldan istenen belgeleri zamanında imzalayıp geri göndermek, ve ev ödevlerini takip etmek.',
+      'Avusturya\'da zorunlu eğitim (Schulpflicht) 6-15 yaş arasıdır — bu yaş aralığındaki her çocuk resmi bir okula devam etmek zorundadır.',
+    ],
+  },
+  {
+    id: 'fruehwarnung',
+    title: 'Frühwarnung: Ne anlama gelir, ne yapılmalı',
+    teaser: '"Erken uyarı" — kesin sınıfta kalma anlamına gelmez',
+    paragraphs: [
+      'Frühwarnung nedir? Bir öğrencinin belirli bir dersten kalma riski olduğunda okuldan gelen resmi bir bildirim ("erken uyarı").',
+      'Neden tam bu zamanda gelir? Genellikle yarıyıl sonrasında, yıl sonu karnesinden önce durumu düzeltecek yeterli zaman kalmışken gönderilir.',
+      'Ne yapılmalı? Ciddiye alın ama paniğe kapılmayın — öğretmenle bir Sprechstunde randevusu alın, tam olarak neyin eksik olduğunu sorun, gerekirse özel ders (Nachhilfe) düşünün.',
+      'Bilinmesi gereken önemli nokta: Frühwarnung kesin sınıfta kalma anlamına gelmez — vakit varken harekete geçme fırsatıdır.',
+    ],
+  },
+  {
+    id: 'enrollment',
+    title: 'Çocuğunuzu okula nasıl kaydettirirsiniz (Schulanmeldung)',
+    teaser: 'Gerekli belgeler ve bölge okulu (Sprengelschule)',
+    paragraphs: [
+      'Avusturya\'daki her ailenin bir "bölge okulu" (Sprengelschule) vardır — yani ev adresinize en yakın resmi ilkokul. Bu genellikle ilk seçenektir, ancak boş kontenjan varsa başka bir okula da kayıt yaptırabilirsiniz.',
+      'Volksschule (ilkokul) kaydı genellikle ilkbaharda (yaklaşık Şubat-Mart) bir sonraki eğitim yılı için yapılır; belediye veya okul, kayıt yaşındaki çocuğu olan aileleri resmi olarak davet eder.',
+      'Genellikle istenen belgeler: çocuğun doğum belgesi, ikametgah belgesi, ve okul isterse aşı durumunu gösteren bir belge.',
+      'Nereye veya hangi belgelerle kayıt yaptıracağınızdan emin değilseniz, doğrudan okulu veya bölgenizin belediyesini (Gemeinde) arayın — her belediyenin detayları biraz farklı olabilir.',
+    ],
+  },
+  {
+    id: 'deutschfoerderklasse',
+    title: 'Almanca destek sınıfı (Deutschförderklasse)',
+    teaser: 'Çocuğunuz henüz iyi Almanca konuşmuyorsa',
+    paragraphs: [
+      'Çocuğunuz Avusturya\'ya yeni geldiyse ve Almancası henüz zayıfsa, okul onu normal sınıfa tam olarak katılmadan önce dili güçlendirmesi için özel bir destek sınıfına (Deutschförderklasse) veya ek desteğe (Deutschförderkurs) yerleştirir.',
+      'Öğrenci derslerinin çoğunu destek sınıfında alır, ancak spor veya sanat gibi fazla dil gerektirmeyen derslerde normal sınıf arkadaşlarıyla birlikte olur.',
+      'Süre genellikle çocuğun seviyesine göre bir ila iki yıldır; dil düzeyi düzenli olarak değerlendirilerek normal sınıfa ne zaman tam olarak geçebileceği belirlenir.',
+      'Bu destek ücretsizdir ve her çocuğun hakkıdır — çocuğunuzun dil konusunda ek desteğe ihtiyacı olduğunu düşünüyorsanız ve bu size önerilmediyse, doğrudan okula sorun.',
+    ],
+  },
+  {
+    id: 'school-holidays',
+    title: 'Avusturya\'da okul tatilleri',
+    teaser: 'Yaz, Noel, yarıyıl... aralarındaki fark',
+    paragraphs: [
+      'Yaz tatili (Sommerferien): en uzun tatil, Temmuz başından Ağustos sonuna kadar.',
+      'Noel tatili (Weihnachtsferien): Aralık sonu-Ocak başı civarında yaklaşık iki hafta.',
+      'Yarıyıl tatili (Semesterferien): Şubat ortasında bir hafta, tam tarihi eyalete (Bundesland) göre değişir.',
+      'Paskalya tatili (Osterferien): ilkbaharda yaklaşık iki hafta.',
+      'Yıl içine dağılmış kısa tatil günleri de vardır (Fenstertage ve resmi tatiller) — kesin tarihler her yıl değişir, en güvenilir kaynak okulun dağıttığı resmi takvim veya Avusturya Eğitim Bakanlığı\'nın web sitesidir.',
+    ],
+  },
+  {
+    id: 'school-costs',
+    title: 'Okul masrafları: neler ücretsiz, neler değil',
+    teaser: 'Ders kitapları ücretsiz, ama başka masraflar da var',
+    paragraphs: [
+      'Ders kitapları, Schulbuchaktion adlı bir program sayesinde ücretsiz veya neredeyse ücretsizdir — tam fiyat değil, küçük sembolik bir katkı payı ödersiniz.',
+      'Devlet okullarında resmi eğitim ücretsizdir, ancak genellikle ek masraflar olur: okul gezileri (Schulveranstaltungen), bazı okul malzemeleri, ve tam gün bakımdaysa bazen öğle yemeği.',
+      'Ailenin maddi durumu zorsa, bazı bu masraflardan destek veya muafiyet olup olmadığını okula veya belediyeye sorun — birçok okulun bu tür durumlar için çözümleri vardır, ama durumu açıklayıp sormanız gerekir.',
+      'Okuldan gelen her ödeme talebi net ve resmi bir mektupla gelmelidir (tutar, sebep, son tarih) — belirsiz bir mesaj alırsanız, ödemeden önce okuldan açıklama isteyin.',
+    ],
+  },
+  {
+    id: 'nachmittagsbetreuung',
+    title: 'Tam gün okul ve öğleden sonra bakımı',
+    teaser: 'Çalışan ebeveynler için bir çözüm',
+    paragraphs: [
+      'Birçok okul tam gün eğitim (Ganztagsschule) veya öğleden sonra bakımı (Nachmittagsbetreuung) sunar — çocuk resmi ders bitiminden sonra okulda kalır, ödevlerini yapar ve etkinliklere katılır, ailesi onu almaya gelene kadar.',
+      'Her okul bunu otomatik olarak sunmaz — çocuğunuzu ayrıca bu programa kaydettirmeniz gerekir ve genellikle küçük bir aylık ücret alınır.',
+      'İşiniz nedeniyle bu hizmete ihtiyacınız varsa, kontenjan genellikle sınırlı olduğundan eğitim yılının başında okul yönetimine sorun.',
+    ],
+  },
+  {
+    id: 'elternverein',
+    title: 'Okul hayatına nasıl katılırsınız',
+    teaser: 'Elternabend, Elternverein ve ebeveyn temsilcisi',
+    paragraphs: [
+      'Sınıf toplantısı (Elternabend): genellikle yılda bir veya iki kez yapılan, öğretmenin sınıf planını ve önemli konuları tüm ebeveynlerle birlikte konuştuğu bir buluşma.',
+      'Ebeveyn derneği (Elternverein): etkinlikler düzenleyen ve ebeveynlerin sesini okul yönetimine ileten gönüllü ebeveyn grubu — katılım genellikle isteğe bağlı ve ücretsiz ya da çok düşük bir ücretle olur.',
+      'Sınıf ebeveyn temsilcisi (Klassenelternvertreter): ebeveynlerin kendi aralarından seçtiği, görüşlerini okul yönetimine ileten kişi.',
+      'Katılım zorunlu değildir, ama diğer ebeveynleri tanımak ve çocuğunuzun okulunda neler olup bittiğini daha iyi anlamak için iyi bir fırsattır — özellikle Almanca öğreniyorsanız, diğer ebeveynlerin deneyiminden faydalanabilirsiniz.',
+    ],
+  },
+  {
+    id: 'uebertritt',
+    title: 'Bir aşamadan diğerine geçiş',
+    teaser: 'Volksschule\'den Mittelschule veya Gymnasium\'a',
+    paragraphs: [
+      'Volksschule\'nin son yılında (4. sınıf), okul yıl ortasında ailelere çocuğun seviyesini gösteren ve bir sonraki aşama kararına yardımcı olan bir "okul bildirimi" (Schulnachricht) verir.',
+      'Mittelschule veya Gymnasium/AHS arasındaki karar sonuçta ebeveynlere aittir, ancak okul çocuğun performansına dayalı bir öneri sunar — daha fazla tavsiyeye ihtiyacınız varsa, öğretmenle bir Sprechstunde randevusu isteyin.',
+      'Çocuk bir yol seçtikten sonra bile, durumu veya isteği değişirse daha sonraki aşamalarda yollar arasında geçiş (örneğin Mittelschule\'den AHS\'ye) hâlâ mümkündür — yeni okulun koşullarını sorun.',
+    ],
+  },
+];
+
 export function getGuideArticles(lang: Lang): GuideArticle[] {
-  return lang === 'de' ? de : ar;
+  if (lang === 'de') return de;
+  if (lang === 'tr') return tr;
+  return ar;
 }

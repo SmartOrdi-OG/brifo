@@ -2,6 +2,7 @@
  * when Brifo is fully closed. The server (api/cron/send-reminders) has no
  * access to this browser's localStorage, so every event we want reminders
  * for has to be explicitly synced up via syncPushReminders. */
+import type { Lang } from '../context/translations';
 
 const DEVICE_ID_KEY = 'brifo_device_id';
 const PUSH_ENABLED_KEY = 'brifo_push_enabled';
@@ -95,7 +96,7 @@ export interface SyncablePushEvent {
   time?: string;
 }
 
-export async function syncPushReminders(events: SyncablePushEvent[], offsets: number[], lang: 'ar' | 'de'): Promise<void> {
+export async function syncPushReminders(events: SyncablePushEvent[], offsets: number[], lang: Lang): Promise<void> {
   if (!pushEnabled()) return;
   try {
     await fetch('/api/push-sync', {

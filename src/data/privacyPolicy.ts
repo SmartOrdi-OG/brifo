@@ -87,3 +87,38 @@ export const privacyPolicyAr: PolicySection[] = [
     body: 'لأي سؤال عن الخصوصية، تواصلي معنا عبر: team@smartordi.eu',
   },
 ];
+
+export const privacyPolicyTr: PolicySection[] = [
+  {
+    heading: '1. Veri sorumlusu',
+    body: 'Smartordi OG, Steingasse 6A, Linz, Avusturya\nE-posta: team@smartordi.eu\nTicaret sicil numarası: FN 675586 i\n\n"Brifo" uygulaması kapsamında kişisel verilerin işlenmesinden Genel Veri Koruma Yönetmeliği (GDPR) anlamında yukarıda belirtilen şirket sorumludur.',
+  },
+  {
+    heading: '2. Genel bilgiler',
+    body: 'Brifo, Avusturya\'daki Arapça konuşan ebeveynlerin okul mektuplarını anlamalarına, randevuları yönetmelerine ve Almanca cevap yazmalarına yardımcı olur. Bu metin, uygulamanın hangi verileri, hangi amaçla işlediğini ve ilgili kişi olarak haklarınızı açıklar.\n\nBrifo\'yu kullanmak için, verilerinizin cihazlar arasında güvenle erişilebilir olması amacıyla bir kullanıcı hesabı (e-posta adresi ve şifre) gereklidir. Aile ve kullanım verileriniz hem cihazınızda yerel olarak hem de — hesabınızla ilişkilendirilmiş bir yedek kopya olarak — sunucumuzda saklanır (bkz. madde 3 ve 4).',
+  },
+  {
+    heading: '3. Hangi verileri işliyoruz',
+    body: 'a) Hesap verileri: kimlik doğrulama sağlayıcımız Supabase üzerinden yönetilen e-posta adresiniz ve şifreniz (bkz. madde 5). Şifrenizi biz hiçbir zaman açık metin olarak görmeyiz. Ayrıca bu gizlilik politikasına onayınızın kaydını (sürüm ve zaman) saklarız.\n\nb) Aile profilleri: kendinizin girdiği ad, rol (çocuk/yetişkin), sınıf düzeyi ve okul adı.\n\nc) Okul mektuplarının fotoğrafları: bir mektubu fotoğrafladığınızda, görsel analiz için bir kez yapay zeka sağlayıcımız Anthropic\'e gönderilir (bkz. madde 5). Görselin kendisi ne bizde ne de Anthropic\'te kalıcı olarak saklanır — yalnızca oluşturulan metin özeti (konu, son tarihler, istenen ödemeler) saklanır.\n\nd) Cevap taslakları: bir okul mektubuna cevap oluşturmanızı istediğinizde, bunun için gerekli bilgileri (örn. çocuğun adı ve sınıf düzeyi ile girdiğiniz serbest metin notları) cevap metnini oluşturmak üzere Anthropic\'e iletiriz.\n\ne) Randevular, ödemeler, görevler ve uygulamaya ilişkin değerlendirmeniz/geri bildiriminiz. Değerlendirmeniz/geri bildiriminiz ayrıca hesabınız veya cihazınızla ilişkilendirilmeden anonim olarak da saklanır, böylece uygulamaya dair geri bildirimleri değerlendirebiliriz.\n\nf) Ödeme verileri: bir abonelik satın aldığınızda, ödeme sağlayıcımız Stripe (bkz. madde 5) e-posta adresinizi ve abonelik/ödeme durumunuzu işler. Ödeme bilgilerini (örn. kredi kartı numarası) biz hiçbir zaman görmeyiz — bunlar yalnızca Stripe tarafından işlenir.\n\ng) Push bildirimleri (isteğe bağlı, yalnızca etkinleştirirseniz): cihazınıza rastgele bir cihaz kimliği ve bir push izni (tarayıcınızın uç nokta URL\'si ve şifreleme anahtarları) atanır. Bunlar ile yaklaşan randevularınızın başlığı ve tarihleri, size yalnızca hatırlatma göndermek amacıyla sunucumuzda saklanır.\n\nh) Teknik veriler: dil ayarı (Arapça/Almanca/Türkçe) ve görünüm modu (açık/koyu) — yerel olarak saklanır.\n\nb), c) ve e) maddelerinde belirtilen veriler hem cihazınızda yerel olarak hem de hesabınızla ilişkilendirilmiş bir yedek kopya olarak sunucumuzda saklanır (bkz. madde 4).',
+  },
+  {
+    heading: '4. Saklama yeri ve süresi',
+    body: 'Aile profilleriniz, mektup özetleriniz, randevularınız, ödemeleriniz, görevleriniz ve değerlendirmeleriniz hem cihazınızda yerel olarak hem de kullanıcı hesabınızla ilişkilendirilmiş bir yedek kopya olarak sunucumuzda saklanır — böylece yeni bir cihazda oturum açtığınızda verileriniz korunur. Tek tek kayıtları, bir profili veya tüm verilerinizi istediğiniz zaman ayarlar üzerinden silebilirsiniz; bu, sunucumuzdaki kopyaya da yansıtılır. Kullanıcı hesabınızın tamamen silinmesini isterseniz, madde 1\'de belirtilen e-posta adresinden bizimle iletişime geçin — bu durumda, yasal bir saklama yükümlülüğü (örn. faturalar için) engel olmadığı sürece sunucudaki yedek kopyanızı, hesap verilerinizi ve ödeme geçmişinizi de sileriz.\n\nPush bildirimleri için veriler (cihaz kimliği, push izni, randevu başlıkları/tarihleri), hatırlatma özelliği etkin olduğu sürece saklanır ve bunu devre dışı bıraktığınızda veya push iznini iptal ettiğinizde otomatik olarak silinir.',
+  },
+  {
+    heading: '5. Üçüncü taraflarla paylaşım (veri işleyenler)',
+    body: 'Anthropic PBC (ABD): fotoğraflanan okul mektuplarını metin tanıma/analiz için ve madde 3d\'de belirtilen bilgileri cevap taslakları oluşturmak için işler. Bu, bir üçüncü ülkeye (ABD) veri aktarımı anlamına gelir; bunun için uygun güvencelerin (örn. standart sözleşme maddeleri) bulunmasını sağlarız.\n\nSupabase Inc.: kullanıcı hesabınız için kimlik doğrulama sağlayıcısı (e-posta, şifre, oturum açma işlemi).\n\nStripe: abonelikler için ödeme sağlayıcısı (bkz. madde 3f).\n\nVercel Inc.: uygulamanın barındırılması ve madde 3 ile 4\'te belirtilen sunucu verilerinin (hesap verileri, yedek kopya, push bildirimleri) Avrupa Birliği içindeki sunucularda saklanması.\n\nVerileri üçüncü taraflara satmıyoruz ve reklam veya izleme hizmetleri kullanmıyoruz.',
+  },
+  {
+    heading: '6. Çocuklara ait veriler',
+    body: 'Brifo, okul mektuplarını düzenlemek için çocuklarına ait bilgileri (ad, sınıf düzeyi) kendileri giren ebeveynlere/velilere yöneliktir. Bu bilgilerin girilmesi ve yönetilmesi sorumluluğu ebeveynlere/velilere aittir. Bilgiler madde 3 ve 4\'te açıklandığı şekilde saklanır.',
+  },
+  {
+    heading: '7. Haklarınız',
+    body: 'GDPR uyarınca, verilerinizin işlenmesine ilişkin bilgi alma, düzeltme, silme ve kısıtlama hakkına, ayrıca veri taşınabilirliği ve itiraz hakkına sahipsiniz. Cihazınızda yerel olarak saklanan veriler için bu hakları doğrudan uygulama üzerinden kullanabilirsiniz (görüntüleme, düzenleme, silme, "kullanım verilerini yedekle" ile dosya olarak dışa aktarma). Sunucumuzdaki veriler (hesap, yedek kopya, ödeme verileri, push bildirimleri) için, hesabınızın tamamen silinmesi dahil, madde 1\'de belirtilen e-posta adresinden bizimle iletişime geçin.\n\nAyrıca Avusturya Veri Koruma Kurumu\'na (dsb.gv.at) şikayette bulunma hakkınız vardır.',
+  },
+  {
+    heading: '8. İletişim',
+    body: 'Veri gizliliğiyle ilgili sorularınız için bize şu adresten ulaşabilirsiniz: team@smartordi.eu',
+  },
+];

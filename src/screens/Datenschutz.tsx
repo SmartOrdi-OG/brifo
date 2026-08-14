@@ -1,11 +1,11 @@
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
-import { privacyPolicyAr, privacyPolicyDe, PRIVACY_POLICY_LAST_UPDATED } from '../data/privacyPolicy';
+import { privacyPolicyAr, privacyPolicyDe, privacyPolicyTr, PRIVACY_POLICY_LAST_UPDATED } from '../data/privacyPolicy';
 import './Datenschutz.css';
 
 export function Datenschutz() {
   const { t, lang } = useLanguage();
-  const sections = lang === 'de' ? privacyPolicyDe : privacyPolicyAr;
+  const sections = lang === 'de' ? privacyPolicyDe : lang === 'tr' ? privacyPolicyTr : privacyPolicyAr;
 
   return (
     <FlowLayout title={t('privacy_title')}>

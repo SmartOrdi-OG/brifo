@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { useLanguage } from '../context/LanguageContext';
+import { isRtlLang } from '../context/translations';
 import { getGuideArticles } from '../data/guideArticles';
 import { GUIDE_ARTICLE_ICONS } from '../data/guideIcons';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -28,11 +29,11 @@ export function Guide() {
               </div>
               <div className="guide-text">
                 {/* isolateBidiRuns exists to protect short Latin/numeric fragments
-                    embedded in Arabic prose — German content is single-script and
-                    its regex doesn't even cover umlauts, so applying it here would
-                    split words like "Schularten" mid-word instead of helping. */}
-                <h4>{lang === 'de' ? article.title : isolateBidiRuns(article.title)}</h4>
-                <p>{lang === 'de' ? article.teaser : isolateBidiRuns(article.teaser)}</p>
+                    embedded in RTL prose — LTR-language content (German, Turkish...)
+                    is single-script and the regex doesn't even cover umlauts, so
+                    applying it there would split words mid-word instead of helping. */}
+                <h4>{isRtlLang(lang) ? isolateBidiRuns(article.title) : article.title}</h4>
+                <p>{isRtlLang(lang) ? isolateBidiRuns(article.teaser) : article.teaser}</p>
               </div>
               <span className="guide-arrow">›</span>
             </div>

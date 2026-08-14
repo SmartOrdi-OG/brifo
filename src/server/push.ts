@@ -25,7 +25,7 @@ interface DeviceReminders {
   events: ReminderEvent[];
   /** Minutes before the event's assumed time (see eventAnchorUtcMs). */
   offsets: number[];
-  lang: 'ar' | 'de';
+  lang: 'ar' | 'de' | 'tr';
 }
 
 let vapidConfigured = false;
@@ -59,7 +59,7 @@ export async function removeSubscription(deviceId: string): Promise<void> {
   await kvSrem(DEVICES_SET, deviceId);
 }
 
-export async function syncReminders(deviceId: string, events: ReminderEvent[], offsets: number[], lang: 'ar' | 'de'): Promise<void> {
+export async function syncReminders(deviceId: string, events: ReminderEvent[], offsets: number[], lang: 'ar' | 'de' | 'tr'): Promise<void> {
   await kvSet(remindersKey(deviceId), { events, offsets, lang } satisfies DeviceReminders);
 }
 
@@ -92,11 +92,16 @@ export function eventAnchorUtcMs(dateStr: string, timeStr?: string): number {
   return Date.parse(`${dateStr}T00:00:00Z`) + (hour * 60 + minute - offsetMin) * 60000;
 }
 
-function offsetLabel(offsetMin: number, lang: 'ar' | 'de'): string {
+function offsetLabel(offsetMin: number, lang: 'ar' | 'de' | 'tr'): string {
   if (lang === 'de') {
     if (offsetMin >= 1440) return 'Termin morgen';
     if (offsetMin >= 60) return 'Termin in einer Stunde';
     return 'Termin in Kürze';
+  }
+  if (lang === 'tr') {
+    if (offsetMin >= 1440) return 'Randevun yarın';
+    if (offsetMin >= 60) return 'Randevuna bir saat kaldı';
+    return 'Randevun yakında';
   }
   if (offsetMin >= 1440) return 'موعدك بكرا';
   if (offsetMin >= 60) return 'موعدك بعد ساعة';
