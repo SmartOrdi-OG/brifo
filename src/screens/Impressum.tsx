@@ -1,9 +1,9 @@
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
-import { impressumAr, impressumDe, impressumTr, impressumFa, impressumEn, IMPRESSUM_LAST_UPDATED } from '../data/impressum';
+import { impressumAr, impressumDe, impressumTr, impressumFa, impressumEn, impressumUk, IMPRESSUM_LAST_UPDATED } from '../data/impressum';
 import './Datenschutz.css';
 
-const SECTIONS_BY_LANG = { ar: impressumAr, de: impressumDe, tr: impressumTr, fa: impressumFa, en: impressumEn };
+const SECTIONS_BY_LANG = { ar: impressumAr, de: impressumDe, tr: impressumTr, fa: impressumFa, en: impressumEn, uk: impressumUk };
 
 export function Impressum() {
   const { t, lang } = useLanguage();

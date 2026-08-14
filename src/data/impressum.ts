@@ -121,3 +121,26 @@ export const impressumEn: PolicySection[] = [
     body: 'Brifo helps you understand school letters through AI-powered analysis. The results do not constitute legal, official, or educational advice and do not replace reviewing the original letter yourself. We make no guarantee as to the completeness or accuracy of the automatically generated summaries.',
   },
 ];
+
+export const impressumUk: PolicySection[] = [
+  {
+    heading: 'Інформація відповідно до § 5 ECG',
+    body: 'Smartordi OG\nSteingasse 6A\nЛінц, Австрія\n\nЕлектронна пошта: team@smartordi.eu\nНомер у торговому реєстрі: FN 675586 i\nСуд торгового реєстру: Landesgericht Linz [очікує підтвердження]\nПодатковий номер (UID): [буде додано]\nВид діяльності компанії: розробка програмного забезпечення та надання цифрових послуг',
+  },
+  {
+    heading: 'Уповноважена(і) особа(и)',
+    body: '[Ім\'я уповноваженого представника-партнера буде додано]',
+  },
+  {
+    heading: 'Членство',
+    body: 'Член Австрійської економічної палати (WKO) [очікує підтвердження, якщо застосовно]. Застосовуються австрійські комерційні норми, доступні на www.ris.bka.gv.at.',
+  },
+  {
+    heading: 'Вирішення спорів у ЄС',
+    body: 'Європейська комісія надає платформу для онлайн-вирішення спорів (ODR): https://ec.europa.eu/consumers/odr. Ми не зобов\'язані та не готові брати участь у процедурі вирішення спорів перед споживчим арбітражним органом.',
+  },
+  {
+    heading: 'Відповідальність за вміст',
+    body: 'Brifo допомагає вам розуміти шкільні листи за допомогою аналізу на основі штучного інтелекту. Результати не є юридичною, офіційною чи педагогічною консультацією і не замінюють самостійної перевірки оригінального листа. Ми не гарантуємо повноту чи точність автоматично створених підсумків.',
+  },
+];

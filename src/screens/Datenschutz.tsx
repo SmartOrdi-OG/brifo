@@ -1,9 +1,9 @@
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
-import { privacyPolicyAr, privacyPolicyDe, privacyPolicyTr, privacyPolicyFa, privacyPolicyEn, PRIVACY_POLICY_LAST_UPDATED } from '../data/privacyPolicy';
+import { privacyPolicyAr, privacyPolicyDe, privacyPolicyTr, privacyPolicyFa, privacyPolicyEn, privacyPolicyUk, PRIVACY_POLICY_LAST_UPDATED } from '../data/privacyPolicy';
 import './Datenschutz.css';
 
-const SECTIONS_BY_LANG = { ar: privacyPolicyAr, de: privacyPolicyDe, tr: privacyPolicyTr, fa: privacyPolicyFa, en: privacyPolicyEn };
+const SECTIONS_BY_LANG = { ar: privacyPolicyAr, de: privacyPolicyDe, tr: privacyPolicyTr, fa: privacyPolicyFa, en: privacyPolicyEn, uk: privacyPolicyUk };
 
 export function Datenschutz() {
   const { t, lang } = useLanguage();

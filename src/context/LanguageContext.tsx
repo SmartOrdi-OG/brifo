@@ -11,7 +11,7 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 const STORAGE_KEY = 'brifo_lang';
-const VALID_LANGS: readonly Lang[] = ['ar', 'de', 'tr', 'fa', 'en'];
+const VALID_LANGS: readonly Lang[] = ['ar', 'de', 'tr', 'fa', 'en', 'uk'];
 
 function readStoredLang(): Lang {
   const stored = localStorage.getItem(STORAGE_KEY);
