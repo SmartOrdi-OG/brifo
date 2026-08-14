@@ -206,6 +206,10 @@ blockquote {
   gap: 6px;
 }
 
+.btn-icon-label svg {
+  flex-shrink: 0;
+}
+
 .scan-btn.primary {
   background: linear-gradient(135deg, var(--blue), var(--purple));
   border: none;

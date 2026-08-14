@@ -40,6 +40,7 @@ const LANGUAGE_OPTIONS: { code: Lang; label: string }[] = [
   { code: 'tr', label: 'Türkçe' },
   { code: 'fa', label: 'فارسی' },
   { code: 'en', label: 'English' },
+  { code: 'uk', label: 'Українська' },
 ];
 
 function toggleBtnStyle(active: boolean): CSSProperties {
