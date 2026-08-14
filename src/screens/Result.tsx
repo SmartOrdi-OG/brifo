@@ -89,6 +89,26 @@ export function Result() {
             </>
           )}
 
+          {result.payments.length > 0 && (
+            <>
+              <div className="sec">
+                <h3>{t('child_profile_payments')}</h3>
+              </div>
+              <div className="deadlines">
+                {result.payments.map((p, i) => (
+                  <div className="dl soon" key={i}>
+                    <span className="when nums">{p.due_date}</span>
+                    <h4>{isolateBidiRuns(p.reason)}</h4>
+                    <p className="nums">
+                      {p.amount} {p.currency}
+                    </p>
+                    <AddToCalendarButton title={p.reason} date={p.due_date} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
           <button className="scan-btn primary result-cta" onClick={() => navigate('/scan')}>
             {t('result_scan_another')}
           </button>

@@ -31,7 +31,10 @@ export function GuideArticle() {
         </div>
         {article.paragraphs.map((p, i) => (
           <p className="article-paragraph" key={i}>
-            {isolateBidiRuns(p)}
+            {/* German paragraphs are single-script Latin — isolateBidiRuns is for
+                short fragments embedded in Arabic prose, and its regex doesn't even
+                cover umlauts, so it would split German words mid-word here. */}
+            {lang === 'de' ? p : isolateBidiRuns(p)}
           </p>
         ))}
       </div>

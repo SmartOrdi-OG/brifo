@@ -27,8 +27,12 @@ export function Guide() {
                 <Icon size={22} strokeWidth={2} />
               </div>
               <div className="guide-text">
-                <h4>{isolateBidiRuns(article.title)}</h4>
-                <p>{isolateBidiRuns(article.teaser)}</p>
+                {/* isolateBidiRuns exists to protect short Latin/numeric fragments
+                    embedded in Arabic prose — German content is single-script and
+                    its regex doesn't even cover umlauts, so applying it here would
+                    split words like "Schularten" mid-word instead of helping. */}
+                <h4>{lang === 'de' ? article.title : isolateBidiRuns(article.title)}</h4>
+                <p>{lang === 'de' ? article.teaser : isolateBidiRuns(article.teaser)}</p>
               </div>
               <span className="guide-arrow">›</span>
             </div>
