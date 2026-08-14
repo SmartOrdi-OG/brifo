@@ -68,12 +68,20 @@ function writeNotifiedIds(ids: Set<string>): void {
 export interface ReminderCandidate {
   id: string;
   title: string;
+  /** The originally-requested bucket (day-before/hour-before/...) — stable
+   * across repeated checks, so it's what identifies this reminder slot for
+   * dedup. Must NOT be used for the notification's text (see actualMinutesLeft). */
   offsetMin: number;
+  /** How much time is actually left until the appointment right now — this,
+   * not offsetMin, is what the notification's text should be based on, since
+   * a late-firing check would otherwise keep claiming e.g. "tomorrow" for
+   * something now only an hour out. */
+  actualMinutesLeft: number;
 }
 
 /** Fires a local notification for each (event, offset) pair that's newly due
  * and hasn't fired yet. */
-export function notifyDueReminders(candidates: ReminderCandidate[], bodyForOffset: (offsetMin: number) => string): void {
+export function notifyDueReminders(candidates: ReminderCandidate[], bodyForOffset: (actualMinutesLeft: number) => string): void {
   if (!remindersEnabled() || pushEnabled()) return;
   const notified = readNotifiedIds();
   let changed = false;
@@ -81,7 +89,7 @@ export function notifyDueReminders(candidates: ReminderCandidate[], bodyForOffse
   for (const c of candidates) {
     const key = `${c.id}:${c.offsetMin}`;
     if (notified.has(key)) continue;
-    new Notification(c.title, { body: bodyForOffset(c.offsetMin), tag: key });
+    new Notification(c.title, { body: bodyForOffset(c.actualMinutesLeft), tag: key });
     notified.add(key);
     changed = true;
   }
