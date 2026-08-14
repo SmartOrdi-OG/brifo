@@ -121,6 +121,7 @@ const ar = {
   reply_copy: 'نسخ',
   reply_copied: 'تم النسخ ✓',
   reply_share_whatsapp: 'شارك عبر واتساب',
+  reply_share_email: 'شارك عبر الإيميل',
   reply_new: 'رسالة جديدة',
   reply_details_required: 'لازم تكتب تفاصيل أول',
 
@@ -424,6 +425,7 @@ const de: Record<keyof typeof ar, string> = {
   reply_copy: 'Kopieren',
   reply_copied: 'Kopiert ✓',
   reply_share_whatsapp: 'Über WhatsApp teilen',
+  reply_share_email: 'Per E-Mail teilen',
   reply_new: 'Neuer Brief',
   reply_details_required: 'Bitte zuerst Details eingeben',
 

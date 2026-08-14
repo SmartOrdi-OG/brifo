@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ThermometerSun, CalendarDays, CheckCircle2, HelpCircle, PenLine, Share2, type LucideIcon } from 'lucide-react';
+import { ThermometerSun, CalendarDays, CheckCircle2, HelpCircle, PenLine, Share2, Mail, type LucideIcon } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -69,6 +69,10 @@ export function Reply() {
 
   function shareWhatsApp(text: string) {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+  }
+
+  function shareEmail(text: string) {
+    window.location.href = `mailto:?body=${encodeURIComponent(text)}`;
   }
 
   return (
@@ -151,6 +155,11 @@ export function Reply() {
             <div className="letter-actions">
               <button className="scan-btn" onClick={() => copy(letter.german, 'german')}>
                 {copied === 'german' ? t('reply_copied') : t('reply_copy')}
+              </button>
+              <button className="scan-btn" onClick={() => shareEmail(letter.german)}>
+                <span className="btn-icon-label">
+                  <Mail size={16} strokeWidth={2.5} /> {t('reply_share_email')}
+                </span>
               </button>
               <button className="scan-btn primary" onClick={() => shareWhatsApp(letter.german)}>
                 <span className="btn-icon-label">
