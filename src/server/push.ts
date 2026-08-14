@@ -156,9 +156,18 @@ export async function runDueReminders(windowMinutes: number): Promise<RunDueRemi
         const claimed = await kvMarkSentOnce(claimKey, 60 * 60 * 24 * 14);
         if (!claimed) continue;
 
+        // The daily cron can catch a reminder up to ~24h after it was meant to
+        // fire (see WINDOW_MINUTES in api/cron/send-reminders.ts), so `offsetMin`
+        // — what was originally requested ("day before", "hour before"...) — no
+        // longer reflects reality by send time. Label from how much time is
+        // actually left instead, so a delayed "day before" reminder that's really
+        // firing 2 hours out says "in an hour", not a stale "tomorrow".
+        const actualMinutesLeft = Math.round((anchor - now) / 60000);
+        if (actualMinutesLeft < 0) continue; // the appointment already happened — sending now would just be confusing
+
         const result = await sendPush(subscription, {
           title: event.title,
-          body: offsetLabel(offsetMin, reminders.lang),
+          body: offsetLabel(actualMinutesLeft, reminders.lang),
           tag: `${event.id}:${offsetMin}`,
           url: '/calendar',
         });
