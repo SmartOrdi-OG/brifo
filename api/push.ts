@@ -125,7 +125,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     try {
-      await syncReminders(deviceId, events, offsets, lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : lang === 'fa' ? 'fa' : 'ar');
+      await syncReminders(deviceId, events, offsets, lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : lang === 'fa' ? 'fa' : lang === 'en' ? 'en' : 'ar');
       res.status(200).json({ ok: true });
     } catch (err) {
       console.error('[api/push:sync] failed:', err);

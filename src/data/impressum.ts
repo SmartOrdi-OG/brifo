@@ -98,3 +98,26 @@ export const impressumFa: PolicySection[] = [
     body: 'Brifo به شما کمک می‌کند تا نامه‌های مدرسه را از طریق تحلیل مبتنی بر هوش مصنوعی درک کنید. نتایج به معنای مشاوره حقوقی، رسمی یا آموزشی نیست و جایگزین بررسی شخصی نامه اصلی نمی‌شود. ما هیچ تضمینی برای کامل بودن یا صحت کامل خلاصه‌های تولیدشده به‌صورت خودکار نمی‌دهیم.',
   },
 ];
+
+export const impressumEn: PolicySection[] = [
+  {
+    heading: 'Information pursuant to § 5 ECG',
+    body: 'Smartordi OG\nSteingasse 6A\nLinz, Austria\n\nEmail: team@smartordi.eu\nCompany register number: FN 675586 i\nCompany register court: Landesgericht Linz [to be confirmed]\nVAT ID (UID): [to be added]\nBusiness purpose: software development and provision of digital services',
+  },
+  {
+    heading: 'Authorized representative(s)',
+    body: '[Name of the authorized representative partner to be added]',
+  },
+  {
+    heading: 'Memberships',
+    body: 'Member of the Austrian Federal Economic Chamber (WKO) [to be confirmed, if applicable]. Austrian commercial regulations apply, available at www.ris.bka.gv.at.',
+  },
+  {
+    heading: 'EU dispute resolution',
+    body: 'The European Commission provides a platform for online dispute resolution (ODR): https://ec.europa.eu/consumers/odr. We are neither obligated nor willing to participate in dispute resolution proceedings before a consumer arbitration board.',
+  },
+  {
+    heading: 'Liability for content',
+    body: 'Brifo helps you understand school letters through AI-powered analysis. The results do not constitute legal, official, or educational advice and do not replace reviewing the original letter yourself. We make no guarantee as to the completeness or accuracy of the automatically generated summaries.',
+  },
+];

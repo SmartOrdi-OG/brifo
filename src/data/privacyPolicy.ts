@@ -157,3 +157,38 @@ export const privacyPolicyFa: PolicySection[] = [
     body: 'برای هر سؤالی درباره حریم خصوصی، می‌توانید از طریق team@smartordi.eu با ما تماس بگیرید.',
   },
 ];
+
+export const privacyPolicyEn: PolicySection[] = [
+  {
+    heading: '1. Data controller',
+    body: 'Smartordi OG, Steingasse 6A, Linz, Austria\nEmail: team@smartordi.eu\nCompany register number: FN 675586 i\n\nThe company named above is responsible for processing personal data within the "Brifo" app under the General Data Protection Regulation (GDPR).',
+  },
+  {
+    heading: '2. General',
+    body: 'Brifo helps Arabic-speaking parents in Austria understand school letters, manage appointments, and draft replies in German. This notice describes what data the app processes, for what purpose, and what rights you have as the data subject.\n\nTo use Brifo, a user account (email address and password) is required so your data is securely accessible across devices. Your family and usage data is stored both locally on your device and — as a backup copy linked to your account — on our server (see sections 3 and 4).',
+  },
+  {
+    heading: '3. What data we process',
+    body: 'a) Account data: your email address and password, managed via our authentication provider Supabase (see section 5). We never see your password in plain text ourselves. We also store a record of your consent to this privacy policy (version and timestamp).\n\nb) Family profiles: name, role (child/adult), grade level, and school name, which you enter yourself.\n\nc) Photos of school letters: when you photograph a letter, the image is sent once for analysis to our AI provider Anthropic (see section 5). The image itself is not permanently stored by us or by Anthropic — only the resulting text summary (subject, deadlines, requested payments) is stored.\n\nd) Reply drafts: when you have the app draft a reply to a school letter, we send the information needed for this (e.g. the child\'s name and grade level, plus any free-text notes you enter) to Anthropic to generate the reply text.\n\ne) Appointments, payments, tasks, and your rating/feedback about the app. Your rating/feedback is additionally stored anonymously (without any link to your account or device) so we can review feedback about the app.\n\nf) Payment data: when you take out a subscription, our payment provider Stripe (see section 5) processes your email address and your subscription/payment status. We ourselves never see payment details (e.g. credit card number) — these are processed exclusively by Stripe.\n\ng) Push notifications (optional, only if you enable them): your device receives a random device ID and a push permission (your browser\'s endpoint URL and encryption keys). These, along with the titles and dates of your upcoming appointments, are stored on our server solely to deliver reminders to you.\n\nh) Technical data: language setting (Arabic/German/Turkish/Persian/English) and display mode (light/dark) — stored locally.\n\nThe data listed under b), c), and e) is stored both locally on your device and, linked to your account, as a backup copy on our server (see section 4).',
+  },
+  {
+    heading: '4. Storage location and retention period',
+    body: 'Your family profiles, letter summaries, appointments, payments, tasks, and ratings are stored both locally on your device and as a backup copy on our server, linked to your user account — so your data is preserved when you sign in on a new device. You can delete individual entries, a profile, or all your data at any time via Settings; this is also reflected on our server. If you would additionally like your user account fully deleted, contact us at the email address given in section 1 — we will then also delete the server-side backup copy, your account data, and your payment history, unless a legal retention obligation (e.g. for invoices) prevents this.\n\nData for push notifications (device ID, push permission, appointment titles/dates) is stored as long as the reminder feature is enabled, and automatically deleted when you disable it or revoke your push permission.',
+  },
+  {
+    heading: '5. Sharing with third parties (data processors)',
+    body: 'Anthropic PBC (USA): processes photographed school letters for text recognition/analysis, as well as the information listed in section 3d, to generate reply drafts. This involves a data transfer to a third country (USA); we ensure appropriate safeguards (e.g. standard contractual clauses) are in place for this.\n\nSupabase Inc.: authentication provider for your user account (email, password, sign-in process).\n\nStripe: payment provider for subscriptions (see section 3f).\n\nVercel Inc.: hosting of the app and storage of the server data listed in sections 3 and 4 (account data, backup copy, push notifications), on servers within the European Union.\n\nWe do not sell data to third parties and do not use advertising or tracking services.',
+  },
+  {
+    heading: '6. Children\'s data',
+    body: 'Brifo is intended for parents/guardians who themselves enter information about their children (name, grade level) to organize school letters. Entering and managing this information is the responsibility of the parents/guardian. The information is stored as described in sections 3 and 4.',
+  },
+  {
+    heading: '7. Your rights',
+    body: 'Under the GDPR, you have the right to access, rectify, delete, and restrict the processing of your data, as well as the right to data portability and to object. For data stored locally on your device, you can exercise these rights directly in the app (viewing, editing, deleting, exporting as a file via "back up usage data"). For data on our server (account, backup copy, payment data, push notifications), including full deletion of your account, contact us at the email address given in section 1.\n\nYou also have the right to lodge a complaint with the Austrian Data Protection Authority (dsb.gv.at).',
+  },
+  {
+    heading: '8. Contact',
+    body: 'For questions about privacy, reach us at: team@smartordi.eu',
+  },
+];
