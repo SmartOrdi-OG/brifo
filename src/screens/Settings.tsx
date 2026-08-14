@@ -38,6 +38,7 @@ const LANGUAGE_OPTIONS: { code: Lang; label: string }[] = [
   { code: 'ar', label: 'العربية' },
   { code: 'de', label: 'Deutsch' },
   { code: 'tr', label: 'Türkçe' },
+  { code: 'fa', label: 'فارسی' },
 ];
 
 function toggleBtnStyle(active: boolean): CSSProperties {

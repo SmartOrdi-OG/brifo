@@ -1,11 +1,13 @@
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
-import { agbAr, agbDe, agbTr, AGB_LAST_UPDATED } from '../data/agb';
+import { agbAr, agbDe, agbTr, agbFa, AGB_LAST_UPDATED } from '../data/agb';
 import './Datenschutz.css';
+
+const SECTIONS_BY_LANG = { ar: agbAr, de: agbDe, tr: agbTr, fa: agbFa };
 
 export function AGB() {
   const { t, lang } = useLanguage();
-  const sections = lang === 'de' ? agbDe : lang === 'tr' ? agbTr : agbAr;
+  const sections = SECTIONS_BY_LANG[lang];
 
   return (
     <FlowLayout title={t('agb_title')}>
