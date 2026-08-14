@@ -144,7 +144,10 @@ export function Reply() {
             <h3>{t('reply_german_label')}</h3>
           </div>
           <div className="card letter-card" dir="ltr">
-            <p className="letter-text">{isolateBidiRuns(letter.german)}</p>
+            {/* Always German, never mixed with Arabic — isolateBidiRuns is for short
+                Latin fragments embedded in Arabic prose, and its regex doesn't even
+                cover umlauts, so it would split German words mid-word here. */}
+            <p className="letter-text">{letter.german}</p>
             <div className="letter-actions">
               <button className="scan-btn" onClick={() => copy(letter.german, 'german')}>
                 {copied === 'german' ? t('reply_copied') : t('reply_copy')}
