@@ -37,7 +37,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     const safeComment = typeof comment === 'string' ? comment.slice(0, MAX_COMMENT_LENGTH) : '';
     try {
-      await submitRating(stars, safeComment, lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : 'ar');
+      await submitRating(stars, safeComment, lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : lang === 'fa' ? 'fa' : 'ar');
       res.status(200).json({ ok: true });
     } catch (err) {
       console.error('[api/ratings:submit] failed:', err);

@@ -75,3 +75,26 @@ export const impressumTr: PolicySection[] = [
     body: 'Brifo, yapay zeka destekli analiz yoluyla okul mektuplarını değerlendirmenize yardımcı olur. Sonuçlar hukuki, resmi veya pedagojik bir danışmanlık teşkil etmez ve orijinal mektubun incelenmesinin yerini tutmaz. Otomatik olarak oluşturulan özetlerin eksiksizliği veya doğruluğu için garanti vermiyoruz.',
   },
 ];
+
+export const impressumFa: PolicySection[] = [
+  {
+    heading: 'اطلاعات طبق ماده ۵ قانون تجارت الکترونیک اتریش (ECG)',
+    body: 'Smartordi OG\nSteingasse 6A\nلینتس، اتریش\n\nایمیل: team@smartordi.eu\nشماره ثبت شرکت: FN 675586 i\nدادگاه ثبت شرکت: Landesgericht Linz [در انتظار تأیید]\nشماره مالیات بر ارزش‌افزوده (UID): [در انتظار تکمیل]\nموضوع فعالیت شرکت: توسعه نرم‌افزار و ارائه خدمات دیجیتال',
+  },
+  {
+    heading: 'شخص/اشخاص مجاز به نمایندگی',
+    body: '[نام شریک مجاز به نمایندگی قانونی اضافه خواهد شد]',
+  },
+  {
+    heading: 'عضویت‌ها',
+    body: 'عضو اتاق اقتصاد اتریش (WKO) [در صورت صدق، در انتظار تأیید]. مقررات تجاری اتریش، قابل دسترسی در www.ris.bka.gv.at، اعمال می‌شود.',
+  },
+  {
+    heading: 'حل اختلاف اتحادیه اروپا',
+    body: 'کمیسیون اروپا یک پلتفرم حل اختلاف آنلاین (ODR) ارائه می‌دهد: https://ec.europa.eu/consumers/odr. ما ملزم یا مایل به شرکت در فرآیند حل اختلاف نزد نهاد حل اختلاف مصرف‌کننده نیستیم.',
+  },
+  {
+    heading: 'مسئولیت محتوا',
+    body: 'Brifo به شما کمک می‌کند تا نامه‌های مدرسه را از طریق تحلیل مبتنی بر هوش مصنوعی درک کنید. نتایج به معنای مشاوره حقوقی، رسمی یا آموزشی نیست و جایگزین بررسی شخصی نامه اصلی نمی‌شود. ما هیچ تضمینی برای کامل بودن یا صحت کامل خلاصه‌های تولیدشده به‌صورت خودکار نمی‌دهیم.',
+  },
+];
