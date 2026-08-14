@@ -163,3 +163,42 @@ export const agbFa: PolicySection[] = [
     body: 'برای هر سؤالی درباره این شرایط، می‌توانید از طریق team@smartordi.eu با ما تماس بگیرید.',
   },
 ];
+
+export const agbEn: PolicySection[] = [
+  {
+    heading: '1. Scope',
+    body: 'These Terms of Use (AGB) apply to the use of the "Brifo" app, offered by Smartordi OG, Steingasse 6A, Linz, Austria ("we", "provider"). By using the app, you agree to these Terms of Use.',
+  },
+  {
+    heading: '2. Service description',
+    body: 'Brifo helps Arabic-speaking parents in Austria understand school letters through AI-powered analysis, organize appointments and payments, and draft replies in German. The app offers a free feature set; individual additional features may be offered as paid ("Premium") in the future — the current features and prices are always shown in the app before purchase.\n\nThe automatically generated summaries and translations are an aid and do not replace reviewing the original letter yourself. We accept no liability for decisions made solely on the basis of the app\'s output.',
+  },
+  {
+    heading: '3. Formation of contract and prices',
+    body: 'A paid contract only comes into effect once you actively complete a purchase or subscription process in the app and confirm the prices, features, and payment terms shown. Unless stated otherwise, all prices include statutory VAT.',
+  },
+  {
+    heading: '4. Right of withdrawal',
+    body: 'As a consumer, you generally have the right to withdraw from a contract for digital content/services within 14 days without giving a reason.\n\nThis right expires early if we have begun performing the service after you expressly agreed that we may begin before the withdrawal period ends, and you simultaneously confirmed that you understand you will lose your right of withdrawal as a result. This express confirmation is obtained separately during each purchase process.',
+  },
+  {
+    heading: '5. Term and cancellation of subscriptions',
+    body: 'If Premium access is offered as a subscription, the term and cancellation notice shown at the time of purchase apply. Cancellation can be done via the relevant function in the app or by email to team@smartordi.eu.',
+  },
+  {
+    heading: '6. Limitation of liability',
+    body: 'We are liable without limitation for intent and gross negligence, and under mandatory statutory provisions (e.g. Product Liability Act). For slight negligence, we are only liable for breach of material contractual obligations and limited to foreseeable, typical damage.\n\nBrifo provides automatically generated analyses; we make no guarantee as to their completeness or accuracy. For deadlines, payment amounts, and other binding information, the school\'s original letter is always authoritative.',
+  },
+  {
+    heading: '7. Changes to these Terms',
+    body: 'We may change these Terms with future effect, for example when adding new features or due to legal requirements. We will inform you of material changes within the app.',
+  },
+  {
+    heading: '8. Applicable law and jurisdiction',
+    body: 'Austrian law applies, excluding the UN Convention on Contracts for the International Sale of Goods. For consumers, the mandatory provisions of the country of their habitual residence apply, provided it is within the EU.',
+  },
+  {
+    heading: '9. Contact',
+    body: 'For questions about these Terms, reach us at: team@smartordi.eu',
+  },
+];

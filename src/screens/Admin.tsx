@@ -7,7 +7,7 @@ interface StoredRating {
   id: string;
   stars: number;
   comment: string;
-  lang: 'ar' | 'de' | 'tr' | 'fa';
+  lang: 'ar' | 'de' | 'tr' | 'fa' | 'en';
   createdAt: string;
 }
 

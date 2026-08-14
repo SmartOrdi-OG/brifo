@@ -543,9 +543,143 @@ const fa: GuideArticle[] = [
   },
 ];
 
+const en: GuideArticle[] = [
+  {
+    id: 'school-types',
+    title: 'Types of schools in Austria',
+    teaser: 'Volksschule, Mittelschule, Gymnasium — what is the difference?',
+    paragraphs: [
+      'Volksschule (primary school): ages 6 to 10, four grades, teaches the basics of reading, writing, and arithmetic.',
+      'Mittelschule (middle school): ages 10 to 14, prepares the student for the next stage, whether academic or vocational.',
+      'Gymnasium (AHS): from age 10 (or after Mittelschule at age 14), a higher academic level, leading directly to university after finishing the Matura.',
+      'Berufsschule / Lehre (vocational school and apprenticeship): vocational training that runs alongside real work with an employer.',
+      'After age 14, parents and the student decide together on the path that best suits the student\'s interests and abilities.',
+    ],
+  },
+  {
+    id: 'grading-system',
+    title: 'Grading system and report cards',
+    teaser: 'From 1 (excellent) to 5 (fail) — what each number means',
+    paragraphs: [
+      'Grades in Austria range from 1 to 5, with 1 being the best grade.',
+      '1 = Sehr gut (excellent), 2 = Gut (good), 3 = Befriedigend (satisfactory), 4 = Genügend (sufficient), 5 = Nicht genügend (fail).',
+      'The report card (Zeugnis) is issued twice a year: the mid-year report (Semesterzeugnis) and the year-end report (Jahreszeugnis). The year-end report determines whether the student moves up to the next grade.',
+    ],
+  },
+  {
+    id: 'sprechstunde',
+    title: 'Sprechstunde: how to talk to the teacher',
+    teaser: 'A dedicated time for parents to speak directly with the teacher',
+    paragraphs: [
+      'What is the Sprechstunde? A fixed weekly time slot when parents can book an appointment and speak face-to-face with the teacher about their child\'s situation.',
+      'How do you book an appointment? Usually through the notebook (Mitteilungsheft), the school\'s email, or an app like Schoolfox.',
+      'What should you prepare beforehand? Write down your questions in advance, bring any important documents, and if your German isn\'t strong enough, you can bring someone along to translate.',
+      'What should you ask during the appointment? How your child is doing in class, whether there\'s progress or something that needs more attention, and how you can help at home.',
+    ],
+  },
+  {
+    id: 'parent-rights',
+    title: 'Parents\' rights and responsibilities',
+    teaser: 'What you\'re entitled to as a parent, and what\'s expected of you',
+    paragraphs: [
+      'Parents\' rights: to be kept informed of your child\'s academic situation, to take part in the class meeting (Elternabend), and to elect a parent representative (Elternverein / Klassenelternvertreter) who speaks on behalf of all parents.',
+      'Parents\' responsibilities: making sure your child attends school regularly (any absence needs a formal excuse), signing and returning any forms the school requires on time, and following up on homework.',
+      'Compulsory education (Schulpflicht) in Austria runs from age 6 to 15 — meaning every child must attend an official school during this age range.',
+    ],
+  },
+  {
+    id: 'fruehwarnung',
+    title: 'Frühwarnung: what it means and what to do',
+    teaser: 'An "early warning" — not necessarily a failing grade',
+    paragraphs: [
+      'What is a Frühwarnung? An official notice from the school ("early warning") sent when there\'s a risk that a student will fail a particular subject.',
+      'Why does it arrive at this specific time? Usually after mid-year, while there\'s still enough time to improve the situation before the year-end report.',
+      'What should you do? Take it seriously but don\'t panic — book a Sprechstunde appointment with the teacher, ask exactly what\'s missing, and consider tutoring (Nachhilfe) if needed.',
+      'Important to know: a Frühwarnung doesn\'t automatically mean failing — it\'s a chance to act early before it\'s too late.',
+    ],
+  },
+  {
+    id: 'enrollment',
+    title: 'How to enroll your child in school (Schulanmeldung)',
+    teaser: 'Required documents, and the district school (Sprengelschule)',
+    paragraphs: [
+      'Every family in Austria has an assigned "district school" (Sprengelschule) — the nearest official primary school to your home address. This is usually the first option, but you can enroll in a different school if there are open spots.',
+      'Enrollment for Volksschule (primary school) usually happens in spring (around February-March) for the upcoming school year, and the municipality or school officially invites families with a child of enrollment age.',
+      'Documents you\'ll typically need: the child\'s birth certificate, proof of home address, and, if the school requests it, proof of vaccination status.',
+      'If you\'re still not sure where or with what documents to enroll, contact the school or your local municipality (Gemeinde) directly — the details differ slightly from one municipality to another.',
+    ],
+  },
+  {
+    id: 'deutschfoerderklasse',
+    title: 'German support class (Deutschförderklasse)',
+    teaser: 'If your child doesn\'t speak German well yet',
+    paragraphs: [
+      'If your child has recently arrived in Austria and their German is still weak, the school places them in a special support class (Deutschförderklasse) or extra support (Deutschförderkurs) to strengthen the language before fully joining the regular class.',
+      'The student spends most lessons in the support class, but joins their regular classmates for subjects like sports or art that don\'t require strong language skills.',
+      'The duration is usually one to two years depending on the child\'s level, and their language is assessed regularly to determine when they\'re ready to move fully into the regular class.',
+      'This support is free and every child\'s right — if you feel your child needs extra language support and it hasn\'t been offered, ask the school directly.',
+    ],
+  },
+  {
+    id: 'school-holidays',
+    title: 'School holidays in Austria',
+    teaser: 'Summer, Christmas, mid-year... what\'s the difference',
+    paragraphs: [
+      'Summer holidays (Sommerferien): the longest break, from early July to the end of August.',
+      'Christmas holidays (Weihnachtsferien): about two weeks around late December and early January.',
+      'Mid-year holidays (Semesterferien): one week in mid-February, the exact date varies slightly by state (Bundesland).',
+      'Easter holidays (Osterferien): about two weeks in spring.',
+      'There are also a few short scattered days off throughout the year (Fenstertage and public holidays) — the exact dates change every year, so the best reference is the official calendar distributed by the school or the Austrian Ministry of Education\'s website.',
+    ],
+  },
+  {
+    id: 'school-costs',
+    title: 'School costs: what\'s free and what isn\'t',
+    teaser: 'Textbooks are free, but there are other costs',
+    paragraphs: [
+      'Textbooks are free or nearly free thanks to a program called Schulbuchaktion — you pay a small symbolic contribution, not the full price.',
+      'Official education at public schools is free, but there are usually additional costs: school trips (Schulveranstaltungen), some school supplies, and sometimes lunch if your child is in all-day care.',
+      'If your family\'s financial situation is difficult, ask the school or municipality about support or exemption from some of these costs — many schools have solutions for this, but you need to ask and explain your situation.',
+      'Any request for payment from the school should come to you as a clear, official message (amount, reason, deadline) — if you receive an unclear message, ask the school to explain before paying.',
+    ],
+  },
+  {
+    id: 'nachmittagsbetreuung',
+    title: 'All-day school and afternoon care',
+    teaser: 'A solution for working parents',
+    paragraphs: [
+      'Many schools offer all-day schooling (Ganztagsschule) or afternoon care (Nachmittagsbetreuung) — the child stays at school after regular class ends, does homework, and takes part in activities until picked up.',
+      'Not every school offers this automatically — you need to enroll your child separately, and there\'s usually a small monthly fee.',
+      'If your work makes you need this service, ask the school administration right at the start of the school year, since spots are often limited.',
+    ],
+  },
+  {
+    id: 'elternverein',
+    title: 'How to get involved in school life',
+    teaser: 'Elternabend, Elternverein, and the parent representative',
+    paragraphs: [
+      'Class meeting (Elternabend): a meeting, usually held once or twice a year, where the teacher discusses the class plan and important topics with all the parents together.',
+      'Parents\' association (Elternverein): a group of volunteer parents who organize activities and represent parents\' voice to the school administration — membership is usually voluntary and free or very low-cost.',
+      'Class parent representative (Klassenelternvertreter): a person parents elect from among themselves to pass their feedback on to the school administration.',
+      'Participation isn\'t mandatory, but it\'s a good opportunity to get to know other parents and better understand what\'s happening at your child\'s school — especially useful if you\'re still learning German, since you can benefit from other parents\' experience.',
+    ],
+  },
+  {
+    id: 'uebertritt',
+    title: 'Moving from one stage to the next',
+    teaser: 'From Volksschule to Mittelschule or Gymnasium',
+    paragraphs: [
+      'In the final year of Volksschule (4th grade), the school gives parents a "school notice" (Schulnachricht) at mid-year that shows the child\'s level and helps with the decision for the next stage.',
+      'The decision between Mittelschule and Gymnasium/AHS ultimately rests with the parents, but the school provides a recommendation based on the child\'s performance — if you feel you need more guidance, ask for a Sprechstunde appointment with the teacher.',
+      'Even after the first choice, switching between paths (for example from Mittelschule to AHS) is still possible at later stages if the student\'s situation or wishes change — ask the new school about the conditions.',
+    ],
+  },
+];
+
 export function getGuideArticles(lang: Lang): GuideArticle[] {
   if (lang === 'de') return de;
   if (lang === 'tr') return tr;
   if (lang === 'fa') return fa;
+  if (lang === 'en') return en;
   return ar;
 }
