@@ -85,3 +85,42 @@ export const agbAr: PolicySection[] = [
     body: 'لأي سؤال عن هالشروط، تواصلي معنا عبر: team@smartordi.eu',
   },
 ];
+
+export const agbTr: PolicySection[] = [
+  {
+    heading: '1. Uygulama alanı',
+    body: 'Bu Genel Kullanım Koşulları (AGB), Smartordi OG, Steingasse 6A, Linz, Avusturya ("biz", "sağlayıcı") tarafından sunulan "Brifo" uygulamasının kullanımı için geçerlidir. Uygulamayı kullanarak bu koşulları kabul etmiş olursunuz.',
+  },
+  {
+    heading: '2. Hizmet tanımı',
+    body: 'Brifo, Avusturya\'daki Arapça konuşan ebeveynlerin yapay zeka destekli analiz yoluyla okul mektuplarını anlamalarına, randevu ve ödemeleri düzenlemelerine ve Almanca cevap yazmalarına yardımcı olur. Uygulama ücretsiz bir özellik kapsamı sunar; bazı ek özellikler ileride ücretli ("Premium") olarak sunulabilir — güncel hizmetler ve fiyatlar satın almadan önce uygulamada gösterilir.\n\nOtomatik oluşturulan özetler ve çeviriler bir yardımcı araçtır ve orijinal mektubun kendiniz incelemesinin yerini tutmaz. Yalnızca uygulama çıktısına dayanarak alınan kararlardan sorumluluk kabul etmiyoruz.',
+  },
+  {
+    heading: '3. Sözleşmenin kurulması ve fiyatlar',
+    body: 'Ücretli bir sözleşme, yalnızca uygulamada bir satın alma veya abonelik işlemini bizzat tamamlayıp gösterilen fiyatları, hizmetleri ve ödeme koşullarını onayladığınızda geçerli olur. Aksi belirtilmedikçe tüm fiyatlara yasal katma değer vergisi dahildir.',
+  },
+  {
+    heading: '4. Cayma hakkı',
+    body: 'Tüketici olarak, dijital içerik/hizmetlerle ilgili bir sözleşmeden gerekçe göstermeksizin 14 gün içinde cayma hakkına genel olarak sahipsiniz.\n\nCayma süresi dolmadan önce hizmetin ifasına başlamamızı açıkça onayladığınızda ve bununla cayma hakkınızı kaybedeceğinizi aynı anda teyit ettiğinizde bu hak erken sona erer. İlgili açık onay, her satın alma işleminde ayrıca alınır.',
+  },
+  {
+    heading: '5. Aboneliklerin süresi ve feshi',
+    body: 'Premium erişim abonelik olarak sunulursa, abonelik başlangıcında gösterilen süre ve fesih süresi geçerlidir. Fesih, uygulamadaki ilgili işlev üzerinden veya team@smartordi.eu adresine e-posta ile yapılabilir.',
+  },
+  {
+    heading: '6. Sorumluluk sınırlaması',
+    body: 'Kasıt ve ağır ihmal ile zorunlu yasal hükümler (örn. Ürün Sorumluluğu Kanunu) çerçevesinde sınırsız sorumluluk taşırız. Hafif ihmal durumunda yalnızca temel sözleşme yükümlülüklerinin ihlali halinde ve öngörülebilir, sözleşmeye özgü zararla sınırlı olarak sorumluyuz.\n\nBrifo otomatik olarak oluşturulan analizler sunar; bunların eksiksizliği veya doğruluğu için garanti vermiyoruz. Süreler, ödeme tutarları ve diğer bağlayıcı bilgiler için her zaman okulun orijinal mektubu esas alınır.',
+  },
+  {
+    heading: '7. Bu koşullardaki değişiklikler',
+    body: 'Yeni özellikler veya yasal gereklilikler gibi nedenlerle bu koşulları ileriye dönük olarak değiştirebiliriz. Önemli değişiklikler hakkında sizi uygulama üzerinden bilgilendiririz.',
+  },
+  {
+    heading: '8. Uygulanacak hukuk ve yetkili mahkeme',
+    body: 'BM Satış Hukuku hariç olmak üzere Avusturya hukuku geçerlidir. Tüketiciler için, olağan ikametgahlarının bulunduğu ülke AB içindeyse, o ülkenin zorunlu hükümleri geçerlidir.',
+  },
+  {
+    heading: '9. İletişim',
+    body: 'Bu koşullarla ilgili sorularınız için bize şu adresten ulaşabilirsiniz: team@smartordi.eu',
+  },
+];

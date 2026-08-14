@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
+import { isRtlLang } from '../context/translations';
 import { getGuideArticles } from '../data/guideArticles';
 import { GUIDE_ARTICLE_ICONS } from '../data/guideIcons';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -31,10 +32,11 @@ export function GuideArticle() {
         </div>
         {article.paragraphs.map((p, i) => (
           <p className="article-paragraph" key={i}>
-            {/* German paragraphs are single-script Latin — isolateBidiRuns is for
-                short fragments embedded in Arabic prose, and its regex doesn't even
-                cover umlauts, so it would split German words mid-word here. */}
-            {lang === 'de' ? p : isolateBidiRuns(p)}
+            {/* LTR-language paragraphs (German, Turkish...) are single-script —
+                isolateBidiRuns is for short fragments embedded in RTL prose, and
+                its regex doesn't even cover umlauts, so it would split words
+                mid-word here. */}
+            {isRtlLang(lang) ? isolateBidiRuns(p) : p}
           </p>
         ))}
       </div>

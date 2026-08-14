@@ -111,10 +111,10 @@ function apiDevMiddleware(): Plugin {
             deviceId?: string
             events?: never[]
             offsets?: number[]
-            lang?: 'ar' | 'de'
+            lang?: 'ar' | 'de' | 'tr'
           }
           if (!deviceId || !events || !offsets) return { status: 400, body: { error: 'invalid request' } }
-          await syncReminders(deviceId, events, offsets, lang === 'de' ? 'de' : 'ar')
+          await syncReminders(deviceId, events, offsets, lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : 'ar')
           return { status: 200, body: { ok: true } }
         }),
       )
@@ -170,7 +170,7 @@ function apiDevMiddleware(): Plugin {
           if (typeof stars !== 'number' || !Number.isInteger(stars) || stars < 1 || stars > 5) {
             return { status: 400, body: { error: 'invalid stars' } }
           }
-          await submitRating(stars, typeof comment === 'string' ? comment : '', lang === 'de' ? 'de' : 'ar')
+          await submitRating(stars, typeof comment === 'string' ? comment : '', lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : 'ar')
           return { status: 200, body: { ok: true } }
         }),
       )

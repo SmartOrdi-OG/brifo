@@ -9,7 +9,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { downloadBackup, parseBackupFile, BackupParseError, type RestorableState } from '../lib/backup';
-import type { TranslationKey } from '../context/translations';
+import type { Lang, TranslationKey } from '../context/translations';
 import {
   enableReminders,
   disableReminders,
@@ -32,6 +32,12 @@ const OFFSET_OPTIONS = [
   { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
   { value: REMINDER_OFFSET_HOUR_BEFORE, key: 'reminders_offset_hour' as const },
   { value: REMINDER_OFFSET_15MIN_BEFORE, key: 'reminders_offset_15min' as const },
+];
+
+const LANGUAGE_OPTIONS: { code: Lang; label: string }[] = [
+  { code: 'ar', label: 'العربية' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'tr', label: 'Türkçe' },
 ];
 
 function toggleBtnStyle(active: boolean): CSSProperties {
@@ -231,13 +237,12 @@ export function Settings() {
 
       <div className="card" style={{ padding: '16px' }}>
         <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>{t('settings_language')}</p>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={() => setLang('ar')} style={toggleBtnStyle(lang === 'ar')}>
-            العربية
-          </button>
-          <button onClick={() => setLang('de')} style={toggleBtnStyle(lang === 'de')}>
-            Deutsch
-          </button>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          {LANGUAGE_OPTIONS.map((opt) => (
+            <button key={opt.code} onClick={() => setLang(opt.code)} style={{ ...toggleBtnStyle(lang === opt.code), flex: '1 1 30%' }}>
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 

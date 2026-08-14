@@ -1,7 +1,9 @@
 /** Sends a copy of a locally-saved rating to the server so it's actually
  * reachable by the app owner (see screens/Admin.tsx) — DataContext's own
  * copy stays device-local, same as the rest of the app's data. */
-export async function submitRatingToServer(stars: number, comment: string, lang: 'ar' | 'de'): Promise<void> {
+import type { Lang } from '../context/translations';
+
+export async function submitRatingToServer(stars: number, comment: string, lang: Lang): Promise<void> {
   try {
     await fetch('/api/rating-submit', {
       method: 'POST',
