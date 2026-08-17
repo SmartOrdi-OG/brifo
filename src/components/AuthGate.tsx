@@ -2,6 +2,8 @@ import { useState, type CSSProperties, type FormEvent } from 'react';
 import { Eye, EyeOff, Mail } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { isRtlLang } from '../context/translations';
+import { isolateBidiRuns } from '../lib/bidiText';
 import type { TranslationKey } from '../context/translations';
 
 type ErrorKind = 'missing' | 'failed' | 'code' | 'password' | 'password_missing' | 'mismatch' | 'too_short';
@@ -107,7 +109,7 @@ function PasswordField({
 }
 
 export function AuthGate() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const {
     passwordPromptPending,
     signInWithEmail,
@@ -262,7 +264,7 @@ export function AuthGate() {
             maxWidth: 320,
           }}
         >
-          {t('auth_pricing_note')}
+          {isRtlLang(lang) ? isolateBidiRuns(t('auth_pricing_note')) : t('auth_pricing_note')}
         </p>
       )}
 
