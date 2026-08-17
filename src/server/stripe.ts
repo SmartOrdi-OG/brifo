@@ -2,8 +2,18 @@ import Stripe from 'stripe';
 import { kvGet, kvSet } from './kv.js';
 import { ConfigError } from './errors.js';
 
-const subscriptionKey = (userId: string) => `stripe:subscription:${userId}`;
-const customerKey = (userId: string) => `stripe:customer:${userId}`;
+// Stripe ids are scoped to the mode that created them: a price/customer made
+// with a test key does not exist under a live key. Namespacing every cached id
+// by mode means flipping STRIPE_SECRET_KEY from test to live (or back) starts
+// from a clean slate instead of replaying ids Stripe will reject with "No such
+// price"/"No such customer".
+function stripeMode(): 'test' | 'live' {
+  const key = process.env.STRIPE_SECRET_KEY ?? '';
+  return key.includes('_test_') ? 'test' : 'live';
+}
+
+const subscriptionKey = (userId: string) => `stripe:${stripeMode()}:subscription:${userId}`;
+const customerKey = (userId: string) => `stripe:${stripeMode()}:customer:${userId}`;
 
 export type Plan = 'monthly' | 'annual';
 
@@ -16,7 +26,7 @@ const PLAN_CONFIG: Record<Plan, { unitAmount: number; interval: Stripe.PriceCrea
 // Keyed by plan + amount so a future price change here automatically creates
 // (and caches) a fresh Stripe Price instead of silently keeping checkouts on
 // a stale cached price_id from before the change.
-const priceIdCacheKey = (plan: Plan) => `stripe:price_id:${plan}:${PLAN_CONFIG[plan].unitAmount}`;
+const priceIdCacheKey = (plan: Plan) => `stripe:${stripeMode()}:price_id:${plan}:${PLAN_CONFIG[plan].unitAmount}`;
 
 let stripeClient: Stripe | null = null;
 
