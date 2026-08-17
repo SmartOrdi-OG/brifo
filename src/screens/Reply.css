@@ -95,12 +95,16 @@
 
 .letter-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 16px;
 }
 
+/* flex-basis keeps two buttons per row at most, so longer labels (Turkish,
+   Ukrainian) wrap onto a second row instead of overflowing the screen. */
 .letter-actions .scan-btn {
-  flex: 1;
+  flex: 1 1 40%;
+  min-width: 0;
   padding: 12px;
   font-size: 13.5px;
 }

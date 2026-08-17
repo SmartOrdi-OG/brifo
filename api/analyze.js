@@ -5,18 +5,36 @@
 
 const MODEL = 'claude-opus-4-8';
 
-const SYSTEM_PROMPT =
-  'You are a helpful assistant for Arabic-speaking parents in Austria. ' +
-  'Read this school letter and respond with ONLY a JSON object (no markdown fences, no prose) ' +
-  'shaped exactly like: {"summary": string, "action_required": boolean, "actions": string[], ' +
-  '"deadlines": [{"date": "YYYY-MM-DD", "what": string}], "needs_reply": boolean, ' +
-  '"urgency": "high" | "medium" | "low", "detected_child_name": string | null, ' +
-  '"detected_child_class": string | null, "payments": [{"amount": number, "currency": string, ' +
-  '"reason": string, "due_date": "YYYY-MM-DD"}]}. If the letter mentions a specific child\'s name ' +
-  'and/or class, extract them into detected_child_name/detected_child_class, otherwise use null. ' +
-  'Extract any payments requested as separate structured items in "payments", in addition to listing ' +
-  'them in actions/deadlines. Write the summary and all text fields in simple Levantine-influenced ' +
-  'Modern Standard Arabic.';
+// Kept in sync with src/lib/aiLanguage.ts on the client side.
+const OUTPUT_LANGUAGE = {
+  ar: 'simple Levantine-influenced Modern Standard Arabic',
+  de: 'simple, clear German',
+  tr: 'simple, clear Turkish',
+  fa: 'simple, clear Persian (Farsi)',
+  en: 'simple, clear English',
+  uk: 'simple, clear Ukrainian',
+};
+
+function buildSystemPrompt(lang) {
+  const target = OUTPUT_LANGUAGE[lang] || OUTPUT_LANGUAGE.ar;
+  return (
+    'You are a helpful assistant for immigrant families in Austria who may not read German well. ' +
+    'The letter may be from a school, a doctor or clinic, an insurer, a government office, a landlord, ' +
+    'a utility or any other sender — handle all of them the same way. ' +
+    'Read this letter and respond with ONLY a JSON object (no markdown fences, no prose) ' +
+    'shaped exactly like: {"summary": string, "action_required": boolean, "actions": string[], ' +
+    '"deadlines": [{"date": "YYYY-MM-DD", "what": string}], "needs_reply": boolean, ' +
+    '"urgency": "high" | "medium" | "low", "detected_child_name": string | null, ' +
+    '"detected_child_class": string | null, "payments": [{"amount": number, "currency": string, ' +
+    '"reason": string, "due_date": "YYYY-MM-DD"}]}. ' +
+    'Capture EVERY appointment, deadline or due date you find in "deadlines" (for a medical or office ' +
+    'appointment, "what" should say what the appointment is for and, if stated, with whom and where), ' +
+    'and EVERY amount of money requested in "payments", in addition to listing them in "actions". ' +
+    'If the letter mentions a specific child\'s name and/or class, extract them into ' +
+    'detected_child_name/detected_child_class, otherwise use null. ' +
+    `Write the summary and all text fields in ${target}.`
+  );
+}
 
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
@@ -35,7 +53,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const { image, mediaType } = req.body || {};
+  const { image, mediaType, lang } = req.body || {};
   if (!image || !mediaType) {
     res.status(400).json({ error: 'missing image or mediaType' });
     return;
@@ -56,13 +74,13 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 2048,
-        system: SYSTEM_PROMPT,
+        system: buildSystemPrompt(lang),
         messages: [
           {
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: mediaType, data: image } },
-              { type: 'text', text: 'حلّل رسالة المدرسة هاي واطلع لي النتيجة بصيغة JSON فقط.' },
+              { type: 'text', text: 'Analyse this letter and return the result as JSON only.' },
             ],
           },
         ],

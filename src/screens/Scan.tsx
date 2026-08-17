@@ -137,7 +137,7 @@ export function Scan() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: base64, mediaType }),
+        body: JSON.stringify({ image: base64, mediaType, lang }),
       });
       if (!response.ok) {
         const body = await response.text().catch(() => '');
