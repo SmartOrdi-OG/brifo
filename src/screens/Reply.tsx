@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ThermometerSun, CalendarDays, CheckCircle2, HelpCircle, PenLine, Share2, Mail, type LucideIcon } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
+import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { ReplyIntent, ReplyLetter } from '../types/reply';
 import './Reply.css';
@@ -17,7 +18,7 @@ const INTENT_ICON: Record<ReplyIntent, LucideIcon> = {
 };
 
 export function Reply() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const [state, setState] = useState<ScreenState>('form');
   const [intent, setIntent] = useState<ReplyIntent | null>(null);
@@ -41,6 +42,7 @@ export function Reply() {
           childName: childName.trim() || undefined,
           childClass: childClass.trim() || undefined,
           details: details.trim(),
+          lang,
         }),
       });
       if (!response.ok) throw new Error('request failed');
@@ -170,12 +172,14 @@ export function Reply() {
           </div>
 
           <div className="sec">
-            <h3>{t('reply_arabic_label')}</h3>
+            <h3>{t('reply_translation_label')}</h3>
           </div>
-          <div className="card letter-card" dir="rtl">
-            <p className="letter-text">{isolateBidiRuns(letter.arabic)}</p>
+          <div className="card letter-card" dir={isRtlLang(lang) ? 'rtl' : 'ltr'}>
+            {/* isolateBidiRuns protects short Latin fragments inside RTL prose;
+                on LTR translations it would split words mid-word instead. */}
+            <p className="letter-text">{isRtlLang(lang) ? isolateBidiRuns(letter.translation) : letter.translation}</p>
             <div className="letter-actions">
-              <button className="scan-btn" onClick={() => copy(letter.arabic, 'arabic')}>
+              <button className="scan-btn" onClick={() => copy(letter.translation, 'arabic')}>
                 {copied === 'arabic' ? t('reply_copied') : t('reply_copy')}
               </button>
             </div>

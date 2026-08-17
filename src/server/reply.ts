@@ -16,11 +16,25 @@ function getClient(): Anthropic {
   return client;
 }
 
-const SYSTEM_PROMPT =
-  'You are a formal German letter-writing assistant helping Arabic-speaking parents in Austria ' +
-  'communicate with their children\'s school. Write a polite, correctly formatted, formal German letter ' +
-  'based on the parent\'s intent and the details they provide (the details may be written in Arabic). ' +
-  'Then provide an accurate Arabic translation of the exact same letter.';
+/** Kept in sync with api/analyze.js's OUTPUT_LANGUAGE. */
+const OUTPUT_LANGUAGE: Record<string, string> = {
+  ar: 'Arabic',
+  de: 'German',
+  tr: 'Turkish',
+  fa: 'Persian (Farsi)',
+  en: 'English',
+  uk: 'Ukrainian',
+};
+
+function buildSystemPrompt(lang: string): string {
+  const target = OUTPUT_LANGUAGE[lang] ?? OUTPUT_LANGUAGE.ar;
+  return (
+    'You are a formal German letter-writing assistant helping immigrant parents in Austria ' +
+    "communicate with their children's school. Write a polite, correctly formatted, formal German letter " +
+    `based on the parent's intent and the details they provide (the details may be written in ${target}). ` +
+    `Then provide an accurate ${target} translation of the exact same letter.`
+  );
+}
 
 const INTENT_LABELS = {
   entschuldigung: 'Entschuldigung wegen Abwesenheit (excuse for absence)',
@@ -36,13 +50,14 @@ export const ReplyRequestSchema = z.object({
   childName: z.string().max(80).optional(),
   childClass: z.string().max(40).optional(),
   details: z.string().min(3).max(2000),
+  lang: z.enum(['ar', 'de', 'tr', 'fa', 'en', 'uk']).default('ar'),
 });
 
 export type ReplyRequestInput = z.infer<typeof ReplyRequestSchema>;
 
 const ReplyResultSchema = z.object({
-  german: z.string().describe('الرسالة الرسمية بالألماني'),
-  arabic: z.string().describe('ترجمة نفس الرسالة بالعربي'),
+  german: z.string().describe('The formal letter in German'),
+  translation: z.string().describe("A translation of the same letter into the user's language"),
 });
 
 export type ReplyLetter = z.infer<typeof ReplyResultSchema>;
@@ -52,13 +67,14 @@ export class ReplyError extends Error {}
 export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> {
   const parsed = ReplyRequestSchema.safeParse(input);
   if (!parsed.success) throw new ReplyError(parsed.error.issues[0]?.message ?? 'invalid input');
-  const { intent, childName, childClass, details } = parsed.data;
+  const { intent, childName, childClass, details, lang } = parsed.data;
+  const target = OUTPUT_LANGUAGE[lang] ?? OUTPUT_LANGUAGE.ar;
 
   const contextLines = [
     `Intent: ${INTENT_LABELS[intent]}`,
     childName ? `Child's name: ${childName}` : null,
     childClass ? `Class: ${childClass}` : null,
-    `Details from parent (may be in Arabic): ${details}`,
+    `Details from parent (may be in ${target}): ${details}`,
   ].filter(Boolean);
 
   const anthropic = getClient();
@@ -67,7 +83,7 @@ export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> 
     response = await anthropic.messages.parse({
       model: 'claude-opus-4-8',
       max_tokens: 2048,
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(lang),
       messages: [{ role: 'user', content: contextLines.join('\n') }],
       output_config: { format: toStructuredOutputFormat(ReplyResultSchema) },
     });

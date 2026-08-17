@@ -16,8 +16,8 @@ const ar = {
   greeting_title_generic: 'أهلاً',
   greeting_subtitle: 'عندك موعد مهم هالأسبوع — كل شي تحت السيطرة',
 
-  scan_title: 'صوّر رسالة المدرسة',
-  scan_subtitle: 'اضغط للتصوير أو ارفع صورة — والشرح بالعربي بثواني',
+  scan_title: 'صوّر أي رسالة',
+  scan_subtitle: 'رسالة مدرسة، موعد دكتور، فاتورة — صوّرها والشرح بلغتك بثواني',
 
   section_deadlines: 'المواعيد القادمة',
   section_letters: 'آخر الرسائل',
@@ -130,7 +130,7 @@ const ar = {
   reply_generating: 'جاري كتابة الرسالة بالذكاء الاصطناعي...',
   reply_error: 'صار في مشكلة، جرّب مرة ثانية',
   reply_german_label: 'الرسالة بالألماني',
-  reply_arabic_label: 'الترجمة بالعربي',
+  reply_translation_label: 'الترجمة بلغتك',
   reply_copy: 'نسخ',
   reply_copied: 'تم النسخ ✓',
   reply_share_whatsapp: 'شارك عبر واتساب',
@@ -328,8 +328,8 @@ const de: Record<keyof typeof ar, string> = {
   greeting_title_generic: 'Hallo',
   greeting_subtitle: 'Diese Woche steht ein wichtiger Termin an — alles im Griff',
 
-  scan_title: 'Schulbrief fotografieren',
-  scan_subtitle: 'Tippen zum Fotografieren oder Bild hochladen — Erklärung auf Arabisch in Sekunden',
+  scan_title: 'Brief fotografieren',
+  scan_subtitle: 'Schulbrief, Arzttermin, Rechnung — fotografieren und in Sekunden in deiner Sprache erklärt',
 
   section_deadlines: 'Anstehende Termine',
   section_letters: 'Letzte Briefe',
@@ -442,7 +442,7 @@ const de: Record<keyof typeof ar, string> = {
   reply_generating: 'Der Brief wird von der KI geschrieben...',
   reply_error: 'Ein Fehler ist aufgetreten, bitte erneut versuchen',
   reply_german_label: 'Brief auf Deutsch',
-  reply_arabic_label: 'Übersetzung auf Arabisch',
+  reply_translation_label: 'Übersetzung in deiner Sprache',
   reply_copy: 'Kopieren',
   reply_copied: 'Kopiert ✓',
   reply_share_whatsapp: 'Über WhatsApp teilen',
@@ -640,8 +640,8 @@ const tr: Record<keyof typeof ar, string> = {
   greeting_title_generic: 'Merhaba',
   greeting_subtitle: 'Bu hafta önemli bir randevun var — her şey kontrol altında',
 
-  scan_title: 'Okul mektubunu fotoğrafla',
-  scan_subtitle: 'Fotoğraf çek ya da resim yükle — saniyeler içinde Arapça açıklama',
+  scan_title: 'Herhangi bir mektubu fotoğrafla',
+  scan_subtitle: 'Okul mektubu, doktor randevusu, fatura — fotoğrafla, saniyeler içinde kendi dilinde açıklansın',
 
   section_deadlines: 'Yaklaşan randevular',
   section_letters: 'Son mektuplar',
@@ -754,7 +754,7 @@ const tr: Record<keyof typeof ar, string> = {
   reply_generating: 'Mektup yapay zeka ile yazılıyor...',
   reply_error: 'Bir sorun oluştu, tekrar dene',
   reply_german_label: 'Almanca mektup',
-  reply_arabic_label: 'Arapça çeviri',
+  reply_translation_label: 'Kendi dilinizde çeviri',
   reply_copy: 'Kopyala',
   reply_copied: 'Kopyalandı ✓',
   reply_share_whatsapp: "WhatsApp'ta paylaş",
@@ -952,8 +952,8 @@ const fa: Record<keyof typeof ar, string> = {
   greeting_title_generic: 'سلام',
   greeting_subtitle: 'این هفته یک قرار مهم داری — همه چیز تحت کنترله',
 
-  scan_title: 'از نامه مدرسه عکس بگیر',
-  scan_subtitle: 'عکس بگیر یا تصویر آپلود کن — توضیح به عربی در چند ثانیه',
+  scan_title: 'از هر نامه‌ای عکس بگیر',
+  scan_subtitle: 'نامه مدرسه، وقت دکتر، صورت‌حساب — عکس بگیر و در چند ثانیه به زبان خودت توضیح بگیر',
 
   section_deadlines: 'قرارهای پیش رو',
   section_letters: 'آخرین نامه‌ها',
@@ -1066,7 +1066,7 @@ const fa: Record<keyof typeof ar, string> = {
   reply_generating: 'در حال نوشتن نامه با هوش مصنوعی...',
   reply_error: 'مشکلی پیش اومد، دوباره امتحان کن',
   reply_german_label: 'نامه به آلمانی',
-  reply_arabic_label: 'ترجمه به عربی',
+  reply_translation_label: 'ترجمه به زبان شما',
   reply_copy: 'کپی',
   reply_copied: 'کپی شد ✓',
   reply_share_whatsapp: 'اشتراک‌گذاری در واتس‌اپ',
@@ -1264,8 +1264,8 @@ const en: Record<keyof typeof ar, string> = {
   greeting_title_generic: 'Hi there',
   greeting_subtitle: "You have an important appointment this week — everything's under control",
 
-  scan_title: 'Photograph a school letter',
-  scan_subtitle: 'Tap to take a photo or upload an image — Arabic explanation in seconds',
+  scan_title: 'Photograph any letter',
+  scan_subtitle: 'School letter, doctor appointment, bill — snap it and get it explained in your language in seconds',
 
   section_deadlines: 'Upcoming appointments',
   section_letters: 'Recent letters',
@@ -1378,7 +1378,7 @@ const en: Record<keyof typeof ar, string> = {
   reply_generating: 'Writing the letter with AI...',
   reply_error: 'Something went wrong, try again',
   reply_german_label: 'The letter in German',
-  reply_arabic_label: 'Arabic translation',
+  reply_translation_label: 'Translation in your language',
   reply_copy: 'Copy',
   reply_copied: 'Copied ✓',
   reply_share_whatsapp: 'Share via WhatsApp',
@@ -1576,8 +1576,8 @@ const uk: Record<keyof typeof ar, string> = {
   greeting_title_generic: 'Привіт',
   greeting_subtitle: 'У вас важлива зустріч цього тижня — все під контролем',
 
-  scan_title: 'Сфотографуйте шкільний лист',
-  scan_subtitle: 'Натисніть, щоб сфотографувати, або завантажте зображення — пояснення арабською за кілька секунд',
+  scan_title: 'Сфотографуйте будь-який лист',
+  scan_subtitle: 'Шкільний лист, візит до лікаря, рахунок — сфотографуйте й отримайте пояснення вашою мовою за секунди',
 
   section_deadlines: 'Найближчі зустрічі',
   section_letters: 'Останні листи',
@@ -1690,7 +1690,7 @@ const uk: Record<keyof typeof ar, string> = {
   reply_generating: 'Написання листа за допомогою ШІ...',
   reply_error: 'Щось пішло не так, спробуйте ще раз',
   reply_german_label: 'Лист німецькою',
-  reply_arabic_label: 'Переклад арабською',
+  reply_translation_label: 'Переклад вашою мовою',
   reply_copy: 'Копіювати',
   reply_copied: 'Скопійовано ✓',
   reply_share_whatsapp: 'Поділитися через WhatsApp',
