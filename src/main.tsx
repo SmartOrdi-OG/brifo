@@ -8,6 +8,9 @@ import { DataProvider } from './context/DataContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
+import { enableServiceWorkerAutoReload } from './lib/swAutoReload'
+
+enableServiceWorkerAutoReload()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
