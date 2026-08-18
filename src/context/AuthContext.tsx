@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from './LanguageContext';
 import { getStashedReferralCode, clearStashedReferralCode } from '../lib/referral';
 import { redeemReferral } from '../lib/subscription';
 
@@ -19,11 +20,14 @@ interface AuthContextValue {
   setPassword: (password: string) => Promise<{ error: string | null }>;
   skipPasswordPrompt: () => void;
   signOut: () => Promise<void>;
+  /** Stores the given language on the signed-in account, for email templates. */
+  syncUserLanguage: (lang: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { lang } = useLanguage();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [passwordPromptPending, setPasswordPromptPending] = useState(false);
@@ -43,10 +47,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // `data` is only applied when this call creates the account, so it seeds the
+  // language for new sign-ups; existing accounts get theirs kept current by
+  // syncUserLanguage below. Supabase's email templates read it back as
+  // {{ .Data.language }} to pick the language of the code email.
   async function signInWithEmail(email: string): Promise<{ error: string | null }> {
     if (!supabase) return { error: 'not configured' };
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin, data: { language: lang } },
+    });
     return { error: error?.message ?? null };
+  }
+
+  /** Keeps auth metadata in step with the language actually in use, so the
+   * next code email matches — including for accounts created before this
+   * existed, and for anyone who switches language later. */
+  async function syncUserLanguage(next: string): Promise<void> {
+    if (!supabase) return;
+    const { error } = await supabase.auth.updateUser({ data: { language: next } });
+    if (error) console.error('[auth] language metadata sync failed:', error.message);
   }
 
   // Signing in by tapping the emailed link opens whatever browser handles
@@ -113,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setPassword,
         skipPasswordPrompt,
         signOut,
+        syncUserLanguage,
       }}
     >
       {children}
