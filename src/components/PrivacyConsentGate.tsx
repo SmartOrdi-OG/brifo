@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ShieldCheck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { acceptPrivacyPolicy } from '../lib/consent';
+import { LanguagePicker } from './LanguagePicker';
 
 interface PrivacyConsentGateProps {
   onAccept: () => void;
@@ -29,6 +30,7 @@ export function PrivacyConsentGate({ onAccept }: PrivacyConsentGateProps) {
         gap: 16,
       }}
     >
+      <LanguagePicker />
       <div
         style={{
           width: 72,

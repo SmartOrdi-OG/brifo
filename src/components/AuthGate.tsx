@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
+import { LanguagePicker } from './LanguagePicker';
 import type { TranslationKey } from '../context/translations';
 
 type ErrorKind = 'missing' | 'failed' | 'code' | 'password' | 'password_missing' | 'mismatch' | 'too_short';
@@ -236,6 +237,7 @@ export function AuthGate() {
         gap: 16,
       }}
     >
+      <LanguagePicker />
       <div
         style={{
           width: 72,
