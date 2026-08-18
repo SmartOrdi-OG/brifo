@@ -5,11 +5,12 @@ import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
 import { useLanguage } from '../context/LanguageContext';
+import { LANGUAGE_OPTIONS } from '../data/languages';
 import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { downloadBackup, parseBackupFile, BackupParseError, type RestorableState } from '../lib/backup';
-import type { Lang, TranslationKey } from '../context/translations';
+import type { TranslationKey } from '../context/translations';
 import {
   enableReminders,
   disableReminders,
@@ -32,15 +33,6 @@ const OFFSET_OPTIONS = [
   { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
   { value: REMINDER_OFFSET_HOUR_BEFORE, key: 'reminders_offset_hour' as const },
   { value: REMINDER_OFFSET_15MIN_BEFORE, key: 'reminders_offset_15min' as const },
-];
-
-const LANGUAGE_OPTIONS: { code: Lang; label: string }[] = [
-  { code: 'ar', label: 'العربية' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'tr', label: 'Türkçe' },
-  { code: 'fa', label: 'فارسی' },
-  { code: 'en', label: 'English' },
-  { code: 'uk', label: 'Українська' },
 ];
 
 function toggleBtnStyle(active: boolean): CSSProperties {
