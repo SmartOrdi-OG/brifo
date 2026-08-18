@@ -32,7 +32,7 @@ import { captureReferralCodeFromUrl } from './lib/referral';
 function App() {
   const { t, lang } = useLanguage();
   const { events, todos } = useData();
-  const { session, loading: authLoading, passwordPromptPending } = useAuth();
+  const { session, loading: authLoading, passwordPromptPending, syncUserLanguage } = useAuth();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
   const remindables = [
@@ -47,6 +47,16 @@ function App() {
   useEffect(() => {
     if (session) syncConsentToServer();
   }, [session]);
+
+  // Mirror the chosen language onto the account so Supabase's email templates
+  // can send the sign-in code in it. Runs on sign-in and on every later
+  // change, which is what brings accounts created before this into line.
+  useEffect(() => {
+    if (session) syncUserLanguage(lang);
+    // syncUserLanguage is stable for the provider's lifetime; depending on it
+    // would re-run this on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, lang]);
 
   // Must run before any gate below gets a chance to strip ?ref= off via a
   // redirect/navigation, and before sign-up — captured once, it survives in
