@@ -64,7 +64,11 @@
 
 html,
 body {
-  height: 100%;
+  /* min-height, not height: a fixed 100% pins the document to the viewport, so
+     anything taller overflows *inside* body (overflow-x: hidden below forces
+     overflow-y to auto) instead of scrolling the page. That left the last cards
+     unreachable with window.scrollY stuck at 0. */
+  min-height: 100%;
   /* Stops the page from rubber-band-bouncing sideways on a touch swipe near
      the edges (reads as "the screen shifts left/right") — there's never a
      legitimate reason for this app to scroll horizontally. */
@@ -145,7 +149,10 @@ blockquote {
 .app {
   width: 100%;
   max-width: 430px;
-  padding: calc(20px + env(safe-area-inset-top)) 20px 110px;
+  /* The bottom nav is fixed, so reserve its height plus breathing room. It
+     pads itself by env(safe-area-inset-bottom), so this has to grow by the
+     same amount — a flat value left the gap different on every device. */
+  padding: calc(20px + env(safe-area-inset-top)) 20px calc(92px + env(safe-area-inset-bottom));
   position: relative;
 }
 
