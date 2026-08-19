@@ -17,7 +17,14 @@ const MAX_COMMENT_LENGTH = 2000;
 
 function isAuthorized(secret: unknown): boolean {
   const expected = process.env.ADMIN_SECRET;
-  if (!expected) return true; // no secret configured (e.g. local dev) — allow
+  // Fail closed. This file only ever runs deployed — local `npm run dev` is
+  // served by the middleware in vite.config.ts — so a missing secret here
+  // means the deployment is misconfigured, and treating that as "allow"
+  // published every rating and comment to anyone who opened /admin.
+  if (!expected) {
+    console.error('[api/ratings] ADMIN_SECRET is not set — refusing to list ratings');
+    return false;
+  }
   return secret === expected;
 }
 
