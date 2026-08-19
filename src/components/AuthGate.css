@@ -34,10 +34,15 @@
   max-width: 320px;
 }
 
-/* The picker floats over the gradient rather than butting into its edge. */
-.auth-shell .lang-picker {
-  margin-bottom: -46px;
-  z-index: 1;
+/* `margin-top: auto` drops the switcher to the bottom of the column no matter
+   how tall the form above it is. `text-align` is used rather than a flex
+   alignment because it's physical — the switcher stays on the right in Arabic
+   and in German alike, instead of flipping sides with the page direction. */
+.auth-lang-row {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 28px;
+  text-align: right;
 }
 
 .auth-hero {
@@ -46,8 +51,7 @@
   /* the shell's own top padding already clears the status bar, so pull the
      panel back up over it and re-add the inset here instead */
   margin-top: calc(-20px - env(safe-area-inset-top));
-  /* clears the picker that overlaps the panel's top edge */
-  padding: calc(56px + env(safe-area-inset-top)) 24px 34px;
+  padding: calc(30px + env(safe-area-inset-top)) 24px 34px;
   background: linear-gradient(150deg, var(--blue), var(--purple));
   border-end-start-radius: 34px;
   border-end-end-radius: 34px;
