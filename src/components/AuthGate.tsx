@@ -6,6 +6,7 @@ import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { LanguagePicker } from './LanguagePicker';
 import type { TranslationKey } from '../context/translations';
+import './AuthGate.css';
 
 type ErrorKind = 'missing' | 'failed' | 'code' | 'password' | 'password_missing' | 'mismatch' | 'too_short';
 
@@ -83,6 +84,7 @@ function PasswordField({
         autoComplete={autoComplete}
         placeholder={placeholder}
         dir="ltr"
+        className="auth-input"
         style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', paddingInlineEnd: 44 }}
       />
       <button
@@ -224,40 +226,30 @@ export function AuthGate() {
     // On success, passwordPromptPending flips off and App renders past this gate.
   }
 
-  return (
-    <div
-      className="app"
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        gap: 16,
-      }}
-    >
-      <LanguagePicker />
+  const variant = (typeof localStorage !== 'undefined' && localStorage.getItem('brifo_auth_variant')) || 'a';
+  const tx = (key: 'auth_tagline' | 'auth_price_line') =>
+    isRtlLang(lang) ? isolateBidiRuns(t(key)) : t(key);
+
+  const brand = (
+    <>
       {/* The real logo rather than a generic envelope — this is the first
           screen anyone sees, so it may as well build the brand. */}
-      <img
-        src="/icons/apple-touch-icon-v2.png"
-        alt=""
-        width={76}
-        height={76}
-        style={{ borderRadius: 22, boxShadow: '0 14px 34px rgba(109,92,231,.35)' }}
-      />
-      <h1 style={{ fontSize: 22, fontWeight: 900, marginTop: 2 }}>Brifo</h1>
+      <img src="/icons/apple-touch-icon-v2.png" alt="" width={76} height={76} className="auth-logo" />
+      <h1 className="auth-title">Brifo</h1>
       {/* What the app does comes before what it costs: pricing used to be the
           loudest thing on the page, above any explanation of the product. */}
-      <p style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.5, maxWidth: 300, marginTop: -6 }}>
-        {isRtlLang(lang) ? isolateBidiRuns(t('auth_tagline')) : t('auth_tagline')}
-      </p>
-      {configured && (
-        <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', maxWidth: 320, marginTop: -6 }}>
-          {isRtlLang(lang) ? isolateBidiRuns(t('auth_price_line')) : t('auth_price_line')}
-        </p>
-      )}
+      <p className="auth-tagline">{tx('auth_tagline')}</p>
+    </>
+  );
+  const price = configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null;
+
+  return (
+    <div className={`app auth-shell auth-${variant}`}>
+      <LanguagePicker />
+      {variant === 'b' ? <div className="auth-hero">{brand}</div> : brand}
+
+      <div className="auth-panel">
+        {price}
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
@@ -298,6 +290,7 @@ export function AuthGate() {
               autoComplete="one-time-code"
               placeholder={t('auth_code_placeholder')}
               dir="ltr"
+              className="auth-input"
               style={codeInputStyle}
             />
             {error && (
@@ -330,6 +323,7 @@ export function AuthGate() {
               defaultValue={lastEmail}
               placeholder={t('auth_email_placeholder')}
               dir="ltr"
+              className="auth-input"
               style={inputStyle}
             />
             {error && (
@@ -363,6 +357,7 @@ export function AuthGate() {
             defaultValue={lastEmail}
             placeholder={t('auth_email_placeholder')}
             dir="ltr"
+            className="auth-input"
             style={inputStyle}
           />
           <PasswordField name="password" autoComplete="current-password" placeholder={t('auth_password_placeholder')} />
@@ -387,6 +382,7 @@ export function AuthGate() {
           </button>
         </form>
       )}
+      </div>
     </div>
   );
 }
