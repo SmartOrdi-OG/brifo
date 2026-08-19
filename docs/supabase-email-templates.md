@@ -26,6 +26,18 @@ default, which sends a *link* instead of a *code* and breaks the in-app flow.
 
 `{{ .Token }}` is the 6-digit code. Keep it exactly as written.
 
+## The 255-character subject limit
+
+Supabase rejects a subject longer than 255 characters ("Failed to validate
+template: subject: Too big"). Six branches of `{{else if eq .Data.language
+"xx"}}` cost 180 characters on their own, which leaves about 75 for all six
+translations — roughly twelve characters each. Hence the terse subjects below;
+the braces are written without inner spaces for the same reason. The body has
+no such limit, so that's where the full localised wording lives.
+
+Lengthening a subject means re-counting: the limit is on the template source,
+not on what any one recipient sees.
+
 ## Fallback behaviour
 
 The final `{{ else }}` branch is English and covers:
@@ -43,7 +55,7 @@ Nobody gets a broken or empty email; they get English.
 **Subject**
 
 ```
-{{ if eq .Data.language "ar" }}تأكيد حسابك في Brifo{{ else if eq .Data.language "de" }}Bestätige dein Brifo-Konto{{ else if eq .Data.language "tr" }}Brifo hesabını doğrula{{ else if eq .Data.language "fa" }}تأیید حساب Brifo{{ else if eq .Data.language "uk" }}Підтвердьте свій обліковий запис Brifo{{ else }}Confirm your Brifo account{{ end }}
+{{if eq .Data.language "ar"}}كود Brifo{{else if eq .Data.language "de"}}Brifo-Code{{else if eq .Data.language "tr"}}Brifo kodu{{else if eq .Data.language "fa"}}کد Brifo{{else if eq .Data.language "uk"}}Код Brifo{{else}}Brifo code{{end}}
 ```
 
 **Message body**
@@ -95,7 +107,7 @@ Nobody gets a broken or empty email; they get English.
 **Subject**
 
 ```
-{{ if eq .Data.language "ar" }}رمز الدخول لـ Brifo{{ else if eq .Data.language "de" }}Dein Brifo-Anmeldecode{{ else if eq .Data.language "tr" }}Brifo giriş kodun{{ else if eq .Data.language "fa" }}کد ورود Brifo{{ else if eq .Data.language "uk" }}Ваш код входу Brifo{{ else }}Your Brifo sign-in code{{ end }}
+{{if eq .Data.language "ar"}}رمز Brifo{{else if eq .Data.language "de"}}Brifo-Code{{else if eq .Data.language "tr"}}Brifo kodu{{else if eq .Data.language "fa"}}رمز Brifo{{else if eq .Data.language "uk"}}Код Brifo{{else}}Brifo code{{end}}
 ```
 
 **Message body**
