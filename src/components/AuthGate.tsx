@@ -1,5 +1,5 @@
 import { useState, type CSSProperties, type FormEvent } from 'react';
-import { Eye, EyeOff, Mail } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { isRtlLang } from '../context/translations';
@@ -238,35 +238,24 @@ export function AuthGate() {
       }}
     >
       <LanguagePicker />
-      <div
-        style={{
-          width: 72,
-          height: 72,
-          borderRadius: 20,
-          background: 'linear-gradient(135deg,var(--blue),var(--purple))',
-          display: 'grid',
-          placeItems: 'center',
-          color: '#fff',
-          boxShadow: '0 14px 34px rgba(109,92,231,.4)',
-        }}
-      >
-        <Mail size={32} strokeWidth={2} />
-      </div>
-      <h1 style={{ fontSize: 21, fontWeight: 900 }}>Brifo</h1>
+      {/* The real logo rather than a generic envelope — this is the first
+          screen anyone sees, so it may as well build the brand. */}
+      <img
+        src="/icons/apple-touch-icon-v2.png"
+        alt=""
+        width={76}
+        height={76}
+        style={{ borderRadius: 22, boxShadow: '0 14px 34px rgba(109,92,231,.35)' }}
+      />
+      <h1 style={{ fontSize: 22, fontWeight: 900, marginTop: 2 }}>Brifo</h1>
+      {/* What the app does comes before what it costs: pricing used to be the
+          loudest thing on the page, above any explanation of the product. */}
+      <p style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.5, maxWidth: 300, marginTop: -6 }}>
+        {isRtlLang(lang) ? isolateBidiRuns(t('auth_tagline')) : t('auth_tagline')}
+      </p>
       {configured && (
-        <p
-          style={{
-            fontSize: 12.5,
-            fontWeight: 700,
-            color: 'var(--muted)',
-            background: 'var(--card)',
-            border: '1px solid var(--card-border)',
-            borderRadius: 12,
-            padding: '8px 14px',
-            maxWidth: 320,
-          }}
-        >
-          {isRtlLang(lang) ? isolateBidiRuns(t('auth_pricing_note')) : t('auth_pricing_note')}
+        <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', maxWidth: 320, marginTop: -6 }}>
+          {isRtlLang(lang) ? isolateBidiRuns(t('auth_price_line')) : t('auth_price_line')}
         </p>
       )}
 
