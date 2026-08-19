@@ -38,6 +38,19 @@ function getStripe(): Stripe {
   return stripeClient;
 }
 
+/** What the charge is called on the customer's bank or card statement.
+ *
+ * Set per product rather than left to the Stripe account's default, because
+ * the account is shared with other apps from the same business — the default
+ * has to name the company, which tells a Brifo subscriber nothing. A parent
+ * seeing an unrecognised €2.90 line weeks later disputes it; the domain lets
+ * them look it up instead.
+ *
+ * Stripe's constraints: at most 22 characters, at least one letter, and none
+ * of `< > \ " '`. It is rendered in capitals regardless of what's written
+ * here, and only applies to subscription payments — which is all Brifo has. */
+const STATEMENT_DESCRIPTOR = 'MYBRIFO.COM';
+
 /** Creates each plan's Product/Price once (on whichever request needs it
  * first) and caches the id in KV, so repeated checkouts reuse the same Price
  * instead of accumulating duplicates. Set STRIPE_PRICE_ID to skip this and
@@ -53,7 +66,10 @@ async function getOrCreatePriceId(stripe: Stripe, plan: Plan): Promise<string> {
   if (cached) return cached;
 
   const { unitAmount, interval } = PLAN_CONFIG[plan];
-  const product = await stripe.products.create({ name: plan === 'annual' ? 'Brifo Premium (jährlich)' : 'Brifo Premium' });
+  const product = await stripe.products.create({
+    name: plan === 'annual' ? 'Brifo Premium (jährlich)' : 'Brifo Premium',
+    statement_descriptor: STATEMENT_DESCRIPTOR,
+  });
   const price = await stripe.prices.create({
     product: product.id,
     currency: 'eur',
