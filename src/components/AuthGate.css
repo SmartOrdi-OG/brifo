@@ -1,0 +1,73 @@
+/* Sign-in screen: a brand-coloured hero carries the logo and the promise, and
+   the form sits on the plain background beneath it. */
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+}
+
+.auth-logo {
+  border-radius: 22px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.auth-tagline {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+.auth-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  max-width: 320px;
+}
+
+/* The picker floats over the gradient rather than butting into its edge. */
+.auth-shell .lang-picker {
+  margin-bottom: -46px;
+  z-index: 1;
+}
+
+.auth-hero {
+  width: calc(100% + 40px);
+  margin-inline: -20px;
+  /* the shell's own top padding already clears the status bar, so pull the
+     panel back up over it and re-add the inset here instead */
+  margin-top: calc(-20px - env(safe-area-inset-top));
+  /* clears the picker that overlaps the panel's top edge */
+  padding: calc(56px + env(safe-area-inset-top)) 24px 34px;
+  background: linear-gradient(150deg, var(--blue), var(--purple));
+  border-end-start-radius: 34px;
+  border-end-end-radius: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 16px 38px rgba(109, 92, 231, 0.3);
+}
+
+.auth-hero .auth-title,
+.auth-hero .auth-tagline {
+  color: #fff;
+}
+
+.auth-panel {
+  width: 100%;
+  padding-top: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}

@@ -44,6 +44,8 @@ const ar = {
 
   auth_intro: 'سجّلي دخول بإيميلك عشان تبدئي تستخدمي Brifo. رح نبعتلك كود تكتبيه هون، بدون كلمة سر.',
   auth_pricing_note: 'Brifo مجاني (الدليل، التقويم، المهام، التذكيرات). تصوير الرسائل وتحليلها بالذكاء الاصطناعي، وتوليد الردود، بحاجة اشتراك بعد 7 أيام تجربة مجانية — 2.90 € بالشهر أو 20 € بالسنة، تقدري تلغي وقت ما بدك.',
+  auth_tagline: 'صوّري أي رسالة ألمانية — وافهميها بلغتك بثواني',
+  auth_price_line: 'تجربة مجانية 7 أيام · بعدها 2.90 € بالشهر · إلغاء بأي وقت',
   auth_email_placeholder: 'إيميلك',
   auth_send_link: 'إرسال الكود',
   auth_check_email: 'بعتنالك رابط عإيميلك — افتحي الإيميل ودوسي عالرابط لتسجيل الدخول.',
@@ -356,6 +358,8 @@ const de: Record<keyof typeof ar, string> = {
 
   auth_intro: 'Melde dich mit deiner E-Mail an, um Brifo zu nutzen. Wir schicken dir einen Code, den du hier eingibst — kein Passwort nötig.',
   auth_pricing_note: 'Brifo ist kostenlos (Ratgeber, Kalender, Aufgaben, Erinnerungen). Das Fotografieren und KI-Analysieren von Briefen sowie das Verfassen von Antworten erfordert nach 7 Tagen kostenloser Testphase ein Abo — 2,90 €/Monat oder 20 €/Jahr, jederzeit kündbar.',
+  auth_tagline: 'Fotografiere jeden deutschen Brief — und verstehe ihn in Sekunden in deiner Sprache',
+  auth_price_line: '7 Tage gratis testen · danach 2,90 €/Monat · jederzeit kündbar',
   auth_email_placeholder: 'Deine E-Mail',
   auth_send_link: 'Code senden',
   auth_check_email: 'Wir haben dir einen Link geschickt — öffne deine E-Mails und klick drauf, um dich anzumelden.',
@@ -668,6 +672,8 @@ const tr: Record<keyof typeof ar, string> = {
 
   auth_intro: "Brifo'yu kullanmaya başlamak için e-postanla giriş yap. Sana buraya gireceğin bir kod göndereceğiz, şifre gerekmez.",
   auth_pricing_note: 'Brifo ücretsizdir (rehber, takvim, görevler, hatırlatmalar). Mektupları fotoğraflayıp yapay zekayla analiz etmek ve cevap yazdırmak, 7 günlük ücretsiz deneme sonrası abonelik gerektirir — aylık 2,90 € veya yıllık 20 €, istediğin zaman iptal edebilirsin.',
+  auth_tagline: 'Herhangi bir Almanca mektubu fotoğrafla — saniyeler içinde kendi dilinde anla',
+  auth_price_line: '7 gün ücretsiz · sonrasında ayda 2,90 € · istediğin zaman iptal',
   auth_email_placeholder: 'E-postan',
   auth_send_link: 'Kod gönder',
   auth_check_email: 'E-postana bir bağlantı gönderdik — e-postanı aç ve giriş yapmak için bağlantıya tıkla.',
@@ -980,6 +986,8 @@ const fa: Record<keyof typeof ar, string> = {
 
   auth_intro: 'با ایمیلت وارد شو تا استفاده از Brifo رو شروع کنی. یک کد برات می‌فرستیم که همین‌جا واردش می‌کنی، بدون رمز عبور.',
   auth_pricing_note: 'Brifo رایگان است (راهنما، تقویم، کارها، یادآوری‌ها). عکس‌برداری و تحلیل نامه‌ها با هوش مصنوعی، و تولید پاسخ، بعد از ۷ روز آزمایشی رایگان نیاز به اشتراک دارد — ۲.۹۰ یورو در ماه یا ۲۰ یورو در سال، هر وقت خواستی می‌تونی لغو کنی.',
+  auth_tagline: 'از هر نامه آلمانی عکس بگیر — و در چند ثانیه به زبان خودت بفهمش',
+  auth_price_line: '۷ روز رایگان · سپس ۲.۹۰ یورو در ماه · لغو در هر زمان',
   auth_email_placeholder: 'ایمیلت',
   auth_send_link: 'ارسال کد',
   auth_check_email: 'لینکی به ایمیلت فرستادیم — ایمیلت رو باز کن و روی لینک بزن تا وارد شوی.',
@@ -1292,6 +1300,8 @@ const en: Record<keyof typeof ar, string> = {
 
   auth_intro: "Sign in with your email to start using Brifo. We'll send you a code to enter here, no password needed.",
   auth_pricing_note: 'Brifo is free (guide, calendar, tasks, reminders). Photographing and analyzing letters with AI, and generating replies, require a subscription after a 7-day free trial — €2.90/month or €20/year, cancel anytime.',
+  auth_tagline: 'Photograph any German letter — and understand it in your language in seconds',
+  auth_price_line: '7 days free · then €2.90/month · cancel anytime',
   auth_email_placeholder: 'Your email',
   auth_send_link: 'Send code',
   auth_check_email: 'We sent a link to your email — open it and tap the link to sign in.',
@@ -1604,6 +1614,8 @@ const uk: Record<keyof typeof ar, string> = {
 
   auth_intro: 'Увійдіть за допомогою електронної пошти, щоб почати користуватися Brifo. Ми надішлемо вам код, який потрібно ввести тут, без пароля.',
   auth_pricing_note: 'Brifo безкоштовний (гід, календар, завдання, нагадування). Фотографування та аналіз листів за допомогою ШІ, а також створення відповідей, потребують підписки після 7-денного безкоштовного пробного періоду — 2,90 € на місяць або 20 € на рік, скасувати можна будь-коли.',
+  auth_tagline: 'Сфотографуйте будь-який німецький лист — і зрозумійте його вашою мовою за секунди',
+  auth_price_line: '7 днів безкоштовно · далі 2,90 €/місяць · скасувати будь-коли',
   auth_email_placeholder: 'Ваша електронна пошта',
   auth_send_link: 'Надіслати код',
   auth_check_email: 'Ми надіслали посилання на вашу пошту — відкрийте його та натисніть на посилання, щоб увійти.',

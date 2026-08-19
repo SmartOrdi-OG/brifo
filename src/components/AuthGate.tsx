@@ -1,11 +1,12 @@
 import { useState, type CSSProperties, type FormEvent } from 'react';
-import { Eye, EyeOff, Mail } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { LanguagePicker } from './LanguagePicker';
 import type { TranslationKey } from '../context/translations';
+import './AuthGate.css';
 
 type ErrorKind = 'missing' | 'failed' | 'code' | 'password' | 'password_missing' | 'mismatch' | 'too_short';
 
@@ -83,6 +84,7 @@ function PasswordField({
         autoComplete={autoComplete}
         placeholder={placeholder}
         dir="ltr"
+        className="auth-input"
         style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', paddingInlineEnd: 44 }}
       />
       <button
@@ -224,51 +226,24 @@ export function AuthGate() {
     // On success, passwordPromptPending flips off and App renders past this gate.
   }
 
+  const tx = (key: 'auth_tagline' | 'auth_price_line') =>
+    isRtlLang(lang) ? isolateBidiRuns(t(key)) : t(key);
+
   return (
-    <div
-      className="app"
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        gap: 16,
-      }}
-    >
+    <div className="app auth-shell">
       <LanguagePicker />
-      <div
-        style={{
-          width: 72,
-          height: 72,
-          borderRadius: 20,
-          background: 'linear-gradient(135deg,var(--blue),var(--purple))',
-          display: 'grid',
-          placeItems: 'center',
-          color: '#fff',
-          boxShadow: '0 14px 34px rgba(109,92,231,.4)',
-        }}
-      >
-        <Mail size={32} strokeWidth={2} />
+      <div className="auth-hero">
+        {/* The real logo rather than a generic envelope — this is the first
+            screen anyone sees, so it may as well build the brand. */}
+        <img src="/icons/apple-touch-icon-v2.png" alt="" width={76} height={76} className="auth-logo" />
+        <h1 className="auth-title">Brifo</h1>
+        {/* What the app does comes before what it costs: pricing used to be the
+            loudest thing on the page, above any explanation of the product. */}
+        <p className="auth-tagline">{tx('auth_tagline')}</p>
       </div>
-      <h1 style={{ fontSize: 21, fontWeight: 900 }}>Brifo</h1>
-      {configured && (
-        <p
-          style={{
-            fontSize: 12.5,
-            fontWeight: 700,
-            color: 'var(--muted)',
-            background: 'var(--card)',
-            border: '1px solid var(--card-border)',
-            borderRadius: 12,
-            padding: '8px 14px',
-            maxWidth: 320,
-          }}
-        >
-          {isRtlLang(lang) ? isolateBidiRuns(t('auth_pricing_note')) : t('auth_pricing_note')}
-        </p>
-      )}
+
+      <div className="auth-panel">
+        {configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null}
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
@@ -309,6 +284,7 @@ export function AuthGate() {
               autoComplete="one-time-code"
               placeholder={t('auth_code_placeholder')}
               dir="ltr"
+              className="auth-input"
               style={codeInputStyle}
             />
             {error && (
@@ -341,6 +317,7 @@ export function AuthGate() {
               defaultValue={lastEmail}
               placeholder={t('auth_email_placeholder')}
               dir="ltr"
+              className="auth-input"
               style={inputStyle}
             />
             {error && (
@@ -374,6 +351,7 @@ export function AuthGate() {
             defaultValue={lastEmail}
             placeholder={t('auth_email_placeholder')}
             dir="ltr"
+            className="auth-input"
             style={inputStyle}
           />
           <PasswordField name="password" autoComplete="current-password" placeholder={t('auth_password_placeholder')} />
@@ -398,6 +376,7 @@ export function AuthGate() {
           </button>
         </form>
       )}
+      </div>
     </div>
   );
 }
