@@ -7,13 +7,24 @@ import { pushEnabled } from './push';
 
 const ENABLED_KEY = 'brifo_reminders_enabled';
 const NOTIFIED_KEY = 'brifo_reminders_notified';
-const OFFSETS_KEY = 'brifo_reminder_offsets';
 
 export const REMINDER_OFFSET_DAY_BEFORE = 1440;
-export const REMINDER_OFFSET_HOUR_BEFORE = 60;
-export const REMINDER_OFFSET_15MIN_BEFORE = 15;
 
-const DEFAULT_OFFSETS = [REMINDER_OFFSET_DAY_BEFORE, REMINDER_OFFSET_HOUR_BEFORE];
+/** One timing, not a choice.
+ *
+ * Delivery for a closed app comes from a cron job, and Vercel's Hobby plan
+ * caps those at one run per day (see vercel.json). Simulating the real due
+ * window against that schedule showed what the other two options were worth:
+ * "15 minutes before" never fired at all, and "an hour before" only fired for
+ * appointments falling in the one hour after the daily run. Offering them
+ * promised the user something the system cannot do.
+ *
+ * What the day-before offset actually produces is a reminder on the *morning
+ * of* the appointment — the daily run is the first one whose window contains
+ * the fire time. That's a useful, honest promise, and it is the one the
+ * settings screen now makes. Restoring a choice here means moving to a plan
+ * with sub-daily cron first. */
+export const REMINDER_OFFSETS = [REMINDER_OFFSET_DAY_BEFORE];
 
 export function notificationsSupported(): boolean {
   return typeof window !== 'undefined' && 'Notification' in window;
@@ -33,23 +44,6 @@ export async function enableReminders(): Promise<boolean> {
 
 export function disableReminders(): void {
   localStorage.setItem(ENABLED_KEY, '0');
-}
-
-/** Which offsets (minutes before an appointment) the user wants to be
- * reminded at — shared between the foreground fallback and the server-side
- * push scheduler so both honor the same choice. */
-export function getReminderOffsets(): number[] {
-  try {
-    const raw = localStorage.getItem(OFFSETS_KEY);
-    const parsed = raw ? JSON.parse(raw) : null;
-    return Array.isArray(parsed) && parsed.every((n) => typeof n === 'number') ? parsed : DEFAULT_OFFSETS;
-  } catch {
-    return DEFAULT_OFFSETS;
-  }
-}
-
-export function setReminderOffsets(offsets: number[]): void {
-  localStorage.setItem(OFFSETS_KEY, JSON.stringify(offsets));
 }
 
 function readNotifiedIds(): Set<string> {
