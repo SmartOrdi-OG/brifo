@@ -1,8 +1,9 @@
 /** Impressum / بيان الهوية القانونية — required under Austrian §5 ECG for any
  * commercial website/app, separate from the Datenschutzerklärung. Draft based
- * on the company details provided; VAT ID (UID) and the commercial-register
- * court are placeholders pending confirmation, and a lawyer should still
- * sign off before this is relied on. */
+ * on the company details provided. The VAT line states the Kleinunternehmer
+ * exemption the business operates under, so no UID is shown; the register
+ * court and the representing partner are still placeholders pending
+ * confirmation, and a lawyer should sign off before this is relied on. */
 import type { PolicySection } from './privacyPolicy';
 
 export const IMPRESSUM_LAST_UPDATED = '2026-07-11';
@@ -10,7 +11,7 @@ export const IMPRESSUM_LAST_UPDATED = '2026-07-11';
 export const impressumDe: PolicySection[] = [
   {
     heading: 'Angaben gemäß § 5 ECG',
-    body: 'Smartordi OG\nSteingasse 6A\nLinz, Österreich\n\nE-Mail: team@smartordi.eu\nFirmenbuchnummer: FN 675586 i\nFirmenbuchgericht: Landesgericht Linz [bitte bestätigen]\nUID-Nummer: [bitte ergänzen]\nUnternehmensgegenstand: Softwareentwicklung und Erbringung digitaler Dienstleistungen',
+    body: 'Smartordi OG\nSteingasse 6A\nLinz, Österreich\n\nE-Mail: team@smartordi.eu\nFirmenbuchnummer: FN 675586 i\nFirmenbuchgericht: Landesgericht Linz [bitte bestätigen]\nUmsatzsteuer: Kleinunternehmer gemäß § 6 Abs. 1 Z 27 UStG — keine Umsatzsteuer ausgewiesen\nUnternehmensgegenstand: Softwareentwicklung und Erbringung digitaler Dienstleistungen',
   },
   {
     heading: 'Vertretungsbefugte Person(en)',
@@ -33,7 +34,7 @@ export const impressumDe: PolicySection[] = [
 export const impressumAr: PolicySection[] = [
   {
     heading: 'بيانات وفق المادة ٥ من قانون التجارة الإلكترونية النمساوي (ECG)',
-    body: 'Smartordi OG\nSteingasse 6A\nLinz، النمسا\n\nالبريد الإلكتروني: team@smartordi.eu\nرقم السجل التجاري: FN 675586 i\nمحكمة السجل التجاري: Landesgericht Linz [بانتظار التأكيد]\nرقم ضريبة القيمة المضافة (UID): [بانتظار الإضافة]\nنشاط الشركة: تطوير برمجيات وتقديم خدمات رقمية',
+    body: 'Smartordi OG\nSteingasse 6A\nLinz، النمسا\n\nالبريد الإلكتروني: team@smartordi.eu\nرقم السجل التجاري: FN 675586 i\nمحكمة السجل التجاري: Landesgericht Linz [بانتظار التأكيد]\nضريبة القيمة المضافة: مشروع صغير وفق المادة 6 فقرة 1 رقم 27 من قانون ضريبة القيمة المضافة النمساوي (UStG) — لا تُفرض ضريبة قيمة مضافة\nنشاط الشركة: تطوير برمجيات وتقديم خدمات رقمية',
   },
   {
     heading: 'الشخص/الأشخاص المخوّلون بالتمثيل',
@@ -56,7 +57,7 @@ export const impressumAr: PolicySection[] = [
 export const impressumTr: PolicySection[] = [
   {
     heading: '§ 5 ECG uyarınca bilgiler',
-    body: 'Smartordi OG\nSteingasse 6A\nLinz, Avusturya\n\nE-posta: team@smartordi.eu\nTicaret sicil numarası: FN 675586 i\nTicaret sicil mahkemesi: Landesgericht Linz [onay bekleniyor]\nKDV numarası (UID): [eklenecek]\nŞirket faaliyet konusu: Yazılım geliştirme ve dijital hizmet sunumu',
+    body: 'Smartordi OG\nSteingasse 6A\nLinz, Avusturya\n\nE-posta: team@smartordi.eu\nTicaret sicil numarası: FN 675586 i\nTicaret sicil mahkemesi: Landesgericht Linz [onay bekleniyor]\nKatma değer vergisi: UStG § 6 fıkra 1 no. 27 uyarınca küçük işletme — katma değer vergisi uygulanmaz\nŞirket faaliyet konusu: Yazılım geliştirme ve dijital hizmet sunumu',
   },
   {
     heading: 'Temsile yetkili kişi(ler)',
@@ -79,7 +80,7 @@ export const impressumTr: PolicySection[] = [
 export const impressumFa: PolicySection[] = [
   {
     heading: 'اطلاعات طبق ماده ۵ قانون تجارت الکترونیک اتریش (ECG)',
-    body: 'Smartordi OG\nSteingasse 6A\nلینتس، اتریش\n\nایمیل: team@smartordi.eu\nشماره ثبت شرکت: FN 675586 i\nدادگاه ثبت شرکت: Landesgericht Linz [در انتظار تأیید]\nشماره مالیات بر ارزش‌افزوده (UID): [در انتظار تکمیل]\nموضوع فعالیت شرکت: توسعه نرم‌افزار و ارائه خدمات دیجیتال',
+    body: 'Smartordi OG\nSteingasse 6A\nلینتس، اتریش\n\nایمیل: team@smartordi.eu\nشماره ثبت شرکت: FN 675586 i\nدادگاه ثبت شرکت: Landesgericht Linz [در انتظار تأیید]\nمالیات بر ارزش‌افزوده: کسب‌وکار کوچک طبق ماده ۶ بند ۱ شماره ۲۷ قانون UStG اتریش — مالیات بر ارزش‌افزوده دریافت نمی‌شود\nموضوع فعالیت شرکت: توسعه نرم‌افزار و ارائه خدمات دیجیتال',
   },
   {
     heading: 'شخص/اشخاص مجاز به نمایندگی',
@@ -102,7 +103,7 @@ export const impressumFa: PolicySection[] = [
 export const impressumEn: PolicySection[] = [
   {
     heading: 'Information pursuant to § 5 ECG',
-    body: 'Smartordi OG\nSteingasse 6A\nLinz, Austria\n\nEmail: team@smartordi.eu\nCompany register number: FN 675586 i\nCompany register court: Landesgericht Linz [to be confirmed]\nVAT ID (UID): [to be added]\nBusiness purpose: software development and provision of digital services',
+    body: 'Smartordi OG\nSteingasse 6A\nLinz, Austria\n\nEmail: team@smartordi.eu\nCompany register number: FN 675586 i\nCompany register court: Landesgericht Linz [to be confirmed]\nVAT: small business under § 6 (1) no. 27 UStG — no VAT charged\nBusiness purpose: software development and provision of digital services',
   },
   {
     heading: 'Authorized representative(s)',
@@ -125,7 +126,7 @@ export const impressumEn: PolicySection[] = [
 export const impressumUk: PolicySection[] = [
   {
     heading: 'Інформація відповідно до § 5 ECG',
-    body: 'Smartordi OG\nSteingasse 6A\nЛінц, Австрія\n\nЕлектронна пошта: team@smartordi.eu\nНомер у торговому реєстрі: FN 675586 i\nСуд торгового реєстру: Landesgericht Linz [очікує підтвердження]\nПодатковий номер (UID): [буде додано]\nВид діяльності компанії: розробка програмного забезпечення та надання цифрових послуг',
+    body: 'Smartordi OG\nSteingasse 6A\nЛінц, Австрія\n\nЕлектронна пошта: team@smartordi.eu\nНомер у торговому реєстрі: FN 675586 i\nСуд торгового реєстру: Landesgericht Linz [очікує підтвердження]\nПДВ: мале підприємство згідно з § 6 (1) № 27 UStG — ПДВ не нараховується\nВид діяльності компанії: розробка програмного забезпечення та надання цифрових послуг',
   },
   {
     heading: 'Уповноважена(і) особа(и)',
