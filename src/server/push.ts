@@ -92,34 +92,47 @@ export function eventAnchorUtcMs(dateStr: string, timeStr?: string): number {
   return Date.parse(`${dateStr}T00:00:00Z`) + (hour * 60 + minute - offsetMin) * 60000;
 }
 
-function offsetLabel(offsetMin: number, lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk'): string {
+/** Wording is chosen from how much time is actually left, and the "today"
+ * band exists because that is the common case: the daily cron delivers on the
+ * morning of the appointment, so a 14:00 appointment is announced at 08:00
+ * with six hours to go. Without this band that reminder claimed "in an hour",
+ * which was simply false — anything between one hour and a full day fell into
+ * the hour bucket. Keep the bands in sync with labelFor in
+ * src/lib/useReminderScheduler.ts. */
+function offsetLabel(minutesLeft: number, lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk'): string {
   if (lang === 'de') {
-    if (offsetMin >= 1440) return 'Termin morgen';
-    if (offsetMin >= 60) return 'Termin in einer Stunde';
+    if (minutesLeft >= 1440) return 'Termin morgen';
+    if (minutesLeft >= 120) return 'Termin heute';
+    if (minutesLeft >= 60) return 'Termin in einer Stunde';
     return 'Termin in Kürze';
   }
   if (lang === 'tr') {
-    if (offsetMin >= 1440) return 'Randevun yarın';
-    if (offsetMin >= 60) return 'Randevuna bir saat kaldı';
+    if (minutesLeft >= 1440) return 'Randevun yarın';
+    if (minutesLeft >= 120) return 'Randevun bugün';
+    if (minutesLeft >= 60) return 'Randevuna bir saat kaldı';
     return 'Randevun yakında';
   }
   if (lang === 'fa') {
-    if (offsetMin >= 1440) return 'قرارت فرداست';
-    if (offsetMin >= 60) return 'قرارت یک ساعت دیگه‌ست';
+    if (minutesLeft >= 1440) return 'قرارت فرداست';
+    if (minutesLeft >= 120) return 'قرارت امروزه';
+    if (minutesLeft >= 60) return 'قرارت یک ساعت دیگه‌ست';
     return 'قرارت به‌زودیه';
   }
   if (lang === 'en') {
-    if (offsetMin >= 1440) return 'Your appointment is tomorrow';
-    if (offsetMin >= 60) return 'Your appointment is in an hour';
+    if (minutesLeft >= 1440) return 'Your appointment is tomorrow';
+    if (minutesLeft >= 120) return 'Your appointment is today';
+    if (minutesLeft >= 60) return 'Your appointment is in an hour';
     return 'Your appointment is coming up soon';
   }
   if (lang === 'uk') {
-    if (offsetMin >= 1440) return 'Ваша зустріч завтра';
-    if (offsetMin >= 60) return 'Ваша зустріч за годину';
+    if (minutesLeft >= 1440) return 'Ваша зустріч завтра';
+    if (minutesLeft >= 120) return 'Ваша зустріч сьогодні';
+    if (minutesLeft >= 60) return 'Ваша зустріч за годину';
     return 'Ваша зустріч скоро';
   }
-  if (offsetMin >= 1440) return 'موعدك بكرا';
-  if (offsetMin >= 60) return 'موعدك بعد ساعة';
+  if (minutesLeft >= 1440) return 'موعدك بكرا';
+  if (minutesLeft >= 120) return 'موعدك اليوم';
+  if (minutesLeft >= 60) return 'موعدك بعد ساعة';
   return 'موعدك قريباً';
 }
 

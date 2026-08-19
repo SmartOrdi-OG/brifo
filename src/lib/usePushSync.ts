@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import type { Lang } from '../context/translations';
 import type { Remindable } from './useReminderScheduler';
 import { pushEnabled, syncPushReminders } from './push';
-import { getReminderOffsets } from './reminders';
+import { REMINDER_OFFSETS } from './reminders';
 
 /** Keeps the server's copy of "what to remind this device about" in sync
- * with local events, offsets, and language — debounced so rapid edits (e.g.
- * typing) don't fire a request per keystroke. */
+ * with local events and language — debounced so rapid edits (e.g. typing)
+ * don't fire a request per keystroke. */
 export function usePushSync(events: Remindable[], lang: Lang) {
   useEffect(() => {
     if (!pushEnabled()) return;
@@ -14,7 +14,7 @@ export function usePushSync(events: Remindable[], lang: Lang) {
     const upcoming = events.filter((e) => e.date >= today).map((e) => ({ id: e.id, title: e.title, date: e.date, time: e.time }));
 
     const timeout = setTimeout(() => {
-      syncPushReminders(upcoming, getReminderOffsets(), lang);
+      syncPushReminders(upcoming, REMINDER_OFFSETS, lang);
     }, 800);
 
     return () => clearTimeout(timeout);

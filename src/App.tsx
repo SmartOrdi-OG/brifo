@@ -41,7 +41,13 @@ function App() {
       .filter((item) => !item.done && item.dueDate)
       .map((item) => ({ id: item.id, title: item.title, date: item.dueDate! })),
   ];
-  useReminderScheduler(remindables, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
+  useReminderScheduler(
+    remindables,
+    t('reminders_body_day_before'),
+    t('reminders_body_today'),
+    t('reminders_body_hour_before'),
+    t('reminders_body_soon'),
+  );
   usePushSync(remindables, lang);
 
   useEffect(() => {

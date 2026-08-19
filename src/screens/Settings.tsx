@@ -16,11 +16,7 @@ import {
   disableReminders,
   notificationsSupported,
   remindersEnabled,
-  getReminderOffsets,
-  setReminderOffsets,
-  REMINDER_OFFSET_DAY_BEFORE,
-  REMINDER_OFFSET_HOUR_BEFORE,
-  REMINDER_OFFSET_15MIN_BEFORE,
+  REMINDER_OFFSETS,
 } from '../lib/reminders';
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { submitRatingToServer } from '../lib/ratings';
@@ -28,12 +24,6 @@ import { startBillingPortal } from '../lib/subscription';
 import { referralLinkFor, REFERRAL_BONUS_DAYS } from '../lib/referral';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
-
-const OFFSET_OPTIONS = [
-  { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
-  { value: REMINDER_OFFSET_HOUR_BEFORE, key: 'reminders_offset_hour' as const },
-  { value: REMINDER_OFFSET_15MIN_BEFORE, key: 'reminders_offset_15min' as const },
-];
 
 function toggleBtnStyle(active: boolean): CSSProperties {
   return {
@@ -60,7 +50,6 @@ export function Settings() {
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
   const [pushActive, setPushActive] = useState(pushEnabled());
-  const [offsets, setOffsets] = useState(getReminderOffsets());
   const [stars, setStars] = useState(rating?.stars ?? 0);
   const [comment, setComment] = useState(rating?.comment ?? '');
   const [ratingSaved, setRatingSaved] = useState(false);
@@ -103,14 +92,7 @@ export function Settings() {
 
     const subscribed = await subscribeToPush();
     setPushActive(subscribed);
-    if (subscribed) await syncPushReminders(upcomingSyncEvents(), offsets, lang);
-  }
-
-  function handleToggleOffset(value: number) {
-    const next = offsets.includes(value) ? offsets.filter((o) => o !== value) : [...offsets, value].sort((a, b) => b - a);
-    setOffsets(next);
-    setReminderOffsets(next);
-    if (pushActive) syncPushReminders(upcomingSyncEvents(), next, lang);
+    if (subscribed) await syncPushReminders(upcomingSyncEvents(), REMINDER_OFFSETS, lang);
   }
 
   function handleRate(next: number) {
@@ -275,26 +257,22 @@ export function Settings() {
                 {pushActive ? t('reminders_push_active') : t('reminders_push_fallback')}
               </p>
             )}
+            {/* States the one timing rather than offering a choice of three:
+                two of the old options could not actually be delivered on a
+                once-a-day cron (see REMINDER_OFFSETS). */}
             {remindersOn && (
-              <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--card-border)' }}>
-                <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{t('reminders_offsets_label')}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {OFFSET_OPTIONS.map((opt) => (
-                    <label
-                      key={opt.value}
-                      style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={offsets.includes(opt.value)}
-                        onChange={() => handleToggleOffset(opt.value)}
-                        style={{ width: 18, height: 18, accentColor: 'var(--blue)' }}
-                      />
-                      {t(opt.key)}
-                    </label>
-                  ))}
-                </div>
-              </div>
+              <p
+                style={{
+                  fontSize: 12.5,
+                  color: 'var(--muted)',
+                  fontWeight: 700,
+                  marginTop: 14,
+                  paddingTop: 14,
+                  borderTop: '1px solid var(--card-border)',
+                }}
+              >
+                {t('reminders_timing_note')}
+              </p>
             )}
           </>
         ) : (
