@@ -10,7 +10,6 @@
   background: var(--card);
   color: var(--text);
   font-family: inherit;
-  font-size: 15px;
 }
 
 .search-list {

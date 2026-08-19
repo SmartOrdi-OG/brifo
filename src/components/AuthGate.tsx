@@ -16,7 +16,10 @@ const inputStyle: CSSProperties = {
   border: '1px solid var(--card-border)',
   background: 'var(--card)',
   color: 'var(--text)',
-  fontSize: 15,
+  // 16px, not smaller: below that iOS zooms the page in when the field takes
+  // focus and leaves it zoomed. Inline styles beat the stylesheet's floor, so
+  // this one has to carry the same number itself.
+  fontSize: 16,
   textAlign: 'center',
 };
 

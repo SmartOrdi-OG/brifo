@@ -74,6 +74,9 @@ body {
      legitimate reason for this app to scroll horizontally. */
   overflow-x: hidden;
   overscroll-behavior-x: none;
+  /* Kills double-tap-to-zoom, which the viewport meta alone doesn't cover.
+     Single taps and scrolling are unaffected. */
+  touch-action: manipulation;
 }
 
 body {
@@ -105,6 +108,17 @@ input,
 textarea,
 select {
   font-family: inherit;
+}
+
+/* iOS zooms the page in whenever a focused field's text is smaller than 16px,
+   and leaves it zoomed afterwards — which is how the app ended up shifted with
+   its edges cut off. Every text field is therefore at least 16px; that's the
+   half of the fix that still works in Safari-the-browser, where the viewport
+   meta's user-scalable=no is ignored. Checkboxes are sized in px and unaffected. */
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+  font-size: 16px;
 }
 
 a {

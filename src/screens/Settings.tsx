@@ -323,7 +323,9 @@ export function Settings() {
             background: 'var(--card)',
             color: 'var(--text)',
             fontFamily: 'inherit',
-            fontSize: 14,
+            // 16px keeps iOS from zooming the page in on focus; an inline style
+            // overrides the stylesheet's floor, so it has to be set here too.
+            fontSize: 16,
             resize: 'vertical',
           }}
         />
