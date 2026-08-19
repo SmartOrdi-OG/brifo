@@ -2,7 +2,16 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- maximum-scale/user-scalable: this is a phone app with one column and no
+         maps or diagrams, so pinch-zoom has nothing to reveal — it only ever
+         left the layout shifted sideways with the edges cut off, and getting
+         back to a clean fit by hand is fiddly. Honoured by the installed PWA;
+         Safari-the-browser ignores it, which is why the fields are also sized
+         at 16px (see theme.css) so iOS never zooms in on focus either. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#f5f6fb" />
     <!-- Translucent status bar: lets the app's own (theme-aware) background show
          through the safe area on an installed iOS PWA, instead of iOS painting a
