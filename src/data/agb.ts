@@ -19,7 +19,7 @@ export const agbDe: PolicySection[] = [
   },
   {
     heading: '3. Vertragsabschluss und Preise',
-    body: 'Ein kostenpflichtiger Vertrag kommt erst zustande, wenn Sie einen Kauf- bzw. Abo-Vorgang in der App aktiv abschließen und die jeweils angezeigten Preise, Leistungen und Zahlungsbedingungen bestätigen. Alle Preise verstehen sich inklusive der gesetzlichen Umsatzsteuer, sofern nicht anders angegeben.',
+    body: 'Ein kostenpflichtiger Vertrag kommt erst zustande, wenn Sie einen Kauf- bzw. Abo-Vorgang in der App aktiv abschließen und die jeweils angezeigten Preise, Leistungen und Zahlungsbedingungen bestätigen. Die angezeigten Preise sind Endpreise. Als Kleinunternehmer gemäß § 6 Abs. 1 Z 27 UStG weisen wir keine Umsatzsteuer aus.',
   },
   {
     heading: '4. Widerrufsrecht',
@@ -58,7 +58,7 @@ export const agbAr: PolicySection[] = [
   },
   {
     heading: '٣. إبرام العقد والأسعار',
-    body: 'أي عقد مدفوع ما بيصير سارياً إلا لما تكملي عملية شراء أو اشتراك فعلية بالتطبيق وتأكدي على الأسعار والميزات وشروط الدفع المعروضة. كل الأسعار شاملة ضريبة القيمة المضافة القانونية ما لم يُذكر خلاف ذلك.',
+    body: 'أي عقد مدفوع ما بيصير سارياً إلا لما تكملي عملية شراء أو اشتراك فعلية بالتطبيق وتأكدي على الأسعار والميزات وشروط الدفع المعروضة. الأسعار المعروضة هي الأسعار النهائية. بصفتنا مشروعاً صغيراً وفق المادة 6 فقرة 1 رقم 27 من قانون ضريبة القيمة المضافة النمساوي (UStG)، لا نفرض ضريبة قيمة مضافة.',
   },
   {
     heading: '٤. حق الرجوع (Widerrufsrecht)',
@@ -97,7 +97,7 @@ export const agbTr: PolicySection[] = [
   },
   {
     heading: '3. Sözleşmenin kurulması ve fiyatlar',
-    body: 'Ücretli bir sözleşme, yalnızca uygulamada bir satın alma veya abonelik işlemini bizzat tamamlayıp gösterilen fiyatları, hizmetleri ve ödeme koşullarını onayladığınızda geçerli olur. Aksi belirtilmedikçe tüm fiyatlara yasal katma değer vergisi dahildir.',
+    body: 'Ücretli bir sözleşme, yalnızca uygulamada bir satın alma veya abonelik işlemini bizzat tamamlayıp gösterilen fiyatları, hizmetleri ve ödeme koşullarını onayladığınızda geçerli olur. Gösterilen fiyatlar nihai fiyatlardır. Avusturya Katma Değer Vergisi Kanunu (UStG) § 6 fıkra 1 no. 27 uyarınca küçük işletme olduğumuz için katma değer vergisi uygulanmaz.',
   },
   {
     heading: '4. Cayma hakkı',
@@ -136,7 +136,7 @@ export const agbFa: PolicySection[] = [
   },
   {
     heading: '۳. انعقاد قرارداد و قیمت‌ها',
-    body: 'یک قرارداد پولی تنها زمانی معتبر می‌شود که شما شخصاً یک فرآیند خرید یا اشتراک را در اپلیکیشن کامل کرده و قیمت‌ها، خدمات و شرایط پرداخت نمایش‌داده‌شده را تأیید کنید. تمام قیمت‌ها، مگر خلاف آن ذکر شده باشد، شامل مالیات بر ارزش‌افزوده قانونی است.',
+    body: 'یک قرارداد پولی تنها زمانی معتبر می‌شود که شما شخصاً یک فرآیند خرید یا اشتراک را در اپلیکیشن کامل کرده و قیمت‌ها، خدمات و شرایط پرداخت نمایش‌داده‌شده را تأیید کنید. قیمت‌های نمایش‌داده‌شده قیمت نهایی هستند. ما به‌عنوان کسب‌وکار کوچک طبق ماده ۶ بند ۱ شماره ۲۷ قانون مالیات بر ارزش‌افزوده اتریش (UStG) مالیات بر ارزش‌افزوده دریافت نمی‌کنیم.',
   },
   {
     heading: '۴. حق انصراف',
@@ -175,7 +175,7 @@ export const agbEn: PolicySection[] = [
   },
   {
     heading: '3. Formation of contract and prices',
-    body: 'A paid contract only comes into effect once you actively complete a purchase or subscription process in the app and confirm the prices, features, and payment terms shown. Unless stated otherwise, all prices include statutory VAT.',
+    body: 'A paid contract only comes into effect once you actively complete a purchase or subscription process in the app and confirm the prices, features, and payment terms shown. The prices shown are final prices. As a small business under § 6 (1) no. 27 of the Austrian VAT Act (UStG), we do not charge VAT.',
   },
   {
     heading: '4. Right of withdrawal',
@@ -214,7 +214,7 @@ export const agbUk: PolicySection[] = [
   },
   {
     heading: '3. Укладення договору та ціни',
-    body: 'Платний договір набуває чинності лише тоді, коли ви самостійно завершуєте процес покупки чи підписки в застосунку та підтверджуєте показані ціни, послуги й умови оплати. Усі ціни включають установлений законом податок на додану вартість, якщо не зазначено інше.',
+    body: 'Платний договір набуває чинності лише тоді, коли ви самостійно завершуєте процес покупки чи підписки в застосунку та підтверджуєте показані ціни, послуги й умови оплати. Показані ціни є остаточними. Як мале підприємство згідно з § 6 (1) № 27 Закону Австрії про ПДВ (UStG) ми не нараховуємо ПДВ.',
   },
   {
     heading: '4. Право на відмову',
