@@ -231,7 +231,6 @@ export function AuthGate() {
 
   return (
     <div className="app auth-shell">
-      <LanguagePicker />
       <div className="auth-hero">
         {/* The real logo rather than a generic envelope — this is the first
             screen anyone sees, so it may as well build the brand. */}
@@ -376,6 +375,14 @@ export function AuthGate() {
           </button>
         </form>
       )}
+      </div>
+
+      {/* Bottom of the screen rather than over the hero: the form is what the
+          page is for, and the switcher only matters to the minority who can't
+          read the default language — but it has to stay visible for them, so
+          it sits in the empty space below rather than hidden behind a menu. */}
+      <div className="auth-lang-row">
+        <LanguagePicker />
       </div>
     </div>
   );
