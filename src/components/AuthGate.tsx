@@ -226,30 +226,24 @@ export function AuthGate() {
     // On success, passwordPromptPending flips off and App renders past this gate.
   }
 
-  const variant = (typeof localStorage !== 'undefined' && localStorage.getItem('brifo_auth_variant')) || 'a';
   const tx = (key: 'auth_tagline' | 'auth_price_line') =>
     isRtlLang(lang) ? isolateBidiRuns(t(key)) : t(key);
 
-  const brand = (
-    <>
-      {/* The real logo rather than a generic envelope — this is the first
-          screen anyone sees, so it may as well build the brand. */}
-      <img src="/icons/apple-touch-icon-v2.png" alt="" width={76} height={76} className="auth-logo" />
-      <h1 className="auth-title">Brifo</h1>
-      {/* What the app does comes before what it costs: pricing used to be the
-          loudest thing on the page, above any explanation of the product. */}
-      <p className="auth-tagline">{tx('auth_tagline')}</p>
-    </>
-  );
-  const price = configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null;
-
   return (
-    <div className={`app auth-shell auth-${variant}`}>
+    <div className="app auth-shell">
       <LanguagePicker />
-      {variant === 'b' ? <div className="auth-hero">{brand}</div> : brand}
+      <div className="auth-hero">
+        {/* The real logo rather than a generic envelope — this is the first
+            screen anyone sees, so it may as well build the brand. */}
+        <img src="/icons/apple-touch-icon-v2.png" alt="" width={76} height={76} className="auth-logo" />
+        <h1 className="auth-title">Brifo</h1>
+        {/* What the app does comes before what it costs: pricing used to be the
+            loudest thing on the page, above any explanation of the product. */}
+        <p className="auth-tagline">{tx('auth_tagline')}</p>
+      </div>
 
       <div className="auth-panel">
-        {price}
+        {configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null}
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
