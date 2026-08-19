@@ -4,8 +4,8 @@ import { Plus, Bell, Share2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
+import { LanguagePicker } from '../components/LanguagePicker';
 import { useLanguage } from '../context/LanguageContext';
-import { LANGUAGE_OPTIONS } from '../data/languages';
 import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -50,7 +50,7 @@ function toggleBtnStyle(active: boolean): CSSProperties {
 
 export function Settings() {
   const navigate = useNavigate();
-  const { t, lang, setLang } = useLanguage();
+  const { t, lang } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
   const { session, signOut } = useAuth();
@@ -232,13 +232,7 @@ export function Settings() {
 
       <div className="card" style={{ padding: '16px' }}>
         <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>{t('settings_language')}</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          {LANGUAGE_OPTIONS.map((opt) => (
-            <button key={opt.code} onClick={() => setLang(opt.code)} style={{ ...toggleBtnStyle(lang === opt.code), flex: '1 1 30%' }}>
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        <LanguagePicker block />
       </div>
 
       <div className="card" style={{ padding: '16px', marginTop: 12 }}>
