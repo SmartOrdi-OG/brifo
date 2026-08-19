@@ -261,7 +261,10 @@ export function Calendar() {
         <div className="card event-form">
           <div className="field">
             <label>{t('calendar_event_title_label')}</label>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('calendar_event_title_placeholder')} />
+            {/* No example placeholders on this form: the labels above already
+                say what each field is, and worked examples here meant shipping
+                a plausible doctor's name and address to every user. */}
+            <input value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
           <div className="field">
             <label>{t('calendar_event_date_label')}</label>
@@ -273,23 +276,15 @@ export function Calendar() {
           </div>
           <div className="field">
             <label>{t('calendar_event_provider_label')}</label>
-            <input
-              value={provider}
-              onChange={(e) => setProvider(e.target.value)}
-              placeholder={t('calendar_event_provider_placeholder')}
-            />
+            <input value={provider} onChange={(e) => setProvider(e.target.value)} />
           </div>
           <div className="field">
             <label>{t('calendar_event_location_label')}</label>
-            <input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder={t('calendar_event_location_placeholder')}
-            />
+            <input value={location} onChange={(e) => setLocation(e.target.value)} />
           </div>
           <div className="field">
             <label>{t('calendar_event_reason_label')}</label>
-            <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t('calendar_event_reason_placeholder')} />
+            <input value={reason} onChange={(e) => setReason(e.target.value)} />
           </div>
           <div className="field">
             <label>{t('calendar_event_child_label')}</label>
