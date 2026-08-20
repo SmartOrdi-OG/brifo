@@ -73,6 +73,10 @@ export const ReplyRequestSchema = z.object({
   /** Who the letter is going to. Optional, but it is what stops the model
    * falling back on the most common case when the details are terse. */
   recipient: z.string().max(120).optional(),
+  /** What the letter being answered said, when the reply was started from one.
+   * Separate from `details` on purpose: details is what the parent wants to
+   * say, this is what they are answering. */
+  letterContext: z.string().max(2000).optional(),
   childName: z.string().max(80).optional(),
   childClass: z.string().max(40).optional(),
   details: z.string().min(3).max(2000),
@@ -93,12 +97,13 @@ export class ReplyError extends Error {}
 export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> {
   const parsed = ReplyRequestSchema.safeParse(input);
   if (!parsed.success) throw new ReplyError(parsed.error.issues[0]?.message ?? 'invalid input');
-  const { intent, recipient, childName, childClass, details, lang } = parsed.data;
+  const { intent, recipient, letterContext, childName, childClass, details, lang } = parsed.data;
   const target = OUTPUT_LANGUAGE[lang] ?? OUTPUT_LANGUAGE.ar;
 
   const contextLines = [
     `Intent: ${INTENT_LABELS[intent]}`,
     recipient ? `Recipient: ${recipient}` : null,
+    letterContext ? `This is a reply to a letter that said: ${letterContext}` : null,
     childName ? `Name of the person concerned: ${childName}` : null,
     childClass ? `School class (only relevant if the recipient is a school): ${childClass}` : null,
     `Details from parent (may be in ${target}): ${details}`,

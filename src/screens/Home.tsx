@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Camera, Plus, PenLine, CheckCircle2, BookOpen, Trash2 } from 'lucide-react';
+import { Camera, Plus, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
+import { LetterMenu } from '../components/LetterMenu';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -173,16 +174,7 @@ export function Home() {
               <span className={`tag ${l.analysis.action_required ? 'a' : 'g'}`}>
                 {l.analysis.action_required ? t('tag_reply_needed') : t('tag_done')}
               </span>
-              <button
-                className="letter-delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteLetter(l.id);
-                }}
-                aria-label={t('letter_delete')}
-              >
-                <Trash2 size={16} strokeWidth={2} />
-              </button>
+              <LetterMenu letter={l} childName={childFor(l.childId)?.name} onDelete={() => deleteLetter(l.id)} />
             </div>
           ))}
         </>

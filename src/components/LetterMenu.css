@@ -1,0 +1,62 @@
+.letter-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.letter-menu-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.letter-menu-btn:active {
+  background: var(--card-active);
+}
+
+.letter-menu-popup {
+  position: absolute;
+  top: 36px;
+  /* Opens toward the middle of the screen rather than off its edge, in both
+     reading directions. */
+  inset-inline-end: 0;
+  z-index: 20;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: 0 14px 34px rgba(23, 25, 60, 0.18);
+}
+
+.letter-menu-popup button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: start;
+  cursor: pointer;
+}
+
+.letter-menu-popup button:active {
+  background: var(--card-active);
+}
+
+.letter-menu-popup button.danger {
+  color: var(--red);
+}

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail, Trash2 } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
+import { LetterMenu } from '../components/LetterMenu';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -158,16 +159,7 @@ export function ChildProfile() {
               <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
               <p className="nums">{l.createdAt.slice(0, 10)}</p>
             </div>
-            <button
-              className="letter-delete"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteLetter(l.id);
-              }}
-              aria-label={t('letter_delete')}
-            >
-              <Trash2 size={16} strokeWidth={2} />
-            </button>
+            <LetterMenu letter={l} childName={child?.name} onDelete={() => deleteLetter(l.id)} />
           </div>
         ))
       )}
