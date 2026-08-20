@@ -22,7 +22,7 @@ function buildSystemPrompt(lang) {
     'The letter may be from a school, a doctor or clinic, an insurer, a government office, a landlord, ' +
     'a utility or any other sender — handle all of them the same way. ' +
     'Read this letter and respond with ONLY a JSON object (no markdown fences, no prose) ' +
-    'shaped exactly like: {"summary": string, "action_required": boolean, "actions": string[], ' +
+    'shaped exactly like: {"summary": string, "sender": string | null, "action_required": boolean, "actions": string[], ' +
     '"deadlines": [{"date": "YYYY-MM-DD", "what": string}], "needs_reply": boolean, ' +
     '"urgency": "high" | "medium" | "low", "detected_child_name": string | null, ' +
     '"detected_child_class": string | null, "payments": [{"amount": number, "currency": string, ' +
@@ -32,6 +32,8 @@ function buildSystemPrompt(lang) {
     'and EVERY amount of money requested in "payments", in addition to listing them in "actions". ' +
     'If the letter mentions a specific child\'s name and/or class, extract them into ' +
     'detected_child_name/detected_child_class, otherwise use null. ' +
+    'Put the name of the organisation that sent the letter in "sender" exactly as printed ' +
+    '(the school, clinic, office or company), or null if it is not stated. ' +
     `Write the summary and all text fields in ${target}.`
   );
 }
@@ -109,6 +111,7 @@ module.exports = async function handler(req, res) {
     // exactly what happened when this route's response was missing `payments`).
     res.status(200).json({
       summary: typeof parsed.summary === 'string' ? parsed.summary : '',
+      sender: typeof parsed.sender === 'string' && parsed.sender.trim() ? parsed.sender.trim() : null,
       action_required: !!parsed.action_required,
       actions: Array.isArray(parsed.actions) ? parsed.actions : [],
       deadlines: Array.isArray(parsed.deadlines) ? parsed.deadlines : [],
