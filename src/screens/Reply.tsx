@@ -24,6 +24,7 @@ export function Reply() {
 
   const [state, setState] = useState<ScreenState>('form');
   const [intent, setIntent] = useState<ReplyIntent | null>(null);
+  const [recipient, setRecipient] = useState('');
   const [childName, setChildName] = useState('');
   const [childClass, setChildClass] = useState('');
   const [details, setDetails] = useState('');
@@ -48,6 +49,7 @@ export function Reply() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           intent,
+          recipient: recipient.trim() || undefined,
           childName: childName.trim() || undefined,
           childClass: childClass.trim() || undefined,
           details: details.trim(),
@@ -118,6 +120,17 @@ export function Reply() {
             })}
           </div>
 
+          {/* First field, because it is what decides who the letter addresses.
+              Without it the model fell back on the app's original case and
+              wrote to the school no matter who the parent meant. */}
+          <div className="field">
+            <label>{t('reply_recipient_label')}</label>
+            <input
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder={t('reply_recipient_placeholder')}
+            />
+          </div>
           <div className="field">
             <label>{t('reply_child_name')}</label>
             <input value={childName} onChange={(e) => setChildName(e.target.value)} />
