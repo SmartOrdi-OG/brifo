@@ -1,0 +1,83 @@
+/* Built on the guide card's shape so tapping it clearly leads to the same
+   place, but tinted and labelled so it reads as an aside rather than as part
+   of what the letter said. */
+.guide-tip {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.09), rgba(139, 92, 246, 0.09));
+  box-shadow: var(--card-shadow);
+  color: var(--text);
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.guide-tip:active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.16), rgba(139, 92, 246, 0.16));
+}
+
+.guide-tip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--blue);
+  background: var(--card);
+}
+
+.guide-tip-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guide-tip-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.guide-tip-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.guide-tip-teaser {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.guide-tip-arrow {
+  flex-shrink: 0;
+  font-size: 22px;
+  color: var(--muted);
+}
+
+/* The chevron is a literal "›" — mirror it so it points along the reading
+   direction instead of back at the text. */
+[dir='rtl'] .guide-tip-arrow {
+  transform: scaleX(-1);
+}
+
+/* Arabic and Farsi are cursive: tracking pushes joined letters apart, and
+   uppercasing does nothing at all in either script. */
+[dir='rtl'] .guide-tip-label {
+  letter-spacing: normal;
+  text-transform: none;
+}
