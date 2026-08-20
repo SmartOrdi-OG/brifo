@@ -3,6 +3,7 @@ import { CalendarX2, ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'luc
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
+import { GuideTipCard } from '../components/GuideTip';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { ALL_CHILDREN, type CalendarEvent } from '../types/data';
@@ -373,6 +374,10 @@ export function Calendar() {
               <div className="calendar-list">{expired.map((e) => renderRow(e))}</div>
             </>
           )}
+
+          {/* Only once there's something in the calendar: on an empty one this
+              would be a tip about managing appointments nobody has yet. */}
+          {events.length > 0 && <GuideTipCard articleId="termine" />}
         </>
       ) : (
         <div className="week-view">
