@@ -1,5 +1,17 @@
 import { useState } from 'react';
-import { ThermometerSun, CalendarDays, CheckCircle2, HelpCircle, PenLine, Share2, Mail, type LucideIcon } from 'lucide-react';
+import {
+  ThermometerSun,
+  CalendarDays,
+  CalendarX2,
+  CheckCircle2,
+  Coins,
+  Scale,
+  HelpCircle,
+  PenLine,
+  Share2,
+  Mail,
+  type LucideIcon,
+} from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
@@ -11,11 +23,22 @@ import './Reply.css';
 
 type ScreenState = 'form' | 'generating' | 'result' | 'error';
 
-const INTENTS: ReplyIntent[] = ['entschuldigung', 'termin', 'zustimmung', 'frage'];
+const INTENTS: ReplyIntent[] = [
+  'entschuldigung',
+  'termin',
+  'absage',
+  'zustimmung',
+  'ratenzahlung',
+  'einspruch',
+  'frage',
+];
 const INTENT_ICON: Record<ReplyIntent, LucideIcon> = {
   entschuldigung: ThermometerSun,
   termin: CalendarDays,
+  absage: CalendarX2,
   zustimmung: CheckCircle2,
+  ratenzahlung: Coins,
+  einspruch: Scale,
   frage: HelpCircle,
 };
 
