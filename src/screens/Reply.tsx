@@ -4,6 +4,8 @@ import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
+import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
+import type { TranslationKey } from '../context/translations';
 import type { ReplyIntent, ReplyLetter } from '../types/reply';
 import './Reply.css';
 
@@ -27,12 +29,19 @@ export function Reply() {
   const [details, setDetails] = useState('');
   const [letter, setLetter] = useState<ReplyLetter | null>(null);
   const [copied, setCopied] = useState<'german' | 'arabic' | null>(null);
+  const [errorKey, setErrorKey] = useState<TranslationKey>('reply_error');
 
   const canGenerate = intent !== null && details.trim().length >= 3;
 
   async function generate() {
     if (!canGenerate) return;
+    if (isDefinitelyOffline()) {
+      setErrorKey('error_offline');
+      setState('error');
+      return;
+    }
     setState('generating');
+    let status: number | undefined;
     try {
       const response = await fetch('/api/reply', {
         method: 'POST',
@@ -45,11 +54,18 @@ export function Reply() {
           lang,
         }),
       });
-      if (!response.ok) throw new Error('request failed');
+      if (!response.ok) {
+        status = response.status;
+        throw new Error('request failed');
+      }
       const result: ReplyLetter = await response.json();
       setLetter(result);
       setState('result');
     } catch {
+      // A failed generation is retried from the same form, so 'unreadable'
+      // gets the same wording as any other server-side failure — unlike the
+      // scan, there is no photo to take differently.
+      setErrorKey(requestErrorKey(classifyRequestError(status), 'reply_error', 'reply_error'));
       setState('error');
     }
   }
@@ -137,7 +153,7 @@ export function Reply() {
 
       {state === 'error' && (
         <div className="card error-card">
-          <p>{t('reply_error')}</p>
+          <p>{t(errorKey)}</p>
           <button className="scan-btn primary" onClick={startOver}>
             {t('scan_try_again')}
           </button>

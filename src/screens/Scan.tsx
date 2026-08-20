@@ -8,6 +8,7 @@ import { useData, findMatchingChild } from '../context/DataContext';
 import { ALL_CHILDREN, type Child } from '../types/data';
 import { compressImage, compressImageForStorage, type CompressedImage } from '../lib/compressImage';
 import { isolateBidiRuns } from '../lib/bidiText';
+import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
 import type { LetterAnalysis } from '../types/analysis';
 import './Scan.css';
 
@@ -128,7 +129,16 @@ export function Scan() {
 
   async function confirmAndAnalyze() {
     if (!capturedBlob) return;
+    // Checked before compressing: with no network the request cannot arrive,
+    // and making someone watch a spinner work through a large photo first
+    // only delays telling them the one thing they need to know.
+    if (isDefinitelyOffline()) {
+      setErrorMessage(t('error_offline'));
+      setState('error');
+      return;
+    }
     setState('analyzing');
+    let status: number | undefined;
     try {
       const [{ base64, mediaType }, storagePhoto] = await Promise.all([
         compressImage(capturedBlob),
@@ -140,6 +150,7 @@ export function Scan() {
         body: JSON.stringify({ image: base64, mediaType, lang }),
       });
       if (!response.ok) {
+        status = response.status;
         const body = await response.text().catch(() => '');
         console.error(`[Scan] /api/analyze failed: ${response.status} ${response.statusText}`, body);
         throw new Error('request failed');
@@ -162,7 +173,8 @@ export function Scan() {
       setState('assign');
     } catch (err) {
       console.error('[Scan] confirmAndAnalyze failed:', err);
-      setErrorMessage(t('scan_error'));
+      const kind = classifyRequestError(status);
+      setErrorMessage(t(requestErrorKey(kind, 'scan_error_unreadable', 'scan_error')));
       setState('error');
     }
   }
