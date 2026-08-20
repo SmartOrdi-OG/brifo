@@ -37,6 +37,22 @@ export function Home() {
     ? t('greeting_title_named').replace('{name}', firstChild.name)
     : t('greeting_title_generic');
 
+  // The line under the greeting used to be a fixed string announcing "you have
+  // an important appointment this week" — to everyone, including someone who
+  // had just opened the app and had nothing in it at all. The first sentence a
+  // new user read was false. It now describes what is actually there, and on
+  // an empty account says what to do first instead of inventing a week.
+  const weekAhead = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const eventsThisWeek = events.filter((e) => e.date >= today && e.date <= weekAhead).length;
+  const subtitle =
+    children.length === 0
+      ? t('greeting_subtitle_new')
+      : eventsThisWeek === 0
+        ? t('greeting_subtitle_clear')
+        : eventsThisWeek === 1
+          ? t('greeting_subtitle_one')
+          : t('greeting_subtitle_many').replace('{count}', String(eventsThisWeek));
+
   function childFor(childId: string) {
     return children.find((c) => c.id === childId);
   }
@@ -55,7 +71,7 @@ export function Home() {
 
       <div className="greeting">
         <h1>{greeting}</h1>
-        <p>{t('greeting_subtitle')}</p>
+        <p>{isolateBidiRuns(subtitle)}</p>
       </div>
 
       <div className="sec">

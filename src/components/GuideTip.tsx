@@ -30,20 +30,25 @@ function articleIdFor(result: LetterAnalysis): string | null {
  * nothing when neither trigger applies — the Ratgeber tab still holds the
  * full set for anyone who goes looking. */
 export function GuideTip({ result }: { result: LetterAnalysis }) {
+  const id = articleIdFor(result);
+  if (!id) return null;
+  return <GuideTipCard articleId={id} />;
+}
+
+/** The card itself, for screens that already know which article is relevant
+ * — the calendar and appointments, say, where no inference is needed. */
+export function GuideTipCard({ articleId }: { articleId: string }) {
   const navigate = useNavigate();
   const { t, lang } = useLanguage();
 
-  const id = articleIdFor(result);
-  if (!id) return null;
-
-  const article = getGuideArticles(lang).find((a) => a.id === id);
+  const article = getGuideArticles(lang).find((a) => a.id === articleId);
   if (!article) return null;
 
   const rtl = isRtlLang(lang);
   const bidi = (text: string) => (rtl ? isolateBidiRuns(text) : text);
 
   return (
-    <button type="button" className="guide-tip" onClick={() => navigate(`/guide/${id}`)}>
+    <button type="button" className="guide-tip" onClick={() => navigate(`/guide/${articleId}`)}>
       <span className="guide-tip-icon">
         <Lightbulb size={20} strokeWidth={2} />
       </span>
