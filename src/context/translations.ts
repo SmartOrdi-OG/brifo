@@ -30,7 +30,7 @@ const ar = {
 
   quick_reply_title: 'اكتب رد بالألماني',
   quick_reply_subtitle: 'اعتذار، موعد، موافقة',
-  quick_guide_title: 'دليل المدارس',
+  quick_guide_title: "الدليل",
   quick_guide_subtitle: 'افهم النظام النمساوي',
 
   screen_scan: 'صوّر رسالة',
@@ -137,7 +137,9 @@ const ar = {
   reply_intent_zustimmung: 'موافقة',
   reply_intent_frage: 'سؤال',
   reply_child_name: 'اسم الطفل (اختياري)',
-  reply_child_class: 'الصف (اختياري)',
+  reply_child_class: "الصف (إذا الرسالة للمدرسة)",
+  reply_recipient_label: "لمين الرسالة؟",
+  reply_recipient_placeholder: "مثلاً: عيادة الأطفال، المدرسة، دائرة الشباب",
   reply_details_label: 'احكيلي بالتفصيل — فيك تكتب بالعربي',
   reply_details_placeholder: 'مثلاً: ابني عندو موعد دكتور بكرا الساعة 10، بدي أعتذر عن غيابه...',
   reply_generate: 'اكتب الرسالة',
@@ -356,7 +358,7 @@ const de: Record<keyof typeof ar, string> = {
 
   quick_reply_title: 'Antwort auf Deutsch schreiben',
   quick_reply_subtitle: 'Entschuldigung, Termin, Zustimmung',
-  quick_guide_title: 'Schulratgeber',
+  quick_guide_title: "Ratgeber",
   quick_guide_subtitle: 'Das österreichische Schulsystem verstehen',
 
   screen_scan: 'Brief fotografieren',
@@ -463,7 +465,9 @@ const de: Record<keyof typeof ar, string> = {
   reply_intent_zustimmung: 'Zustimmung',
   reply_intent_frage: 'Frage',
   reply_child_name: 'Name des Kindes (optional)',
-  reply_child_class: 'Klasse (optional)',
+  reply_child_class: "Klasse (nur bei Briefen an die Schule)",
+  reply_recipient_label: "An wen geht der Brief?",
+  reply_recipient_placeholder: "z. B.: Kinderarztpraxis, Schule, Amt",
   reply_details_label: 'Erzähl mir die Details — auch auf Arabisch möglich',
   reply_details_placeholder: 'z. B.: Mein Sohn hat morgen um 10 Uhr einen Arzttermin, ich möchte seine Abwesenheit entschuldigen...',
   reply_generate: 'Brief schreiben',
@@ -682,7 +686,7 @@ const tr: Record<keyof typeof ar, string> = {
 
   quick_reply_title: 'Almanca cevap yaz',
   quick_reply_subtitle: 'Özür, randevu, onay',
-  quick_guide_title: 'Okul rehberi',
+  quick_guide_title: "Rehber",
   quick_guide_subtitle: 'Avusturya sistemini anla',
 
   screen_scan: 'Mektup fotoğrafla',
@@ -789,7 +793,9 @@ const tr: Record<keyof typeof ar, string> = {
   reply_intent_zustimmung: 'Onay',
   reply_intent_frage: 'Soru',
   reply_child_name: 'Çocuğun adı (isteğe bağlı)',
-  reply_child_class: 'Sınıf (isteğe bağlı)',
+  reply_child_class: "Sınıf (yalnızca okula yazılan mektuplarda)",
+  reply_recipient_label: "Mektup kime gidiyor?",
+  reply_recipient_placeholder: "Örneğin: çocuk doktoru, okul, resmi daire",
   reply_details_label: 'Bana detayları anlat — Arapça da yazabilirsin',
   reply_details_placeholder: 'Örneğin: Oğlumun yarın saat 10\'da doktor randevusu var, devamsızlığı için özür dilemek istiyorum...',
   reply_generate: 'Mektubu yaz',
@@ -1008,7 +1014,7 @@ const fa: Record<keyof typeof ar, string> = {
 
   quick_reply_title: 'نوشتن پاسخ به آلمانی',
   quick_reply_subtitle: 'عذرخواهی، درخواست قرار، موافقت',
-  quick_guide_title: 'راهنمای مدرسه',
+  quick_guide_title: "راهنما",
   quick_guide_subtitle: 'سیستم اتریش را بشناس',
 
   screen_scan: 'عکس‌برداری از نامه',
@@ -1115,7 +1121,9 @@ const fa: Record<keyof typeof ar, string> = {
   reply_intent_zustimmung: 'موافقت',
   reply_intent_frage: 'سؤال',
   reply_child_name: 'اسم فرزند (اختیاری)',
-  reply_child_class: 'کلاس (اختیاری)',
+  reply_child_class: "کلاس (فقط اگر نامه به مدرسه است)",
+  reply_recipient_label: "نامه برای چه کسی است؟",
+  reply_recipient_placeholder: "مثلاً: مطب اطفال، مدرسه، اداره",
   reply_details_label: 'با جزئیات برام بگو — به عربی هم می‌تونی بنویسی',
   reply_details_placeholder: 'مثلاً: پسرم فردا ساعت ۱۰ قرار دکتر داره، می‌خوام برای غیبتش عذرخواهی کنم...',
   reply_generate: 'نوشتن نامه',
@@ -1334,7 +1342,7 @@ const en: Record<keyof typeof ar, string> = {
 
   quick_reply_title: 'Write a reply in German',
   quick_reply_subtitle: 'Apology, appointment request, consent',
-  quick_guide_title: 'School guide',
+  quick_guide_title: "Guide",
   quick_guide_subtitle: 'Understand the Austrian system',
 
   screen_scan: 'Photograph a letter',
@@ -1441,7 +1449,9 @@ const en: Record<keyof typeof ar, string> = {
   reply_intent_zustimmung: 'Consent',
   reply_intent_frage: 'A question',
   reply_child_name: "Child's name (optional)",
-  reply_child_class: 'Class (optional)',
+  reply_child_class: "Class (only for letters to a school)",
+  reply_recipient_label: "Who is the letter for?",
+  reply_recipient_placeholder: "E.g.: paediatric clinic, school, authority",
   reply_details_label: 'Tell me the details — you can write in Arabic too',
   reply_details_placeholder: "E.g.: My son has a doctor's appointment tomorrow at 10, I want to apologize for his absence...",
   reply_generate: 'Write the letter',
@@ -1660,7 +1670,7 @@ const uk: Record<keyof typeof ar, string> = {
 
   quick_reply_title: 'Написати відповідь німецькою',
   quick_reply_subtitle: 'Вибачення, запит на зустріч, згода',
-  quick_guide_title: 'Шкільний гід',
+  quick_guide_title: "Довідник",
   quick_guide_subtitle: 'Зрозумійте австрійську систему',
 
   screen_scan: 'Сфотографувати лист',
@@ -1767,7 +1777,9 @@ const uk: Record<keyof typeof ar, string> = {
   reply_intent_zustimmung: 'Згода',
   reply_intent_frage: 'Питання',
   reply_child_name: "Ім'я дитини (необов'язково)",
-  reply_child_class: 'Клас (необов\'язково)',
+  reply_child_class: "Клас (лише для листів до школи)",
+  reply_recipient_label: "Кому адресований лист?",
+  reply_recipient_placeholder: "Наприклад: дитяча клініка, школа, установа",
   reply_details_label: 'Розкажіть детальніше — можна писати й арабською',
   reply_details_placeholder: 'Наприклад: у мого сина завтра о 10:00 прийом у лікаря, хочу вибачитися за його відсутність...',
   reply_generate: 'Написати лист',

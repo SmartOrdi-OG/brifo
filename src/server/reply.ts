@@ -26,12 +26,24 @@ const OUTPUT_LANGUAGE: Record<string, string> = {
   uk: 'Ukrainian',
 };
 
+/** Deliberately does not mention schools first, and says so explicitly.
+ *
+ * This prompt used to read "communicate with their children's school", left
+ * over from when the app only handled school letters. api/analyze.js was
+ * broadened when the app was; this was not — so a parent asking to excuse an
+ * appointment with their child's paediatrician got back a letter addressed to
+ * a school, about a two-month-old missing lessons. */
 function buildSystemPrompt(lang: string): string {
   const target = OUTPUT_LANGUAGE[lang] ?? OUTPUT_LANGUAGE.ar;
   return (
-    'You are a formal German letter-writing assistant helping immigrant parents in Austria ' +
-    "communicate with their children's school. Write a polite, correctly formatted, formal German letter " +
-    `based on the parent's intent and the details they provide (the details may be written in ${target}). ` +
+    'You are a formal German letter-writing assistant helping immigrant families in Austria ' +
+    'write to any recipient: a school, a doctor or clinic, a government office, an insurer, ' +
+    'a landlord, a utility, or anyone else. ' +
+    'Never assume the recipient is a school. Take it from the "Recipient" line when one is ' +
+    'given, otherwise infer it from the details, and address the letter accordingly. ' +
+    "Do not mention school, lessons or teachers unless the recipient really is a school. " +
+    'Write a polite, correctly formatted, formal German letter ' +
+    `based on the intent and the details provided (the details may be written in ${target}). ` +
     `Then provide an accurate ${target} translation of the exact same letter.`
   );
 }
@@ -40,13 +52,16 @@ const INTENT_LABELS = {
   entschuldigung: 'Entschuldigung wegen Abwesenheit (excuse for absence)',
   termin: 'Terminanfrage (appointment request)',
   zustimmung: 'Zustimmung / Einverständnis (consent)',
-  frage: 'Frage an die Lehrperson (question for the teacher)',
+  frage: 'Frage an den Empfänger (a question for the recipient)',
 } as const;
 
 export type ReplyIntent = keyof typeof INTENT_LABELS;
 
 export const ReplyRequestSchema = z.object({
   intent: z.enum(['entschuldigung', 'termin', 'zustimmung', 'frage']),
+  /** Who the letter is going to. Optional, but it is what stops the model
+   * falling back on the most common case when the details are terse. */
+  recipient: z.string().max(120).optional(),
   childName: z.string().max(80).optional(),
   childClass: z.string().max(40).optional(),
   details: z.string().min(3).max(2000),
@@ -67,13 +82,14 @@ export class ReplyError extends Error {}
 export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> {
   const parsed = ReplyRequestSchema.safeParse(input);
   if (!parsed.success) throw new ReplyError(parsed.error.issues[0]?.message ?? 'invalid input');
-  const { intent, childName, childClass, details, lang } = parsed.data;
+  const { intent, recipient, childName, childClass, details, lang } = parsed.data;
   const target = OUTPUT_LANGUAGE[lang] ?? OUTPUT_LANGUAGE.ar;
 
   const contextLines = [
     `Intent: ${INTENT_LABELS[intent]}`,
-    childName ? `Child's name: ${childName}` : null,
-    childClass ? `Class: ${childClass}` : null,
+    recipient ? `Recipient: ${recipient}` : null,
+    childName ? `Name of the person concerned: ${childName}` : null,
+    childClass ? `School class (only relevant if the recipient is a school): ${childClass}` : null,
     `Details from parent (may be in ${target}): ${details}`,
   ].filter(Boolean);
 
