@@ -48,17 +48,28 @@ function buildSystemPrompt(lang: string): string {
   );
 }
 
+/** Ordered as they appear on screen. Kept broad enough for any recipient —
+ * the original four were school-shaped, which is no longer what the app is
+ * for; cancelling an appointment, asking to pay in instalments and objecting
+ * to a decision are the things the guide articles actually tell people to do. */
 const INTENT_LABELS = {
-  entschuldigung: 'Entschuldigung wegen Abwesenheit (excuse for absence)',
-  termin: 'Terminanfrage (appointment request)',
+  entschuldigung: 'Entschuldigung wegen Abwesenheit (excuse for an absence)',
+  termin: 'Terminanfrage (request an appointment)',
+  absage: 'Terminabsage (cancel or move an existing appointment; apologise and, where it fits, ask for a new one)',
   zustimmung: 'Zustimmung / Einverständnis (consent)',
+  ratenzahlung:
+    'Bitte um Ratenzahlung oder Zahlungsaufschub (ask to pay an invoice in instalments or later; ' +
+    'stay courteous, state the wish plainly, do not promise an amount or date the sender has not been given)',
+  einspruch:
+    'Einspruch / Widerspruch gegen eine Entscheidung (object to a decision; state only the reasons the ' +
+    'sender gives, and never invent legal grounds, statutes or deadlines that were not provided)',
   frage: 'Frage an den Empfänger (a question for the recipient)',
 } as const;
 
 export type ReplyIntent = keyof typeof INTENT_LABELS;
 
 export const ReplyRequestSchema = z.object({
-  intent: z.enum(['entschuldigung', 'termin', 'zustimmung', 'frage']),
+  intent: z.enum(['entschuldigung', 'termin', 'absage', 'zustimmung', 'ratenzahlung', 'einspruch', 'frage']),
   /** Who the letter is going to. Optional, but it is what stops the model
    * falling back on the most common case when the details are terse. */
   recipient: z.string().max(120).optional(),
