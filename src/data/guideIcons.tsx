@@ -11,6 +11,9 @@ import {
   Clock,
   Handshake,
   Shuffle,
+  ReceiptText,
+  CalendarCheck,
+  Stamp,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -29,4 +32,7 @@ export const GUIDE_ARTICLE_ICONS: Record<string, LucideIcon> = {
   nachmittagsbetreuung: Clock,
   elternverein: Handshake,
   uebertritt: Shuffle,
+  'rechnung-mahnung': ReceiptText,
+  termine: CalendarCheck,
+  behoerdenbrief: Stamp,
 };

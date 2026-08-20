@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
+import { GuideTip } from '../components/GuideTip';
 import { useLanguage } from '../context/LanguageContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
@@ -108,6 +109,10 @@ export function Result() {
               </div>
             </>
           )}
+
+          {/* After the letter's own contents, not before: the tip is context,
+              and it shouldn't come between the reader and what they photographed. */}
+          <GuideTip result={result} />
 
           <button className="scan-btn primary result-cta" onClick={() => navigate('/scan')}>
             {t('result_scan_another')}
