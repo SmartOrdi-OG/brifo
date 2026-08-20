@@ -9,9 +9,9 @@ import { isolateBidiRuns } from '../lib/bidiText';
 import './Guide.css';
 
 export function Guide() {
-  const { t, lang } = useLanguage();
+  const { t, lang, gender } = useLanguage();
   const navigate = useNavigate();
-  const articles = getGuideArticles(lang);
+  const articles = getGuideArticles(lang, gender);
 
   return (
     <TabLayout>

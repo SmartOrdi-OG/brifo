@@ -40,7 +40,7 @@ function toggleBtnStyle(active: boolean): CSSProperties {
 
 export function Settings() {
   const navigate = useNavigate();
-  const { t, lang } = useLanguage();
+  const { t, lang, gender, setGender } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
   const { session, signOut } = useAuth();
@@ -216,6 +216,27 @@ export function Settings() {
         <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>{t('settings_language')}</p>
         <LanguagePicker block />
       </div>
+
+      {/* Arabic is the only language whose wording changes with this, so the
+          card only appears there — asking a German reader a question that
+          would change nothing on their screen is just noise. Tapping the
+          selected option again clears it, back to the neutral default. */}
+      {lang === 'ar' && (
+        <div className="card" style={{ padding: '16px', marginTop: 12 }}>
+          <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>{t('settings_address_title')}</p>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={() => setGender(gender === 'm' ? null : 'm')} style={toggleBtnStyle(gender === 'm')}>
+              {t('settings_address_m')}
+            </button>
+            <button onClick={() => setGender(gender === 'f' ? null : 'f')} style={toggleBtnStyle(gender === 'f')}>
+              {t('settings_address_f')}
+            </button>
+          </div>
+          <p style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 10, lineHeight: 1.5 }}>
+            {t('settings_address_note')}
+          </p>
+        </div>
+      )}
 
       <div className="card" style={{ padding: '16px', marginTop: 12 }}>
         <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>{t('settings_theme')}</p>

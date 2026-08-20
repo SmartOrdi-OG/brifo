@@ -9,8 +9,8 @@ import './GuideArticle.css';
 
 export function GuideArticle() {
   const { id } = useParams<{ id: string }>();
-  const { lang } = useLanguage();
-  const article = getGuideArticles(lang).find((a) => a.id === id);
+  const { lang, gender } = useLanguage();
+  const article = getGuideArticles(lang, gender).find((a) => a.id === id);
 
   if (!article) {
     return (
