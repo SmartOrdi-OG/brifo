@@ -93,6 +93,10 @@ const ar = {
   auth_hide_password: 'إخفاء كلمة السر',
 
   settings_language: 'اللغة',
+  settings_address_title: "كيف نخاطبك؟",
+  settings_address_m: "مذكر",
+  settings_address_f: "مؤنث",
+  settings_address_note: "بيغيّر صيغة الكلام بالعربي بس. باقي اللغات ما فيها فرق.",
   settings_theme: 'المظهر',
   theme_light: 'فاتح',
   theme_dark: 'داكن',
@@ -415,6 +419,10 @@ const de: Record<keyof typeof ar, string> = {
   auth_hide_password: 'Passwort verbergen',
 
   settings_language: 'Sprache',
+  settings_address_title: "Wie sollen wir dich ansprechen?",
+  settings_address_m: "Männlich",
+  settings_address_f: "Weiblich",
+  settings_address_note: "Betrifft nur die arabische Fassung; die anderen Sprachen unterscheiden hier nicht.",
   settings_theme: 'Erscheinungsbild',
   theme_light: 'Hell',
   theme_dark: 'Dunkel',
@@ -737,6 +745,10 @@ const tr: Record<keyof typeof ar, string> = {
   auth_hide_password: 'Şifreyi gizle',
 
   settings_language: 'Dil',
+  settings_address_title: "Sana nasıl hitap edelim?",
+  settings_address_m: "Eril",
+  settings_address_f: "Dişil",
+  settings_address_note: "Yalnızca Arapça metni etkiler; diğer dillerde fark yoktur.",
   settings_theme: 'Görünüm',
   theme_light: 'Açık',
   theme_dark: 'Koyu',
@@ -1059,6 +1071,10 @@ const fa: Record<keyof typeof ar, string> = {
   auth_hide_password: 'پنهان کردن رمز عبور',
 
   settings_language: 'زبان',
+  settings_address_title: "چطور خطابت کنیم؟",
+  settings_address_m: "مذکر",
+  settings_address_f: "مؤنث",
+  settings_address_note: "فقط روی متن عربی اثر دارد؛ زبان‌های دیگر تفاوتی ندارند.",
   settings_theme: 'ظاهر برنامه',
   theme_light: 'روشن',
   theme_dark: 'تیره',
@@ -1381,6 +1397,10 @@ const en: Record<keyof typeof ar, string> = {
   auth_hide_password: 'Hide password',
 
   settings_language: 'Language',
+  settings_address_title: "How should we address you?",
+  settings_address_m: "Masculine",
+  settings_address_f: "Feminine",
+  settings_address_note: "Affects the Arabic wording only; the other languages do not differ here.",
   settings_theme: 'Appearance',
   theme_light: 'Light',
   theme_dark: 'Dark',
@@ -1703,6 +1723,10 @@ const uk: Record<keyof typeof ar, string> = {
   auth_hide_password: 'Приховати пароль',
 
   settings_language: 'Мова',
+  settings_address_title: "Як до вас звертатися?",
+  settings_address_m: "Чоловічий",
+  settings_address_f: "Жіночий",
+  settings_address_note: "Впливає лише на арабський текст; інші мови тут не відрізняються.",
   settings_theme: 'Вигляд',
   theme_light: 'Світла',
   theme_dark: 'Темна',
@@ -1939,3 +1963,62 @@ const uk: Record<keyof typeof ar, string> = {
 
 export const translations = { ar, de, tr, fa, en, uk };
 export type TranslationKey = keyof typeof ar;
+
+/** Reader gender. `null` means they haven't said, and the base tables above
+ * stay as written: masculine verb forms (the conventional generic in Arabic)
+ * with a greeting that names the family rather than either parent. */
+export type Gender = 'm' | 'f';
+
+/** Arabic is the only one of the six that changes with the reader's gender —
+ * Turkish and Farsi have no grammatical gender in address, and German,
+ * English and Ukrainian address the reader without it here. So this is a
+ * partial override on `ar` alone, holding only the strings that differ
+ * rather than a second copy of all 290. */
+export const arByGender: Record<Gender, Partial<Record<TranslationKey, string>>> = {
+  m: {
+    greeting_title_named: "أهلاً أبو {name}",
+  },
+  f: {
+    greeting_title_named: "أهلاً أم {name}",
+    greeting_subtitle_new: "ابدي بإضافة أول فرد من العائلة، وبعدين صوّري أول رسالة.",
+    auth_intro: "سجّلي دخول بإيميلك عشان تبدئي تستخدمي Brifo. رح نبعتلك كود تكتبيه هون، بدون كلمة سر.",
+    auth_pricing_note: "Brifo مجاني (الدليل، التقويم، المهام، التذكيرات). تصوير الرسائل وتحليلها بالذكاء الاصطناعي، وتوليد الردود، بحاجة اشتراك بعد 7 أيام تجربة مجانية — 2.90 € بالشهر أو 20 € بالسنة، تقدري تلغي وقت ما بدك.",
+    auth_tagline: "صوّري أي رسالة ألمانية — وافهميها بلغتك بثواني",
+    auth_check_email: "بعتنالك رابط عإيميلك — افتحي الإيميل ودوسي عالرابط لتسجيل الدخول.",
+    auth_enter_code: "بعتنا كود مؤلف من 6 أرقام لـ {email} — دخّليه هون (نفس التطبيق، مش من الإيميل) حتى تسجّلي دخول.",
+    auth_code_required: "دخّلي الكود يلي وصلك بالإيميل",
+    auth_code_invalid: "الكود غلط أو منتهي — تأكدي منه أو اطلبي كود جديد",
+    auth_error: "صار في مشكلة، جرّبي مرة ثانية",
+    auth_email_required: "دخّلي إيميلك الأول",
+    auth_not_configured: "نظام تسجيل الدخول لسا ما انظبط، جرّبي بعد شوي",
+    settings_manage_subscription_error: "صار في مشكلة، جرّبي مرة ثانية",
+    referral_title: "ادعي صديقة",
+    referral_subtitle: "شاركي الرابط، وياخد كل واحدة فيكن {days} أيام تجربة إضافية لما تسجّل صديقتك حساب جديد.",
+    referral_whatsapp_message: "جربي تطبيق Brifo، بيساعد بفهم الرسائل الألمانية بلغتك 🙌",
+    auth_intro_password: "سجّلي دخول بإيميلك وكلمة السر الخاصة فيك.",
+    auth_password_required: "اكتبي كلمة السر",
+    auth_use_code_link: "أول مرة أو نسيتي كلمة السر؟ ادخلي بكود",
+    auth_set_password_title: "حطي كلمة سر خاصة فيك",
+    auth_set_password_subtitle: "رح تستخدميها بالمرات الجايّة بدل ما تنطري كود كل مرة عبر الإيميل",
+    auth_password_confirm_placeholder: "أكدي كلمة السر",
+    error_offline: "ما في اتصال بالإنترنت. تأكدي من الشبكة وجرّبي مرة تانية.",
+    error_connection: "ما قدرنا نوصل للخدمة. تأكدي من الإنترنت وجرّبي مرة تانية.",
+    error_busy: "الخدمة مشغولة هلق. جرّبي بعد دقيقة.",
+    scan_error_unreadable: "ما قدرنا نقرأ الرسالة من الصورة. صوّريها بضوء أحسن والورقة كلها داخل الكادر.",
+    result_tip_label: "مفيد تعرفي",
+    home_no_children_title: "أضيفي أول فرد من العائلة",
+    search_placeholder: "دوّري برسالة أو دفعة...",
+    todo_empty: "أضيفي أول مهمة",
+    reminders_permission_denied: "لازم تسمحي بالإشعارات من إعدادات المتصفح أو الموبايل",
+    rate_comment_placeholder: "اكتبي ملاحظاتك (اختياري)",
+    backup_subtitle: "بياناتك محفوظة تلقائياً بحسابك وبترجع معك بمجرد ما تسجّلي دخول من أي جهاز. هالخيار إضافي بس، لو حبيتي تحتفظي بنسخة ملف على جهازك.",
+    privacy_gate_summary: "قبل ما تكملي استخدام Brifo، لازم تطّلعي على سياسة الخصوصية الجديدة وتوافقي عليها.",
+    paywall_value_line: "صوّري أي رسالة ألمانية — وافهميها بلغتك بثواني.",
+    paywall_annual_compare: "بدل 34.80 € لو دفعتي شهري",
+    paywall_annual_savings: "وفّري أكتر من 40% مقارنة بالاشتراك الشهري",
+    paywall_consent_label: "موافق/ة إنه الاشتراك يبلش فوراً، وفاهم/ة إنه بهيك بفقد حقي بالرجوع خلال 14 يوم (حسب المادة 4 من شروط الاستخدام).",
+    paywall_trial_ended: "انتهت فترتك التجريبية — اشتركي للمتابعة",
+    paywall_checkout_error: "صار في مشكلة، جرّبي مرة ثانية",
+    paywall_checkout_cancelled: "ألغيتي عملية الاشتراك",
+  },
+};

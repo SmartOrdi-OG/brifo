@@ -39,9 +39,9 @@ export function GuideTip({ result }: { result: LetterAnalysis }) {
  * — the calendar and appointments, say, where no inference is needed. */
 export function GuideTipCard({ articleId }: { articleId: string }) {
   const navigate = useNavigate();
-  const { t, lang } = useLanguage();
+  const { t, lang, gender } = useLanguage();
 
-  const article = getGuideArticles(lang).find((a) => a.id === articleId);
+  const article = getGuideArticles(lang, gender).find((a) => a.id === articleId);
   if (!article) return null;
 
   const rtl = isRtlLang(lang);
