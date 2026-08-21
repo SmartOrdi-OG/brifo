@@ -5,6 +5,7 @@ import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { GuideTip } from '../components/GuideTip';
 import { useLanguage } from '../context/LanguageContext';
+import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
 import type { LetterPhoto } from '../types/data';
@@ -13,11 +14,17 @@ import './Result.css';
 export function Result() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { children } = useData();
   const location = useLocation();
   const [showPhoto, setShowPhoto] = useState(false);
-  const state = location.state as { result?: LetterAnalysis; photo?: LetterPhoto | null } | null;
+  const state = location.state as
+    | { result?: LetterAnalysis; photo?: LetterPhoto | null; savedToChildId?: string }
+    | null;
   const result = state?.result;
   const photo = state?.photo;
+  // Only set when arriving straight from a scan; viewing an older letter from
+  // a list doesn't need telling that it was saved.
+  const savedTo = state?.savedToChildId ? children.find((c) => c.id === state.savedToChildId) : undefined;
 
   return (
     <FlowLayout title={t('screen_result')}>
@@ -114,9 +121,23 @@ export function Result() {
               and it shouldn't come between the reader and what they photographed. */}
           <GuideTip result={result} />
 
-          <button className="scan-btn primary result-cta" onClick={() => navigate('/scan')}>
-            {t('result_scan_another')}
-          </button>
+          {savedTo && (
+            <p className="result-saved">
+              <CheckCircle2 size={15} strokeWidth={2.5} />
+              {isolateBidiRuns(t('result_saved_to').replace('{name}', savedTo.name))}
+            </p>
+          )}
+
+          {/* Home first: the letter is filed and read, and finishing is the
+              common case. Scanning another is the follow-on, not the default. */}
+          <div className="result-cta">
+            <button className="scan-btn primary" onClick={() => navigate('/')}>
+              {t('result_done')}
+            </button>
+            <button className="scan-btn" onClick={() => navigate('/scan')}>
+              {t('result_scan_another')}
+            </button>
+          </div>
         </div>
       )}
     </FlowLayout>

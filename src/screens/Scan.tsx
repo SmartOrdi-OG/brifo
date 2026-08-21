@@ -182,7 +182,10 @@ export function Scan() {
   function finalizeAssignment(childId: string) {
     if (!pendingResult) return;
     addLetter(childId, pendingResult, pendingPhoto ?? undefined);
-    navigate('/result', { state: { result: pendingResult, photo: pendingPhoto } });
+    // childId travels along so the result screen can say where the letter was
+    // filed — it is already saved by this point, and saying so is what stops
+    // people wondering whether leaving the screen loses it.
+    navigate('/result', { state: { result: pendingResult, photo: pendingPhoto, savedToChildId: childId } });
   }
 
   function handleCreateChild(values: ChildFormValues) {
