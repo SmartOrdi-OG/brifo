@@ -19,21 +19,25 @@
   background: var(--card-active);
 }
 
+/* Portalled to <body> and fixed — see RowMenu.tsx for why. Position comes
+   from the component after measuring. */
 .row-menu-popup {
-  position: absolute;
-  top: 36px;
-  /* Opens toward the middle of the screen rather than off its edge, in both
-     reading directions. */
-  inset-inline-end: 0;
-  z-index: 20;
-  min-width: 190px;
+  position: fixed;
+  z-index: 200;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   padding: 6px;
   border-radius: 16px;
   border: 1px solid var(--card-border);
-  background: var(--card);
-  box-shadow: 0 14px 34px rgba(23, 25, 60, 0.18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+
+  /* Must be opaque. In dark mode --card is a 5.5%-white glass tint meant to
+     sit on the page background — used alone here it let the row underneath
+     read straight through the menu. Painting the page colour first and the
+     card tint over it gives the same surface the cards have, solid. */
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--card), var(--card));
 }
 
 .row-menu-popup button {

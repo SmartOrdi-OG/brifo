@@ -203,8 +203,10 @@
   display: none;
 }
 
+/* Wider since the row gained a ⋮ alongside the date and the add-to-calendar
+   button: at 168px the date pill was wrapping onto three lines. */
 .dl {
-  min-width: 168px;
+  min-width: 196px;
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
@@ -227,6 +229,8 @@
   border-radius: 99px;
   display: inline-block;
   margin-bottom: 8px;
+  /* A date is one token; letting it break mid-value reads as broken. */
+  white-space: nowrap;
 }
 
 .dl.hot .when {

@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Camera, Plus, PenLine, CheckCircle2, BookOpen, Trash2 } from 'lucide-react';
+import { Camera, Plus, PenLine, CheckCircle2, BookOpen, CalendarPlus, Trash2 } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
-import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { RowMenu } from '../components/RowMenu';
+import { downloadIcsEvent } from '../lib/ics';
 import { prefillFromEvent, prefillFromLetter } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
@@ -142,9 +142,14 @@ export function Home() {
                       {e.date}
                       {e.time ? ` ${e.time}` : ''}
                     </span>
-                    <AddToCalendarButton title={e.title} date={e.date} time={e.time} compact />
                     <RowMenu
                       items={[
+                        {
+                          key: 'ics',
+                          label: t('add_to_calendar'),
+                          icon: <CalendarPlus size={16} strokeWidth={2} />,
+                          onSelect: () => downloadIcsEvent({ title: e.title, date: e.date, time: e.time }),
+                        },
                         {
                           key: 'reply',
                           label: t('event_action_reply'),

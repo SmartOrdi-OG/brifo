@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarX2, ChevronLeft, ChevronRight, Pencil, PenLine, Plus, Trash2 } from 'lucide-react';
+import { CalendarX2, CalendarPlus, ChevronLeft, ChevronRight, Pencil, PenLine, Plus, Trash2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
-import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { GuideTipCard } from '../components/GuideTip';
 import { RowMenu } from '../components/RowMenu';
+import { downloadIcsEvent } from '../lib/ics';
 import { prefillFromEvent } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
@@ -151,9 +151,15 @@ export function Calendar() {
         </div>
         <div className="calendar-row-actions">
           <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
-          <AddToCalendarButton title={e.title} date={e.date} time={e.time} description={eventDescription(e)} compact />
           <RowMenu
             items={[
+              {
+                key: 'ics',
+                label: t('add_to_calendar'),
+                icon: <CalendarPlus size={16} strokeWidth={2} />,
+                onSelect: () =>
+                  downloadIcsEvent({ title: e.title, date: e.date, time: e.time, description: eventDescription(e) }),
+              },
               {
                 key: 'edit',
                 label: t('calendar_edit_event'),
