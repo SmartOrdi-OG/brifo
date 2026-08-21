@@ -20,7 +20,7 @@ import { isolateBidiRuns } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
 import type { TranslationKey } from '../context/translations';
 import type { ReplyIntent, ReplyLetter } from '../types/reply';
-import type { LetterAnalysis } from '../types/analysis';
+import type { ReplyPrefill } from '../lib/replyPrefill';
 import './Reply.css';
 
 type ScreenState = 'form' | 'generating' | 'result' | 'error';
@@ -48,16 +48,16 @@ export function Reply() {
   const { t, lang } = useLanguage();
   const location = useLocation();
 
-  /** Arriving from a letter's ⋮ menu rather than from the quick tool. The app
-   * has already read the letter, so the sender and the child come pre-filled
-   * and the summary seeds the details — the parent edits rather than retypes.
-   * Read once as the initial state: they must stay editable afterwards. */
-  const fromLetter = (location.state as { fromLetter?: { analysis: LetterAnalysis; childName?: string } } | null)?.fromLetter;
+  /** Arriving from a letter's or an appointment's ⋮ menu rather than from the
+   * blank quick tool. The app already knows who wrote in, or who the
+   * appointment is with, so those come pre-filled and the parent edits rather
+   * than retypes. Read once as initial state: the fields stay editable. */
+  const prefill = (location.state as { prefill?: ReplyPrefill } | null)?.prefill;
 
   const [state, setState] = useState<ScreenState>('form');
   const [intent, setIntent] = useState<ReplyIntent | null>(null);
-  const [recipient, setRecipient] = useState(fromLetter?.analysis.sender ?? '');
-  const [childName, setChildName] = useState(fromLetter?.childName ?? '');
+  const [recipient, setRecipient] = useState(prefill?.recipient ?? '');
+  const [childName, setChildName] = useState(prefill?.childName ?? '');
   const [childClass, setChildClass] = useState('');
   const [details, setDetails] = useState('');
   const [letter, setLetter] = useState<ReplyLetter | null>(null);
@@ -82,7 +82,7 @@ export function Reply() {
         body: JSON.stringify({
           intent,
           recipient: recipient.trim() || undefined,
-          letterContext: fromLetter?.analysis.summary || undefined,
+          letterContext: prefill?.context || undefined,
           childName: childName.trim() || undefined,
           childClass: childClass.trim() || undefined,
           details: details.trim(),
@@ -153,9 +153,9 @@ export function Reply() {
             })}
           </div>
 
-          {fromLetter && (
+          {prefill?.context && (
             <p className="reply-context">
-              {t('reply_context_prefix')} {isolateBidiRuns(fromLetter.analysis.summary)}
+              {t('reply_context_prefix')} {isolateBidiRuns(prefill.context)}
             </p>
           )}
 

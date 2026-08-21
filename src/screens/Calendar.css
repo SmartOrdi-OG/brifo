@@ -88,19 +88,6 @@
   border-radius: 99px;
 }
 
-.calendar-edit,
-.calendar-delete {
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
 
 .calendar-view-toggle {
   display: flex;

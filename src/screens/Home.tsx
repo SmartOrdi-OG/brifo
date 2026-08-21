@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { Camera, Plus, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
+import { Camera, Plus, PenLine, CheckCircle2, BookOpen, Trash2 } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
-import { LetterMenu } from '../components/LetterMenu';
+import { RowMenu } from '../components/RowMenu';
+import { prefillFromEvent, prefillFromLetter } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -13,7 +14,7 @@ import './Home.css';
 export function Home() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { children, letters, payments, events, eventsForChild, deleteLetter } = useData();
+  const { children, letters, payments, events, eventsForChild, deleteLetter, deleteEvent } = useData();
 
   const today = new Date().toISOString().slice(0, 10);
   const monthPrefix = today.slice(0, 7);
@@ -142,6 +143,25 @@ export function Home() {
                       {e.time ? ` ${e.time}` : ''}
                     </span>
                     <AddToCalendarButton title={e.title} date={e.date} time={e.time} compact />
+                    <RowMenu
+                      items={[
+                        {
+                          key: 'reply',
+                          label: t('event_action_reply'),
+                          icon: <PenLine size={16} strokeWidth={2} />,
+                          onSelect: () =>
+                            navigate('/reply', { state: { prefill: prefillFromEvent(e, child?.name) } }),
+                        },
+                        {
+                          key: 'delete',
+                          label: t('calendar_delete_event'),
+                          icon: <Trash2 size={16} strokeWidth={2} />,
+                          onSelect: () => deleteEvent(e.id),
+                          danger: true,
+                        },
+                      ]}
+                      label={t('event_actions')}
+                    />
                   </div>
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>
@@ -174,7 +194,25 @@ export function Home() {
               <span className={`tag ${l.analysis.action_required ? 'a' : 'g'}`}>
                 {l.analysis.action_required ? t('tag_reply_needed') : t('tag_done')}
               </span>
-              <LetterMenu letter={l} childName={childFor(l.childId)?.name} onDelete={() => deleteLetter(l.id)} />
+              <RowMenu
+                items={[
+                  {
+                    key: 'reply',
+                    label: t('letter_action_reply'),
+                    icon: <PenLine size={16} strokeWidth={2} />,
+                    onSelect: () =>
+                      navigate('/reply', { state: { prefill: prefillFromLetter(l.analysis, childFor(l.childId)?.name) } }),
+                  },
+                  {
+                    key: 'delete',
+                    label: t('letter_delete'),
+                    icon: <Trash2 size={16} strokeWidth={2} />,
+                    onSelect: () => deleteLetter(l.id),
+                    danger: true,
+                  },
+                ]}
+                label={t('letter_actions')}
+              />
             </div>
           ))}
         </>

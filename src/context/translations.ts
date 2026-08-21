@@ -183,6 +183,9 @@ const ar = {
   letter_delete: 'حذف الرسالة',
   letter_actions: "خيارات الرسالة",
   letter_action_reply: "اكتب رد بالألماني",
+  row_actions: "خيارات",
+  event_actions: "خيارات الموعد",
+  event_action_reply: "اكتب رد بالألماني",
 
   payment_mark_paid: 'تم الدفع',
   payment_paid_label: 'مدفوع',
@@ -517,6 +520,9 @@ const de: Record<keyof typeof ar, string> = {
   letter_delete: 'Brief löschen',
   letter_actions: "Optionen für diesen Brief",
   letter_action_reply: "Antwort auf Deutsch schreiben",
+  row_actions: "Optionen",
+  event_actions: "Optionen für diesen Termin",
+  event_action_reply: "Antwort auf Deutsch schreiben",
 
   payment_mark_paid: 'Bezahlt',
   payment_paid_label: 'Bezahlt',
@@ -851,6 +857,9 @@ const tr: Record<keyof typeof ar, string> = {
   letter_delete: 'Mektubu sil',
   letter_actions: "Mektup seçenekleri",
   letter_action_reply: "Almanca yanıt yaz",
+  row_actions: "Seçenekler",
+  event_actions: "Randevu seçenekleri",
+  event_action_reply: "Almanca yanıt yaz",
 
   payment_mark_paid: 'Ödendi',
   payment_paid_label: 'Ödendi',
@@ -1185,6 +1194,9 @@ const fa: Record<keyof typeof ar, string> = {
   letter_delete: 'حذف نامه',
   letter_actions: "گزینه‌های نامه",
   letter_action_reply: "نوشتن پاسخ به آلمانی",
+  row_actions: "گزینه‌ها",
+  event_actions: "گزینه‌های قرار",
+  event_action_reply: "نوشتن پاسخ به آلمانی",
 
   payment_mark_paid: 'پرداخت شد',
   payment_paid_label: 'پرداخت شده',
@@ -1519,6 +1531,9 @@ const en: Record<keyof typeof ar, string> = {
   letter_delete: 'Delete letter',
   letter_actions: "Letter options",
   letter_action_reply: "Write a reply in German",
+  row_actions: "Options",
+  event_actions: "Appointment options",
+  event_action_reply: "Write a reply in German",
 
   payment_mark_paid: 'Mark as paid',
   payment_paid_label: 'Paid',
@@ -1853,6 +1868,9 @@ const uk: Record<keyof typeof ar, string> = {
   letter_delete: 'Видалити лист',
   letter_actions: "Дії з листом",
   letter_action_reply: "Написати відповідь німецькою",
+  row_actions: "Дії",
+  event_actions: "Дії із зустріччю",
+  event_action_reply: "Написати відповідь німецькою",
 
   payment_mark_paid: 'Позначити як сплачено',
   payment_paid_label: 'Сплачено',

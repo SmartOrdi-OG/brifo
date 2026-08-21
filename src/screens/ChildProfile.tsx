@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail, Trash2 } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
-import { LetterMenu } from '../components/LetterMenu';
+import { RowMenu } from '../components/RowMenu';
+import { prefillFromLetter } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -159,7 +160,24 @@ export function ChildProfile() {
               <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
               <p className="nums">{l.createdAt.slice(0, 10)}</p>
             </div>
-            <LetterMenu letter={l} childName={child?.name} onDelete={() => deleteLetter(l.id)} />
+            <RowMenu
+              items={[
+                {
+                  key: 'reply',
+                  label: t('letter_action_reply'),
+                  icon: <PenLine size={16} strokeWidth={2} />,
+                  onSelect: () => navigate('/reply', { state: { prefill: prefillFromLetter(l.analysis, child?.name) } }),
+                },
+                {
+                  key: 'delete',
+                  label: t('letter_delete'),
+                  icon: <Trash2 size={16} strokeWidth={2} />,
+                  onSelect: () => deleteLetter(l.id),
+                  danger: true,
+                },
+              ]}
+              label={t('letter_actions')}
+            />
           </div>
         ))
       )}

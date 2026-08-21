@@ -1,9 +1,9 @@
-.letter-menu {
+.row-menu {
   position: relative;
   flex-shrink: 0;
 }
 
-.letter-menu-btn {
+.row-menu-btn {
   display: grid;
   place-items: center;
   width: 32px;
@@ -15,11 +15,11 @@
   cursor: pointer;
 }
 
-.letter-menu-btn:active {
+.row-menu-btn:active {
   background: var(--card-active);
 }
 
-.letter-menu-popup {
+.row-menu-popup {
   position: absolute;
   top: 36px;
   /* Opens toward the middle of the screen rather than off its edge, in both
@@ -36,7 +36,7 @@
   box-shadow: 0 14px 34px rgba(23, 25, 60, 0.18);
 }
 
-.letter-menu-popup button {
+.row-menu-popup button {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -53,10 +53,10 @@
   cursor: pointer;
 }
 
-.letter-menu-popup button:active {
+.row-menu-popup button:active {
   background: var(--card-active);
 }
 
-.letter-menu-popup button.danger {
+.row-menu-popup button.danger {
   color: var(--red);
 }
