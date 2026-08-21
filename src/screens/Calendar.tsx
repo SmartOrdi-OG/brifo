@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { CalendarX2, ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CalendarX2, ChevronLeft, ChevronRight, Pencil, PenLine, Plus, Trash2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { GuideTipCard } from '../components/GuideTip';
+import { RowMenu } from '../components/RowMenu';
+import { prefillFromEvent } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { ALL_CHILDREN, type CalendarEvent } from '../types/data';
@@ -61,6 +64,7 @@ function compareByTime(a: CalendarEvent, b: CalendarEvent): number {
 }
 
 export function Calendar() {
+  const navigate = useNavigate();
   const { t, dir } = useLanguage();
   const { children, events, addManualEvent, updateEvent, deleteEvent } = useData();
 
@@ -148,12 +152,30 @@ export function Calendar() {
         <div className="calendar-row-actions">
           <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
           <AddToCalendarButton title={e.title} date={e.date} time={e.time} description={eventDescription(e)} compact />
-          <button className="calendar-edit" onClick={() => startEdit(e)} aria-label={t('calendar_edit_event')}>
-            <Pencil size={16} strokeWidth={2} />
-          </button>
-          <button className="calendar-delete" onClick={() => deleteEvent(e.id)} aria-label={t('calendar_delete_event')}>
-            <Trash2 size={16} strokeWidth={2} />
-          </button>
+          <RowMenu
+            items={[
+              {
+                key: 'edit',
+                label: t('calendar_edit_event'),
+                icon: <Pencil size={16} strokeWidth={2} />,
+                onSelect: () => startEdit(e),
+              },
+              {
+                key: 'reply',
+                label: t('event_action_reply'),
+                icon: <PenLine size={16} strokeWidth={2} />,
+                onSelect: () => navigate('/reply', { state: { prefill: prefillFromEvent(e, child?.name) } }),
+              },
+              {
+                key: 'delete',
+                label: t('calendar_delete_event'),
+                icon: <Trash2 size={16} strokeWidth={2} />,
+                onSelect: () => deleteEvent(e.id),
+                danger: true,
+              },
+            ]}
+            label={t('event_actions')}
+          />
         </div>
       </div>
     );
