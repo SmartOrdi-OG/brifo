@@ -42,9 +42,15 @@ function buildSystemPrompt(lang: string): string {
     'Never assume the recipient is a school. Take it from the "Recipient" line when one is ' +
     'given, otherwise infer it from the details, and address the letter accordingly. ' +
     "Do not mention school, lessons or teachers unless the recipient really is a school. " +
-    'Write a polite, correctly formatted, formal German letter ' +
+    'Write a polite, formal German letter ' +
     `based on the intent and the details provided (the details may be written in ${target}). ` +
-    `Then provide an accurate ${target} translation of the exact same letter.`
+    'Format the letter with real line breaks, following standard German business-letter structure: ' +
+    'the salutation (e.g. "Sehr geehrter Herr Dr. Kar,") alone on its own line, then a blank line, ' +
+    'then the body as one or more short paragraphs separated by blank lines, then a blank line, then ' +
+    'a closing phrase (e.g. "Mit freundlichen Grüßen") on its own line. Never run the salutation ' +
+    'directly into the first sentence of the body on the same line. ' +
+    `Then provide an accurate ${target} translation of the exact same letter, using the same ` +
+    'paragraph structure (translated salutation alone on its own line, blank line, body, blank line, closing).'
   );
 }
 
