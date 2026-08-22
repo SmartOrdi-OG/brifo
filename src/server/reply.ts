@@ -44,13 +44,25 @@ function buildSystemPrompt(lang: string): string {
     "Do not mention school, lessons or teachers unless the recipient really is a school. " +
     'Write a polite, formal German letter ' +
     `based on the intent and the details provided (the details may be written in ${target}). ` +
-    'Format the letter with real line breaks, following standard German business-letter structure: ' +
-    'the salutation (e.g. "Sehr geehrter Herr Dr. Kar,") alone on its own line, then a blank line, ' +
-    'then the body as one or more short paragraphs separated by blank lines, then a blank line, then ' +
-    'a closing phrase (e.g. "Mit freundlichen Grüßen") on its own line. Never run the salutation ' +
-    'directly into the first sentence of the body on the same line. ' +
-    `Then provide an accurate ${target} translation of the exact same letter, using the same ` +
-    'paragraph structure (translated salutation alone on its own line, blank line, body, blank line, closing).'
+    '\n\n' +
+    'The "german" field is not one paragraph — it MUST be laid out exactly like this template, ' +
+    'with real newline characters at every line break shown below (replace the bracketed parts, ' +
+    'keep every blank line):\n' +
+    '[Salutation],\n' +
+    '\n' +
+    '[First paragraph of the body.]\n' +
+    '\n' +
+    '[Further paragraphs, each separated by a blank line, only if needed.]\n' +
+    '\n' +
+    '[Closing phrase]\n' +
+    '\n' +
+    'Hard rules, because this has been generated wrong before: the comma after the salutation is ' +
+    'immediately followed by a newline — the salutation is never followed by body text on the same ' +
+    'line. The closing phrase (e.g. "Mit freundlichen Grüßen") is always its own final line, on its ' +
+    'own paragraph — it is never appended to the end of the last body sentence. ' +
+    `Then provide an accurate ${target} translation of the exact same letter in the "translation" ` +
+    'field, using the identical layout (translated salutation alone on its own line, blank line, ' +
+    'body paragraphs, blank line, closing phrase alone on its own line).'
   );
 }
 
