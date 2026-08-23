@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mybrifo.twa",
+      "sha256_cert_fingerprints": [
+        "A5:FD:5E:6D:1A:E3:2C:3A:E9:7D:55:65:B7:6A:49:2D:A6:8C:D5:FE:DC:68:19:F4:A3:AC:C0:6E:15:8D:D3:F2"
+      ]
+    }
+  }
+]
