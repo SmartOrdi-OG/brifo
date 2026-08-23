@@ -342,6 +342,7 @@ const ar = {
   paywall_redirecting: 'جاري التحويل...',
   paywall_checkout_error: 'صار في مشكلة، جرّب مرة ثانية',
   paywall_checkout_cancelled: 'ألغيت عملية الاشتراك',
+  paywall_android_web_only: 'للاشتراك في Brifo، افتح التطبيق من متصفح جوالك على mybrifo.com.',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -681,6 +682,7 @@ const de: Record<keyof typeof ar, string> = {
   paywall_redirecting: 'Weiterleitung...',
   paywall_checkout_error: 'Es gab ein Problem, bitte versuch es noch mal',
   paywall_checkout_cancelled: 'Du hast den Abo-Vorgang abgebrochen',
+  paywall_android_web_only: 'Um Brifo zu abonnieren, öffne die App im Browser deines Handys unter mybrifo.com.',
 };
 
 const tr: Record<keyof typeof ar, string> = {
@@ -1020,6 +1022,7 @@ const tr: Record<keyof typeof ar, string> = {
   paywall_redirecting: 'Yönlendiriliyor...',
   paywall_checkout_error: 'Bir sorun oluştu, tekrar dene',
   paywall_checkout_cancelled: 'Abonelik işlemini iptal ettin',
+  paywall_android_web_only: "Brifo'ya abone olmak için uygulamayı telefonunun tarayıcısından mybrifo.com adresinde aç.",
 };
 
 const fa: Record<keyof typeof ar, string> = {
@@ -1359,6 +1362,7 @@ const fa: Record<keyof typeof ar, string> = {
   paywall_redirecting: 'در حال انتقال...',
   paywall_checkout_error: 'مشکلی پیش اومد، دوباره امتحان کن',
   paywall_checkout_cancelled: 'فرآیند اشتراک رو لغو کردی',
+  paywall_android_web_only: 'برای اشتراک در Brifo، اپ رو از مرورگر گوشیت روی mybrifo.com باز کن.',
 };
 
 const en: Record<keyof typeof ar, string> = {
@@ -1698,6 +1702,7 @@ const en: Record<keyof typeof ar, string> = {
   paywall_redirecting: 'Redirecting...',
   paywall_checkout_error: 'Something went wrong, try again',
   paywall_checkout_cancelled: 'You cancelled the subscription process',
+  paywall_android_web_only: 'To subscribe to Brifo, open the app in your phone’s browser at mybrifo.com.',
 };
 
 const uk: Record<keyof typeof ar, string> = {
@@ -2037,6 +2042,7 @@ const uk: Record<keyof typeof ar, string> = {
   paywall_redirecting: 'Перенаправлення...',
   paywall_checkout_error: 'Щось пішло не так, спробуйте ще раз',
   paywall_checkout_cancelled: 'Ви скасували процес підписки',
+  paywall_android_web_only: 'Щоб підписатися на Brifo, відкрийте застосунок у браузері телефону на mybrifo.com.',
 };
 
 export const translations = { ar, de, tr, fa, en, uk };
@@ -2098,5 +2104,6 @@ export const arByGender: Record<Gender, Partial<Record<TranslationKey, string>>>
     paywall_trial_ended: "انتهت فترتك التجريبية — اشتركي للمتابعة",
     paywall_checkout_error: "صار في مشكلة، جرّبي مرة ثانية",
     paywall_checkout_cancelled: "ألغيتي عملية الاشتراك",
+    paywall_android_web_only: "للاشتراك في Brifo، افتحي التطبيق من متصفح جوالك على mybrifo.com.",
   },
 };
