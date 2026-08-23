@@ -92,45 +92,58 @@ export function eventAnchorUtcMs(dateStr: string, timeStr?: string): number {
   return Date.parse(`${dateStr}T00:00:00Z`) + (hour * 60 + minute - offsetMin) * 60000;
 }
 
-/** Wording is chosen from how much time is actually left, and the "today"
- * band exists because that is the common case: the daily cron delivers on the
- * morning of the appointment, so a 14:00 appointment is announced at 08:00
- * with six hours to go. Without this band that reminder claimed "in an hour",
- * which was simply false — anything between one hour and a full day fell into
- * the hour bucket. Keep the bands in sync with labelFor in
- * src/lib/useReminderScheduler.ts. */
-function offsetLabel(minutesLeft: number, lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk'): string {
+/** Today's date in Vienna, so "today" and "tomorrow" mean what a reader in
+ * Austria would mean by them. */
+function viennaToday(nowMs: number): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Vienna' }).format(new Date(nowMs));
+}
+
+/** Whether the appointment is on a later calendar day than today, in Vienna.
+ *
+ * Deciding this from the date rather than from a minute threshold is what
+ * makes it exact. The cron does not fire to the second, so a reminder due 24h
+ * ahead can go out at 23h59m — under a `>= 1440` rule that reads as "today"
+ * for an appointment that is plainly tomorrow. Comparing dates cannot drift. */
+function isLaterDay(eventDate: string, nowMs: number): boolean {
+  return eventDate > viennaToday(nowMs);
+}
+
+/** Wording from what is actually true at send time: which day, then how much
+ * of it is left. The in-app fallback in src/lib/useReminderScheduler.ts uses
+ * minutes alone, which is fine there — it fires at the exact offset, so it has
+ * no drift to correct for. */
+function offsetLabel(minutesLeft: number, lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk', tomorrow: boolean): string {
   if (lang === 'de') {
-    if (minutesLeft >= 1440) return 'Termin morgen';
+    if (tomorrow) return 'Termin morgen';
     if (minutesLeft >= 120) return 'Termin heute';
     if (minutesLeft >= 60) return 'Termin in einer Stunde';
     return 'Termin in Kürze';
   }
   if (lang === 'tr') {
-    if (minutesLeft >= 1440) return 'Randevun yarın';
+    if (tomorrow) return 'Randevun yarın';
     if (minutesLeft >= 120) return 'Randevun bugün';
     if (minutesLeft >= 60) return 'Randevuna bir saat kaldı';
     return 'Randevun yakında';
   }
   if (lang === 'fa') {
-    if (minutesLeft >= 1440) return 'قرارت فرداست';
+    if (tomorrow) return 'قرارت فرداست';
     if (minutesLeft >= 120) return 'قرارت امروزه';
     if (minutesLeft >= 60) return 'قرارت یک ساعت دیگه‌ست';
     return 'قرارت به‌زودیه';
   }
   if (lang === 'en') {
-    if (minutesLeft >= 1440) return 'Your appointment is tomorrow';
+    if (tomorrow) return 'Your appointment is tomorrow';
     if (minutesLeft >= 120) return 'Your appointment is today';
     if (minutesLeft >= 60) return 'Your appointment is in an hour';
     return 'Your appointment is coming up soon';
   }
   if (lang === 'uk') {
-    if (minutesLeft >= 1440) return 'Ваша зустріч завтра';
+    if (tomorrow) return 'Ваша зустріч завтра';
     if (minutesLeft >= 120) return 'Ваша зустріч сьогодні';
     if (minutesLeft >= 60) return 'Ваша зустріч за годину';
     return 'Ваша зустріч скоро';
   }
-  if (minutesLeft >= 1440) return 'موعدك بكرا';
+  if (tomorrow) return 'موعدك بكرا';
   if (minutesLeft >= 120) return 'موعدك اليوم';
   if (minutesLeft >= 60) return 'موعدك بعد ساعة';
   return 'موعدك قريباً';
@@ -200,7 +213,7 @@ export async function runDueReminders(windowMinutes: number): Promise<RunDueRemi
 
         const result = await sendPush(subscription, {
           title: event.title,
-          body: offsetLabel(actualMinutesLeft, reminders.lang),
+          body: offsetLabel(actualMinutesLeft, reminders.lang, isLaterDay(event.date, now)),
           tag: `${event.id}:${offsetMin}`,
           url: '/calendar',
         });

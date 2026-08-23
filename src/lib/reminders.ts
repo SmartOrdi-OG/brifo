@@ -8,7 +8,20 @@ import { pushEnabled } from './push';
 const ENABLED_KEY = 'brifo_reminders_enabled';
 const NOTIFIED_KEY = 'brifo_reminders_notified';
 
-export const REMINDER_OFFSET_DAY_BEFORE = 1440;
+/** How long before an appointment a reminder becomes due — 26 hours, not 24.
+ *
+ * The cron that delivers to a closed app runs once daily at 08:00 Vienna, and
+ * a reminder only goes out on the first run at or after it falls due. At 24h
+ * that put the due moment at the same clock time as the appointment, so an
+ * 08:00 appointment fell due at exactly 08:00 the day before: land a minute
+ * early and the whole thing slipped to the next run — 08:00 on the day
+ * itself, the same moment as the appointment. Useless, and it was the likely
+ * outcome for anything booked between 08:00 and 10:00.
+ *
+ * Two extra hours put the due moment safely before the run. Simulated across
+ * appointment times, nothing gets a later reminder than before and early-
+ * morning ones go from about an hour's notice to a full day's. */
+export const REMINDER_LEAD_MINUTES = 26 * 60;
 
 /** One timing, not a choice.
  *
@@ -24,7 +37,7 @@ export const REMINDER_OFFSET_DAY_BEFORE = 1440;
  * the fire time. That's a useful, honest promise, and it is the one the
  * settings screen now makes. Restoring a choice here means moving to a plan
  * with sub-daily cron first. */
-export const REMINDER_OFFSETS = [REMINDER_OFFSET_DAY_BEFORE];
+export const REMINDER_OFFSETS = [REMINDER_LEAD_MINUTES];
 
 export function notificationsSupported(): boolean {
   return typeof window !== 'undefined' && 'Notification' in window;
