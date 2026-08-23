@@ -7,6 +7,7 @@ import { isRtlLang, type TranslationKey } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
+import { isAndroidTwa } from '../lib/platform';
 import './Paywall.css';
 
 const FEATURES: TranslationKey[] = ['paywall_feature_scan', 'paywall_feature_organize', 'paywall_feature_reply'];
@@ -113,31 +114,40 @@ export function Paywall() {
 
             <p className="paywall-free-note">{tx('paywall_free_note')}</p>
 
-            <label className="paywall-consent">
-              <input type="checkbox" checked={consented} onChange={(e) => setConsented(e.target.checked)} />
-              <span>
-                {t('paywall_consent_label')}{' '}
-                <span
-                  className="paywall-consent-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/agb');
-                  }}
-                >
-                  {t('paywall_consent_link')}
-                </span>
-              </span>
-            </label>
+            {isAndroidTwa ? (
+              // Google Play requires in-app digital subscriptions to go through
+              // Play Billing, not Stripe — so the Android build never offers a
+              // purchase flow here, only a pointer to the website. See platform.ts.
+              <p className="paywall-note">{tx('paywall_android_web_only')}</p>
+            ) : (
+              <>
+                <label className="paywall-consent">
+                  <input type="checkbox" checked={consented} onChange={(e) => setConsented(e.target.checked)} />
+                  <span>
+                    {t('paywall_consent_label')}{' '}
+                    <span
+                      className="paywall-consent-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate('/agb');
+                      }}
+                    >
+                      {t('paywall_consent_link')}
+                    </span>
+                  </span>
+                </label>
 
-            <button
-              className="scan-btn primary paywall-subscribe"
-              disabled={!consented || loading}
-              onClick={handleSubscribe}
-            >
-              {loading ? t('paywall_redirecting') : t('paywall_subscribe_button')}
-            </button>
-            {error && <p className="paywall-note error">{t('paywall_checkout_error')}</p>}
-            {checkoutResult === 'cancelled' && <p className="paywall-note muted">{t('paywall_checkout_cancelled')}</p>}
+                <button
+                  className="scan-btn primary paywall-subscribe"
+                  disabled={!consented || loading}
+                  onClick={handleSubscribe}
+                >
+                  {loading ? t('paywall_redirecting') : t('paywall_subscribe_button')}
+                </button>
+                {error && <p className="paywall-note error">{t('paywall_checkout_error')}</p>}
+                {checkoutResult === 'cancelled' && <p className="paywall-note muted">{t('paywall_checkout_cancelled')}</p>}
+              </>
+            )}
           </>
         )}
       </div>
