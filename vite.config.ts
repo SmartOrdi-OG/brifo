@@ -266,6 +266,26 @@ function apiDevMiddleware(): Plugin {
         }),
       )
 
+      // Reachable locally through a tunnel (e.g. `ngrok http 5173`) pointed at
+      // by setWebhook, so the bot can be driven from a real Telegram client
+      // without deploying. Same secret-header check as the deployed route.
+      server.middlewares.use(
+        '/api/telegram',
+        jsonPostRoute(async (body, req) => {
+          const { handleUpdate } = await import('./src/server/telegram.ts')
+          const expected = process.env.TELEGRAM_WEBHOOK_SECRET
+          if (!expected || req.headers['x-telegram-bot-api-secret-token'] !== expected) {
+            return { status: 401, body: { error: 'unauthorized' } }
+          }
+          try {
+            await handleUpdate(body as Parameters<typeof handleUpdate>[0])
+          } catch (err) {
+            console.error('telegram update failed', err)
+          }
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
       server.middlewares.use('/api/cron/send-reminders', async (_req, res) => {
         const { runDueReminders } = await import('./src/server/push.ts')
         res.setHeader('Content-Type', 'application/json')
@@ -299,6 +319,10 @@ export default defineConfig(({ mode }) => {
     'STRIPE_PRICE_ID',
     'STRIPE_WEBHOOK_SECRET',
     'FREE_ACCOUNT_EMAILS',
+    'TELEGRAM_BOT_TOKEN',
+    'TELEGRAM_WEBHOOK_SECRET',
+    'TELEGRAM_DAILY_SCAN_LIMIT',
+    'PUBLIC_BASE_URL',
   ]
   for (const key of passthroughEnvVars) {
     // Assigning `undefined` to process.env[key] would coerce it to the

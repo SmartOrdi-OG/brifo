@@ -21,11 +21,16 @@ export interface ReminderEvent {
   time?: string;
 }
 
+/** The six languages reminders can be worded in — the same set the app and the
+ * Telegram bot speak. Named rather than inlined because three modules now
+ * agree on it. */
+export type ReminderLang = 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk';
+
 interface DeviceReminders {
   events: ReminderEvent[];
   /** Minutes before the event's assumed time (see eventAnchorUtcMs). */
   offsets: number[];
-  lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk';
+  lang: ReminderLang;
 }
 
 let vapidConfigured = false;
@@ -59,7 +64,7 @@ export async function removeSubscription(deviceId: string): Promise<void> {
   await kvSrem(DEVICES_SET, deviceId);
 }
 
-export async function syncReminders(deviceId: string, events: ReminderEvent[], offsets: number[], lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk'): Promise<void> {
+export async function syncReminders(deviceId: string, events: ReminderEvent[], offsets: number[], lang: ReminderLang): Promise<void> {
   await kvSet(remindersKey(deviceId), { events, offsets, lang } satisfies DeviceReminders);
 }
 
@@ -94,7 +99,7 @@ export function eventAnchorUtcMs(dateStr: string, timeStr?: string): number {
 
 /** Today's date in Vienna, so "today" and "tomorrow" mean what a reader in
  * Austria would mean by them. */
-function viennaToday(nowMs: number): string {
+export function viennaToday(nowMs: number): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Vienna' }).format(new Date(nowMs));
 }
 
@@ -112,7 +117,7 @@ function isLaterDay(eventDate: string, nowMs: number): boolean {
  * of it is left. The in-app fallback in src/lib/useReminderScheduler.ts uses
  * minutes alone, which is fine there — it fires at the exact offset, so it has
  * no drift to correct for. */
-function offsetLabel(minutesLeft: number, lang: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk', tomorrow: boolean): string {
+function offsetLabel(minutesLeft: number, lang: ReminderLang, tomorrow: boolean): string {
   if (lang === 'de') {
     if (tomorrow) return 'Termin morgen';
     if (minutesLeft >= 120) return 'Termin heute';
@@ -147,6 +152,13 @@ function offsetLabel(minutesLeft: number, lang: 'ar' | 'de' | 'tr' | 'fa' | 'en'
   if (minutesLeft >= 120) return 'موعدك اليوم';
   if (minutesLeft >= 60) return 'موعدك بعد ساعة';
   return 'موعدك قريباً';
+}
+
+/** The one place a reminder's wording is decided, for web push and for the
+ * Telegram bot alike. Exported so the bot cannot drift into saying something
+ * different from the app about the same appointment. */
+export function reminderBody(eventDate: string, actualMinutesLeft: number, lang: ReminderLang, nowMs: number): string {
+  return offsetLabel(actualMinutesLeft, lang, isLaterDay(eventDate, nowMs));
 }
 
 type SendResult = 'sent' | 'gone' | 'error';
@@ -213,7 +225,7 @@ export async function runDueReminders(windowMinutes: number): Promise<RunDueRemi
 
         const result = await sendPush(subscription, {
           title: event.title,
-          body: offsetLabel(actualMinutesLeft, reminders.lang, isLaterDay(event.date, now)),
+          body: reminderBody(event.date, actualMinutesLeft, reminders.lang, now),
           tag: `${event.id}:${offsetMin}`,
           url: '/calendar',
         });
