@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { runDueReminders } from '../../src/server/push.js';
+import { runDueTelegramReminders, telegramConfigured } from '../../src/server/telegram.js';
 import { ConfigError } from '../../src/server/errors.js';
 
 interface VercelRequest extends IncomingMessage {
@@ -38,8 +39,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Two delivery paths, one schedule. Telegram runs first and in its own
+    // try/catch because web push is the one that can throw ConfigError (no
+    // VAPID keys) — letting that abort the run would silently strand every
+    // bot user's reminders on a deployment that simply never set up push.
+    let telegram = null;
+    if (telegramConfigured()) {
+      try {
+        telegram = await runDueTelegramReminders(WINDOW_MINUTES);
+      } catch (err) {
+        console.error('[api/cron/send-reminders] telegram reminders failed:', err);
+      }
+    }
     const result = await runDueReminders(WINDOW_MINUTES);
-    res.status(200).json({ ok: true, ...result });
+    res.status(200).json({ ok: true, ...result, telegram });
   } catch (err) {
     if (err instanceof ConfigError) {
       console.error('[api/cron/send-reminders] config error:', err.message);
