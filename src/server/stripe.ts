@@ -143,6 +143,15 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
   return { active: stored.status === 'active' || stored.status === 'trialing', currentPeriodEnd: stored.currentPeriodEnd };
 }
 
+/** The delivery did not come from Stripe, or STRIPE_WEBHOOK_SECRET is wrong.
+ *
+ * Worth its own type because it is the one webhook failure that retrying can
+ * never fix — it is a configuration mistake, and it is also the one the
+ * person setting the endpoint up needs to be able to tell apart from "the
+ * event arrived fine but something downstream failed". Both used to come back
+ * as an indistinguishable 400. */
+export class WebhookSignatureError extends Error {}
+
 /** Verifies and applies a Stripe webhook event. Must receive the exact raw
  * request body — Stripe's signature check fails on anything re-serialized
  * from parsed JSON, which is why the calling route disables body parsing. */
@@ -151,7 +160,12 @@ export async function handleWebhookEvent(rawBody: Buffer, signature: string): Pr
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secret) throw new ConfigError('STRIPE_WEBHOOK_SECRET is not set');
 
-  const event = stripe.webhooks.constructEvent(rawBody, signature, secret);
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(rawBody, signature, secret);
+  } catch (err) {
+    throw new WebhookSignatureError(err instanceof Error ? err.message : 'signature verification failed');
+  }
 
   switch (event.type) {
     case 'customer.subscription.created':
