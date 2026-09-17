@@ -7,7 +7,8 @@ import { isRtlLang, type TranslationKey } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
-import { isAndroidTwa } from '../lib/platform';
+import { hidesInAppPurchase } from '../lib/platform';
+import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
 const FEATURES: TranslationKey[] = ['paywall_feature_scan', 'paywall_feature_organize', 'paywall_feature_reply'];
@@ -114,11 +115,34 @@ export function Paywall() {
 
             <p className="paywall-free-note">{tx('paywall_free_note')}</p>
 
-            {isAndroidTwa ? (
-              // Google Play requires in-app digital subscriptions to go through
-              // Play Billing, not Stripe — so the Android build never offers a
-              // purchase flow here, only a pointer to the website. See platform.ts.
-              <p className="paywall-note">{tx('paywall_android_web_only')}</p>
+            {hidesInAppPurchase ? (
+              // Neither store lets a digital subscription be sold in-app —
+              // Google Play wants Play Billing, and a Telegram Mini App on iOS
+              // falls under Apple's rules — so these builds only point at the
+              // website. See platform.ts.
+              <>
+                <p className="paywall-note">{tx('paywall_store_web_only')}</p>
+                {isTelegramMiniApp && (
+                  // A note alone is a dead end inside Telegram: there is no
+                  // address bar to type the URL into. openLink leaves for the
+                  // real browser, which is the context checkout has to run in
+                  // anyway — Telegram's own in-app browser is not outside the
+                  // app for the purposes of the rule above.
+                  <button
+                    // Same full-width primary treatment as the subscribe
+                    // button it stands in for — inside Telegram it is the
+                    // only thing to do on this screen.
+                    className="scan-btn primary paywall-subscribe"
+                    onClick={() => {
+                      if (!openOutsideTelegram('https://mybrifo.com/paywall')) {
+                        window.open('https://mybrifo.com/paywall', '_blank', 'noopener');
+                      }
+                    }}
+                  >
+                    {tx('paywall_open_website')}
+                  </button>
+                )}
+              </>
             ) : (
               <>
                 <label className="paywall-consent">

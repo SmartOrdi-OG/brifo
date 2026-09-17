@@ -9,6 +9,7 @@ import { ALL_CHILDREN, type Child } from '../types/data';
 import { compressImage, compressImageForStorage, type CompressedImage } from '../lib/compressImage';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
+import { isTelegramMiniApp } from '../lib/telegramWebApp';
 import type { LetterAnalysis } from '../types/analysis';
 import './Scan.css';
 
@@ -70,6 +71,16 @@ export function Scan() {
   }
 
   async function openCamera() {
+    // Telegram's webview does not reliably grant getUserMedia — on iOS it is
+    // refused outright, and some Android builds show a permission prompt that
+    // never resolves. Going straight to the file input hands the job to the
+    // system camera, which works on both. This is the same fallback the catch
+    // below uses; the only difference is not making the user watch it fail
+    // first.
+    if (isTelegramMiniApp) {
+      fallbackCaptureInputRef.current?.click();
+      return;
+    }
     try {
       console.log('[Scan] requesting getUserMedia...');
       const stream = await navigator.mediaDevices.getUserMedia({

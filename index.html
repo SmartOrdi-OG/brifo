@@ -30,6 +30,29 @@
     <link rel="manifest" href="/manifest.webmanifest" />
 
     <title>Brifo — بريفو</title>
+
+    <!-- Telegram Mini App SDK, loaded only when Telegram actually opened this
+         page. Telegram appends #tgWebAppPlatform=… to the URL on every launch,
+         so the check needs no SDK of its own — which is the point: putting a
+         third-party script on every ordinary visit to mybrifo.com would cost
+         every other visitor a request and a connection to telegram.org for a
+         feature they never use. The sessionStorage key is the same one
+         src/lib/telegramWebApp.ts reads; keep them in step. Runs before
+         main.tsx, which is a deferred module. -->
+    <script>
+      (function () {
+        try {
+          var launched = (location.hash + location.search).indexOf('tgWebAppPlatform') !== -1;
+          if (!launched && sessionStorage.getItem('brifo:is-telegram') !== '1') return;
+          sessionStorage.setItem('brifo:is-telegram', '1');
+          var s = document.createElement('script');
+          s.src = 'https://telegram.org/js/telegram-web-app.js';
+          document.head.appendChild(s);
+        } catch (e) {
+          /* Locked-down embed: carry on as a plain web page. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -57,6 +57,8 @@ interface BotStrings {
   hint_send_photo: string;
   btn_reply: string;
   btn_cancel: string;
+  btn_open_app: string;
+  open_app_body: string;
   reply_no_letter: string;
   reply_pick_intent: string;
   reply_ask_details: string;
@@ -98,6 +100,7 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
       'الأوامر:\n' +
       '/mawaid — مواعيدك المحفوظة\n' +
       '/clear — مسح المواعيد المحفوظة\n' +
+      '/app — فتح التطبيق\n' +
       '/lang — تغيير اللغة\n' +
       '/start — من الأول',
     reading: '📖 عم إقرأ الرسالة… خود بالك، بياخد شوي وقت.',
@@ -115,6 +118,8 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
     hint_send_photo: 'ابعتلي صورة الرسالة وأنا إشرحلك شو فيها. /help للمساعدة.',
     btn_reply: '✍️ اكتب رد بالألماني',
     btn_cancel: '✖️ إلغاء',
+    btn_open_app: '📱 افتح تطبيق بريفو',
+    open_app_body: 'تطبيق بريفو فيه كل رسائلك ومواعيدك ودليل الدوائر الرسمية — بينفتح هون جوا تيلغرام.',
     reply_no_letter: 'ابعتلي صورة الرسالة أول شي، وبعدين بكتبلك الرد.',
     reply_pick_intent: 'شو بدك تكتب؟',
     reply_ask_details:
@@ -158,6 +163,7 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
       'Befehle:\n' +
       '/mawaid — gespeicherte Termine\n' +
       '/clear — gespeicherte Termine löschen\n' +
+      '/app — die App öffnen\n' +
       '/lang — Sprache ändern\n' +
       '/start — von vorne',
     reading: '📖 Ich lese den Brief … das dauert einen Moment.',
@@ -175,6 +181,8 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
     hint_send_photo: 'Schick mir ein Foto des Briefes, dann erkläre ich ihn dir. /help für Hilfe.',
     btn_reply: '✍️ Antwort auf Deutsch schreiben',
     btn_cancel: '✖️ Abbrechen',
+    btn_open_app: '📱 Brifo-App öffnen',
+    open_app_body: 'In der Brifo-App findest du alle deine Briefe, Termine und den Behörden-Ratgeber — sie öffnet sich hier in Telegram.',
     reply_no_letter: 'Schick mir zuerst ein Foto des Briefes, dann schreibe ich die Antwort.',
     reply_pick_intent: 'Was möchtest du schreiben?',
     reply_ask_details:
@@ -219,6 +227,7 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
       'Komutlar:\n' +
       '/mawaid — kayıtlı randevular\n' +
       '/clear — kayıtlı randevuları sil\n' +
+      '/app — uygulamayı aç\n' +
       '/lang — dili değiştir\n' +
       '/start — baştan başla',
     reading: '📖 Mektubu okuyorum… biraz sürebilir.',
@@ -236,6 +245,8 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
     hint_send_photo: 'Bana mektubun fotoğrafını gönder, ne yazdığını anlatayım. /help yardım için.',
     btn_reply: '✍️ Almanca cevap yaz',
     btn_cancel: '✖️ İptal',
+    btn_open_app: '📱 Brifo uygulamasını aç',
+    open_app_body: 'Brifo uygulamasında tüm mektupların, randevuların ve resmî kurumlar rehberi var — burada, Telegram içinde açılır.',
     reply_no_letter: 'Önce bana mektubun fotoğrafını gönder, sonra cevabı yazayım.',
     reply_pick_intent: 'Ne yazmak istiyorsun?',
     reply_ask_details:
@@ -278,6 +289,7 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
       'دستورها:\n' +
       '/mawaid — قرارهای ذخیره‌شده\n' +
       '/clear — پاک کردن قرارها\n' +
+      '/app — باز کردن اپ\n' +
       '/lang — تغییر زبان\n' +
       '/start — از اول',
     reading: '📖 دارم نامه را می‌خوانم… کمی طول می‌کشد.',
@@ -295,6 +307,8 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
     hint_send_photo: 'عکس نامه را بفرست تا توضیح بدهم چه نوشته. /help برای راهنما.',
     btn_reply: '✍️ نوشتن پاسخ به آلمانی',
     btn_cancel: '✖️ لغو',
+    btn_open_app: '📱 باز کردن اپ بریفو',
+    open_app_body: 'در اپ بریفو همهٔ نامه‌ها، قرارها و راهنمای ادارات هست — همین‌جا داخل تلگرام باز می‌شود.',
     reply_no_letter: 'اول عکس نامه را بفرست، بعد پاسخ را می‌نویسم.',
     reply_pick_intent: 'چه چیزی می‌خواهی بنویسی؟',
     reply_ask_details:
@@ -338,6 +352,7 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
       'Commands:\n' +
       '/mawaid — your saved appointments\n' +
       '/clear — delete saved appointments\n' +
+      '/app — open the app\n' +
       '/lang — change language\n' +
       '/start — start over',
     reading: '📖 Reading the letter… this takes a moment.',
@@ -355,6 +370,8 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
     hint_send_photo: 'Send me a photo of the letter and I will explain it. /help for help.',
     btn_reply: '✍️ Write a reply in German',
     btn_cancel: '✖️ Cancel',
+    btn_open_app: '📱 Open the Brifo app',
+    open_app_body: 'The Brifo app has all your letters, appointments and the guide to Austrian offices — it opens right here inside Telegram.',
     reply_no_letter: 'Send me a photo of the letter first, then I will write the reply.',
     reply_pick_intent: 'What would you like to write?',
     reply_ask_details:
@@ -398,6 +415,7 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
       'Команди:\n' +
       '/mawaid — збережені зустрічі\n' +
       '/clear — видалити збережені зустрічі\n' +
+      '/app — відкрити застосунок\n' +
       '/lang — змінити мову\n' +
       '/start — почати спочатку',
     reading: '📖 Читаю лист… це трохи триває.',
@@ -415,6 +433,8 @@ export const BOT_TEXT: Record<BotLang, BotStrings> = {
     hint_send_photo: 'Надішли мені фото листа, і я поясню, про що він. /help — довідка.',
     btn_reply: '✍️ Написати відповідь німецькою',
     btn_cancel: '✖️ Скасувати',
+    btn_open_app: '📱 Відкрити застосунок Brifo',
+    open_app_body: 'У застосунку Brifo є всі ваші листи, зустрічі та довідник установ — він відкривається тут, усередині Telegram.',
     reply_no_letter: 'Спершу надішли фото листа, а тоді я напишу відповідь.',
     reply_pick_intent: 'Що ти хочеш написати?',
     reply_ask_details:

@@ -8,6 +8,7 @@ import { DataProvider } from './context/DataContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
+import { TelegramChrome } from './components/TelegramChrome'
 import { enableServiceWorkerAutoReload } from './lib/swAutoReload'
 
 enableServiceWorkerAutoReload()
@@ -16,6 +17,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider>
+        {/* Above the gates on purpose — see TelegramChrome's own note. */}
+        <TelegramChrome />
         <LanguageProvider>
           <AuthProvider>
             <SubscriptionProvider>
