@@ -17,9 +17,21 @@ const STORAGE_KEY = 'brifo_lang';
 const GENDER_KEY = 'brifo_gender';
 const VALID_LANGS: readonly Lang[] = ['ar', 'de', 'tr', 'fa', 'en', 'uk'];
 
+/** English is what a first-time visitor gets, and only a first-time one: any
+ * stored choice wins, so nobody who has already picked a language is moved.
+ *
+ * Arabic used to be the fallback, from when the only way in was a link shared
+ * in an Arabic-speaking group. The bot put Brifo in front of people who arrive
+ * without that introduction, and opening in a script they cannot read is a
+ * worse first impression than opening in one most people can navigate. The
+ * language picker is on the first screen either way.
+ *
+ * Kept in step with the pre-paint script in index.html, which reads the same
+ * key and applies the same fallback so the first frame is never in the wrong
+ * direction. */
 function readStoredLang(): Lang {
   const stored = localStorage.getItem(STORAGE_KEY);
-  return VALID_LANGS.includes(stored as Lang) ? (stored as Lang) : 'ar';
+  return VALID_LANGS.includes(stored as Lang) ? (stored as Lang) : 'en';
 }
 
 function readStoredGender(): Gender | null {
