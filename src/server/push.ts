@@ -21,9 +21,8 @@ export interface ReminderEvent {
   time?: string;
 }
 
-/** The six languages reminders can be worded in — the same set the app and the
- * Telegram bot speak. Named rather than inlined because three modules now
- * agree on it. */
+/** The six languages reminders can be worded in — the same set the app
+ * speaks. Named rather than inlined because several places agree on it. */
 export type ReminderLang = 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk';
 
 interface DeviceReminders {
@@ -99,7 +98,7 @@ export function eventAnchorUtcMs(dateStr: string, timeStr?: string): number {
 
 /** Today's date in Vienna, so "today" and "tomorrow" mean what a reader in
  * Austria would mean by them. */
-export function viennaToday(nowMs: number): string {
+function viennaToday(nowMs: number): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Vienna' }).format(new Date(nowMs));
 }
 
@@ -154,10 +153,8 @@ function offsetLabel(minutesLeft: number, lang: ReminderLang, tomorrow: boolean)
   return 'موعدك قريباً';
 }
 
-/** The one place a reminder's wording is decided, for web push and for the
- * Telegram bot alike. Exported so the bot cannot drift into saying something
- * different from the app about the same appointment. */
-export function reminderBody(eventDate: string, actualMinutesLeft: number, lang: ReminderLang, nowMs: number): string {
+/** The one place a reminder's wording is decided. */
+function reminderBody(eventDate: string, actualMinutesLeft: number, lang: ReminderLang, nowMs: number): string {
   return offsetLabel(actualMinutesLeft, lang, isLaterDay(eventDate, nowMs));
 }
 
