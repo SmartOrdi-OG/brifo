@@ -79,8 +79,12 @@ function splitForTelegram(text: string): string[] {
   return chunks;
 }
 
+/** A `web_app` button launches the Mini App (the full Brifo web app) inside
+ * Telegram; a `callback_data` one comes back to this webhook. */
+type InlineButton = { text: string } & ({ callback_data: string } | { web_app: { url: string } });
+
 interface InlineKeyboard {
-  inline_keyboard: { text: string; callback_data: string }[][];
+  inline_keyboard: InlineButton[][];
 }
 
 async function send(chatId: number, html: string, keyboard?: InlineKeyboard): Promise<void> {
@@ -414,9 +418,23 @@ function intentKeyboard(lang: BotLang): InlineKeyboard {
   };
 }
 
-function languageKeyboard(): InlineKeyboard {
+/** The Mini App button, when there is somewhere real to point it.
+ *
+ * Telegram only accepts an https URL here, so a local or unset base URL yields
+ * no button rather than one that errors when tapped. */
+function openAppButton(lang: BotLang): InlineButton[] | null {
+  const url = appBaseUrl();
+  if (!url.startsWith('https://')) return null;
+  return [{ text: t(lang, 'btn_open_app'), web_app: { url } }];
+}
+
+function languageKeyboard(lang: BotLang): InlineKeyboard {
+  const openApp = openAppButton(lang);
   return {
-    inline_keyboard: BOT_LANGS.map((code) => [{ text: LANG_NAMES[code], callback_data: `l:${code}` }]),
+    inline_keyboard: [
+      ...BOT_LANGS.map((code) => [{ text: LANG_NAMES[code], callback_data: `l:${code}` }]),
+      ...(openApp ? [openApp] : []),
+    ],
   };
 }
 
@@ -585,7 +603,7 @@ async function handleCommand(chatId: number, state: ChatState, command: string):
       await send(
         chatId,
         `<b>${escapeHtml(t(lang, 'welcome_title'))}</b>\n\n${escapeHtml(t(lang, 'welcome_body'))}`,
-        languageKeyboard(),
+        languageKeyboard(lang),
       );
       return;
 
@@ -594,8 +612,20 @@ async function handleCommand(chatId: number, state: ChatState, command: string):
       return;
 
     case '/lang':
-      await send(chatId, escapeHtml(t(lang, 'lang_prompt')), languageKeyboard());
+      await send(chatId, escapeHtml(t(lang, 'lang_prompt')), languageKeyboard(lang));
       return;
+
+    case '/app': {
+      const openApp = openAppButton(lang);
+      // No Mini App to open (unset or non-https base URL): say what the bot
+      // can do instead of sending an empty message.
+      if (!openApp) {
+        await send(chatId, escapeHtml(t(lang, 'hint_send_photo')));
+        return;
+      }
+      await send(chatId, escapeHtml(t(lang, 'open_app_body')), { inline_keyboard: [openApp] });
+      return;
+    }
 
     case '/cancel':
       state.awaitingReplyIntent = undefined;
