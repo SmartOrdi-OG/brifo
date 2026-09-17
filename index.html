@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <!-- maximum-scale/user-scalable: this is a phone app with one column and no
@@ -30,6 +30,25 @@
     <link rel="manifest" href="/manifest.webmanifest" />
 
     <title>Brifo — بريفو</title>
+
+    <!-- Language and direction before the first paint. React sets these too
+         (LanguageContext), but not until it has mounted — long enough for a
+         returning Arabic reader to see one frame of the English default laid
+         out left-to-right, and for the whole layout to jump when it corrects.
+         Same storage key and same fallback as readStoredLang(); keep them in
+         step. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('brifo_lang');
+          var lang = ['ar', 'de', 'tr', 'fa', 'en', 'uk'].indexOf(stored) >= 0 ? stored : 'en';
+          document.documentElement.lang = lang;
+          document.documentElement.dir = lang === 'ar' || lang === 'fa' ? 'rtl' : 'ltr';
+        } catch (e) {
+          /* Storage blocked: the static attributes above already say en/ltr. */
+        }
+      })();
+    </script>
 
     <!-- Telegram Mini App SDK, loaded only when Telegram actually opened this
          page. Telegram appends #tgWebAppPlatform=… to the URL on every launch,
