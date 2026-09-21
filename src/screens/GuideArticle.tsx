@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
@@ -6,6 +7,24 @@ import { getGuideArticles } from '../data/guideArticles';
 import { GUIDE_ARTICLE_ICONS } from '../data/guideIcons';
 import { isolateBidiRuns } from '../lib/bidiText';
 import './GuideArticle.css';
+
+/** Renders the `**…**` emphasis the article copy uses.
+ *
+ * The copy has carried these markers since the first non-school articles were
+ * written, and nothing ever interpreted them — readers saw the asterisks. They
+ * mark the one sentence in an article that costs money or time to miss ("the
+ * deadline starts before the letter reaches you", "an AMS appointment is
+ * compulsory"), so they are worth rendering rather than stripping.
+ *
+ * Splitting happens before isolateBidiRuns so each half still gets its Latin
+ * runs isolated; running it the other way round would hand the bidi helper
+ * markup it cannot walk into. */
+function withEmphasis(text: string, rtl: boolean): ReactNode[] {
+  return text.split('**').map((part, i) => {
+    const content = rtl ? isolateBidiRuns(part) : part;
+    return i % 2 === 1 ? <strong key={i}>{content}</strong> : <span key={i}>{content}</span>;
+  });
+}
 
 export function GuideArticle() {
   const { id } = useParams<{ id: string }>();
@@ -36,7 +55,7 @@ export function GuideArticle() {
                 isolateBidiRuns is for short fragments embedded in RTL prose, and
                 its regex doesn't even cover umlauts, so it would split words
                 mid-word here. */}
-            {isRtlLang(lang) ? isolateBidiRuns(p) : p}
+            {withEmphasis(p, isRtlLang(lang))}
           </p>
         ))}
       </div>
