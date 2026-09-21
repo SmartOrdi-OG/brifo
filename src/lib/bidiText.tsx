@@ -6,8 +6,19 @@ import type { ReactNode } from 'react';
  * separator is itself a Latin/numeric character. This groups "6,50", "13:30",
  * "2026-07-04" and "Volksschule 23" into one run each, without swallowing the
  * Arabic text around them.
+ *
+ * The range past ASCII (U+00C0–U+024F, Latin-1 Supplement and Latin Extended
+ * A/B) is what keeps German words whole. Without it "Meldebestätigung" was two
+ * runs either side of a stray "ä", and the bidi algorithm reordered them into
+ * "tigungäMeldebest" on screen — a word the reader cannot even search for.
+ * Every umlaut word in the guide had this: Frühwarnung, Deutschförderklasse,
+ * Behörde, Gebühr.
  */
-const LATIN_NUMERIC_RUN = /[A-Za-z0-9€$%]+(?:(?:[.,:/-]|\s+(?=[A-Za-z0-9€$%]))[A-Za-z0-9€$%]+)*/g;
+const LATIN_LETTER = 'A-Za-z0-9€$%\\u00C0-\\u024F';
+const LATIN_NUMERIC_RUN = new RegExp(
+  `[${LATIN_LETTER}]+(?:(?:[.,:/-]|\\s+(?=[${LATIN_LETTER}]))[${LATIN_LETTER}]+)*`,
+  'g',
+);
 
 /**
  * The Unicode bidi algorithm reorders "weak"/"neutral" runs (digits, decimal

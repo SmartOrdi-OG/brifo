@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
@@ -58,6 +59,17 @@ export function GuideArticle() {
             {withEmphasis(p, isRtlLang(lang))}
           </p>
         ))}
+        {article.source && (
+          /* The domain is the label. It says who is behind the claim without
+             needing translating into six languages, and it is the part worth
+             reading anyway — oesterreich.gv.at carries different weight from
+             somebody's blog. Opens outside the app; rel is not optional on a
+             target=_blank link. */
+          <a className="article-source" href={article.source} target="_blank" rel="noopener noreferrer">
+            <ExternalLink size={14} strokeWidth={2.25} aria-hidden />
+            <span dir="ltr">{new URL(article.source).hostname.replace(/^www\./, '')}</span>
+          </a>
+        )}
       </div>
     </FlowLayout>
   );

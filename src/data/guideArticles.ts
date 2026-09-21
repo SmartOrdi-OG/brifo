@@ -39,6 +39,10 @@ export interface GuideArticle {
   title: string;
   teaser: string;
   paragraphs: string[];
+  /** Official page the article was checked against, shown at the end so a
+   * reader can verify it and see when the rules move on. The older school
+   * articles predate this and have none yet. */
+  source?: string;
 }
 
 const ar: GuideArticle[] = [
@@ -218,6 +222,7 @@ const ar: GuideArticle[] = [
   },
   {
     id: "familienbeihilfe",
+    source: "https://www.oesterreich.gv.at/de/themen/familie_und_partnerschaft/familienbeihilfe/Seite.450233",
     title: "بدل الأطفال (Familienbeihilfe)",
     teaser: "دعم شهري لكل طفل — مين بيستحقه وكيف بتقدّم",
     paragraphs: [
@@ -231,6 +236,7 @@ const ar: GuideArticle[] = [
   },
   {
     id: "meldezettel",
+    source: "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes",
     title: "تسجيل العنوان (Meldezettel)",
     teaser: "٣ أيام بس — وبدونه ما بتمشي ولا معاملة",
     paragraphs: [
@@ -239,10 +245,14 @@ const ar: GuideArticle[] = [
       "شو بدك: استمارة Meldezettel معبّاة وموقّعة من **صاحب البيت** (Unterkunftgeber) — هاي أكتر نقطة بتتأخر عندها الناس — وجواز سفر أو هوية سارية.",
       "في تلات حالات: Anmeldung (تسجيل جديد)، Ummeldung (نقل من عنوان لعنوان)، Abmeldung (إلغاء لما تترك البيت).",
       "ورقة التسجيل (Meldebestätigung) رح تطلبها بكل معاملة تقريباً: فتح حساب بنك، تسجيل المدرسة، التأمين، تمديد الإقامة. احتفظ فيها وصوّرها احتياط.",
+      "⚠️ إذا صاحب البيت رفض يوقّع: القانون بيلزمه يمكّنك من التسجيل، وما بيحق له يرفض بدون سبب. والأهم — **مكتب التسجيل بيقبل التسجيل حتى بدون توقيعه**. ما تخلّي هالنقطة تأخرك عن الـ٣ أيام.",
+      "وفي طريق أسهل: صار ممكن تسجّل **أونلاين** عبر oesterreich.gv.at إذا عندك ID Austria، والتأكيد بينزل فوراً.",
+      "التأخير عن الـ٣ أيام مخالفة إدارية، والغرامة ممكن توصل ٧٢٦ يورو (وأكتر بالتكرار).",
     ],
   },
   {
     id: "ecard-oegk",
+    source: "https://www.oegk.at/cdscontent/?contentid=10007.870516",
     title: "التأمين الصحي والـ e-card",
     teaser: "الفرق بين Kassenarzt و Wahlarzt بيوفّرلك مصاري",
     paragraphs: [
@@ -252,10 +262,12 @@ const ar: GuideArticle[] = [
       "⚠️ **الفرق اللي بيكلّف:** الـ Kassenarzt بيحاسب التأمين مباشرة وما بتدفع شي. الـ Wahlarzt بتدفعله إنت كامل، وبعدين بتقدّم الفاتورة لـ ÖGK وبيرجعولك حوالي **٨٠٪ من تعرفة التأمين** — مو ٨٠٪ من اللي دفعته. الفرق ممكن يكون كبير. اسأل وقت ما تاخد الموعد.",
       "ورا الـ e-card في البطاقة الأوروبية (EHIC) — بتغطي الحالات الطارئة بدول الاتحاد الأوروبي.",
       "إذا ضاعت البطاقة، اطلب وحدة جديدة من ÖGK بأسرع وقت.",
+      "من تموز ٢٠٢٤ صار تقديم فاتورة الـ Wahlarzt أسهل — معظمها بينعالج إلكترونياً وبسرعة.",
     ],
   },
   {
     id: "ams-briefe",
+    source: "https://www.ams.at/arbeitsuchende/arbeitslos-was-tun/wichtige-informationen-zu-ams-leistungen",
     title: "رسائل مكتب العمل (AMS)",
     teaser: "الغياب عن موعد ممكن يوقف الدعم أسابيع",
     paragraphs: [
@@ -265,23 +277,27 @@ const ar: GuideArticle[] = [
       "لما يبعتولك عرض شغل (Vermittlungsvorschlag)، لازم تقدّم عليه فعلاً وترجع تخبرهم بالنتيجة. تجاهله بينحسب رفض، وإلو نفس نتيجة الغياب.",
       "خبّرهم بأي تغيير: شغل جديد حتى لو مؤقت أو بسيط، سفر برّا النمسا، تغيير عنوان أو رقم حساب.",
       "إذا الرسالة مو مفهومة، روح على الفرع واسأل. من حقك تجيب معك حدا يترجملك.",
+      "الأرقام بالضبط: الغياب عن موعد رقابة بيوقف الصرف **لحد ما تروح شخصياً** للفرع وتسجّل حضورك. ورفض عرض شغل بدون سبب وجيه بيوقف الدعم **٦ أسابيع**، و**٨ أسابيع** إذا تكرر.",
     ],
   },
   {
     id: "aufenthaltstitel",
+    source: "https://www.oesterreich.gv.at/de/themen/menschen_aus_anderen_staaten/aufenthalt/3/1",
     title: "تمديد الإقامة (Aufenthaltstitel)",
     teaser: "قدّم قبل ما تنتهي — التأخير بيغيّر كل شي",
     paragraphs: [
-      "⚠️ أهم قاعدة بهالصفحة كلها: **قدّم طلب التمديد قبل ما تنتهي إقامتك.** الأفضل قبلها بـ٣ شهور. إذا قدّمت بالوقت، بتقدر تضل بالنمسا بشكل قانوني لحد ما ينبتّ بطلبك.",
+      "⚠️ أهم قاعدة بهالصفحة كلها: **قدّم طلب التمديد شخصياً قبل ما تنتهي إقامتك.** وبتقدر تقدّمه **بحد أقصى ٣ شهور قبل** تاريخ الانتهاء، مو قبل هيك. إذا قدّمت بالوقت، بتقدر تضل بالنمسا بشكل قانوني لحد ما ينبتّ بطلبك.",
       "إذا انتهت الإقامة وما كنت قدّمت، الطلب بينحسب **طلب جديد** مو تمديد — وهاد مسار أصعب وشروطه أقسى.",
       "وين: MA 35 بفيينا، وبباقي الولايات الـ Bezirkshauptmannschaft أو المجستْرات.",
       "اللي بيطلبوه عادةً: جواز سارٍ، إثبات دخل كافٍ، تأمين صحي، عقد إيجار أو إثبات سكن، وأحياناً شهادة ألماني.",
       "الأوراق والشروط بتختلف حسب نوع إقامتك ووضعك الشخصي. **لا تعتمد على معلومة عامة من الإنترنت** — لا من هون ولا من غيره.",
       "في استشارة مجانية بكل ولاية (Caritas، Diakonie، ÖIF، ومراكز استشارة المهاجرين). موضوع الإقامة أهم وأخطر من إنك تجرّب لحالك.",
+      "في استثناء ضيق إذا تأخرت: بيتعامل معه كتمديد بس إذا كان في مانع مفاجئ ما كان بإيدك، وما عليك ذنب (أو ذنب بسيط)، وقدّمت خلال **أسبوعين** من زوال المانع. ما تعتمد عليه — هو استثناء مو خطة.",
     ],
   },
   {
     id: "kindergarten",
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/kinderbildung-und-betreuung/beitragsfreier-pflichtkindergarten.html",
     title: "تسجيل الروضة (Kindergarten)",
     teaser: "السنة الأخيرة قبل المدرسة إلزامية ومجانية",
     paragraphs: [
@@ -290,10 +306,12 @@ const ar: GuideArticle[] = [
       "التكلفة بتختلف كتير: بفيينا الروضة مجانية. بباقي الولايات في رسوم بتعتمد على دخل العيلة وعدد الساعات.",
       "اللي بيطلبوه عادةً: Meldezettel، شهادة ميلاد الطفل، الـ e-card، ودفتر التطعيمات.",
       "إذا الطفل ما بيحكي ألماني، هاد مو مانع أبداً — بالعكس، الروضة هي أحسن مكان يتعلم فيه قبل ما يبلّش المدرسة.",
+      "خبر للمستقبل: في خطة تصير السنة اللي قبلها إلزامية كمان لأطفال الـ٤ سنين اعتباراً من خريف ٢٠٢٧، بنفس الـ٢٠ ساعة ومجانية.",
     ],
   },
   {
     id: "arbeitnehmerveranlagung",
+    source: "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/verfahren-arbeitnehmerinnenveranlagung/verfahren-beim-finanzamt.html",
     title: "استرجاع الضريبة (Arbeitnehmerveranlagung)",
     teaser: "مصاري إلك عند الدولة — وكتير ناس ما بتطلبها",
     paragraphs: [
@@ -303,6 +321,7 @@ const ar: GuideArticle[] = [
       "اللي بيكبّر المبلغ: Familienbonus Plus عن كل طفل، بدل المعيل الوحيد أو الأهل المنفردين، مصاريف التنقل للشغل (Pendlerpauschale)، مصاريف رعاية الأطفال، ومصاريف متعلقة بالشغل.",
       "حتى لو دخلك واطي وما دفعت ضريبة دخل أصلاً، ممكن يرجعلك مبلغ (Negativsteuer) من اشتراكات التأمين.",
       "الدولة بتعمل أحياناً استرجاع تلقائي بدون طلب — بس عادةً بيطلع **أقل** من اللي بتاخده لو قدّمت بنفسك وحطّيت كل ما بتستحقه.",
+      "ومهم: حتى لو الدولة عملت الاسترجاع التلقائي، لسه من حقك تقدّم بنفسك بعدين وتاخد الفرق. الاسترجاع التلقائي مو نهائي.",
     ],
   },
 ];
@@ -480,6 +499,7 @@ const de: GuideArticle[] = [
   },
   {
     id: "familienbeihilfe",
+    source: "https://www.oesterreich.gv.at/de/themen/familie_und_partnerschaft/familienbeihilfe/Seite.450233",
     title: "Familienbeihilfe",
     teaser: "Monatliche Unterstützung pro Kind — wer sie bekommt und wie",
     paragraphs: [
@@ -493,6 +513,7 @@ const de: GuideArticle[] = [
   },
   {
     id: "meldezettel",
+    source: "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes",
     title: "Meldezettel: Wohnsitz anmelden",
     teaser: "Drei Tage Frist — und ohne ihn geht fast nichts",
     paragraphs: [
@@ -501,10 +522,14 @@ const de: GuideArticle[] = [
       "Was du brauchst: das ausgefüllte Formular Meldezettel, unterschrieben vom **Unterkunftgeber** (Vermieter:in) — daran scheitert es am häufigsten — und einen gültigen Reisepass oder Ausweis.",
       "Drei Fälle: Anmeldung (neu), Ummeldung (Adresswechsel), Abmeldung (wenn du auszieht).",
       "Die Meldebestätigung brauchst du fast überall: Bankkonto, Schulanmeldung, Versicherung, Verlängerung des Aufenthaltstitels. Gut aufbewahren und abfotografieren.",
+      "⚠️ Wenn der Unterkunftgeber nicht unterschreibt: Er ist gesetzlich verpflichtet, die Anmeldung zu ermöglichen, und darf die Unterschrift nicht grundlos verweigern. Vor allem aber — **die Meldebehörde nimmt die Anmeldung auch ohne seine Unterschrift entgegen**. Lass dich daran nicht über die drei Tage hinaus aufhalten.",
+      "Es geht auch einfacher: Die Anmeldung ist inzwischen **online** über oesterreich.gv.at möglich, wenn du ID Austria hast — die Bestätigung gibt es sofort.",
+      "Die Frist zu versäumen ist eine Verwaltungsübertretung; die Geldstrafe kann bis zu 726 Euro betragen, im Wiederholungsfall mehr.",
     ],
   },
   {
     id: "ecard-oegk",
+    source: "https://www.oegk.at/cdscontent/?contentid=10007.870516",
     title: "Krankenversicherung und e-card",
     teaser: "Der Unterschied zwischen Kassenarzt und Wahlarzt kostet Geld",
     paragraphs: [
@@ -514,10 +539,12 @@ const de: GuideArticle[] = [
       "⚠️ **Der teure Unterschied:** Kassenärzt:innen rechnen direkt mit der Kasse ab, du zahlst nichts. Bei Wahlärzt:innen zahlst du zuerst selbst, reichst die Rechnung bei der ÖGK ein und bekommst rund **80 % des Kassentarifs** zurück — nicht 80 % des bezahlten Betrags. Die Differenz kann groß sein. Frag bei der Terminvereinbarung nach.",
       "Auf der Rückseite der e-card ist die Europäische Krankenversicherungskarte (EHIC) — sie deckt Notfälle in der EU ab.",
       "Bei Verlust: möglichst rasch eine neue Karte bei der ÖGK anfordern.",
+      "Seit Juli 2024 ist das Einreichen der Wahlarztrechnung einfacher — der Großteil wird elektronisch und rasch bearbeitet.",
     ],
   },
   {
     id: "ams-briefe",
+    source: "https://www.ams.at/arbeitsuchende/arbeitslos-was-tun/wichtige-informationen-zu-ams-leistungen",
     title: "Briefe vom AMS",
     teaser: "Ein versäumter Termin kann das Geld wochenlang stoppen",
     paragraphs: [
@@ -527,23 +554,27 @@ const de: GuideArticle[] = [
       "Bei einem Vermittlungsvorschlag musst du dich tatsächlich bewerben und das Ergebnis zurückmelden. Ignorieren zählt als Ablehnung und hat dieselben Folgen wie ein versäumter Termin.",
       "Melde jede Änderung: neue Arbeit, auch geringfügig oder befristet, Auslandsaufenthalt, neue Adresse oder Kontonummer.",
       "Wenn du den Brief nicht verstehst, geh in die Geschäftsstelle und frag. Du darfst jemanden zum Übersetzen mitnehmen.",
+      "Die genauen Zahlen: Ein versäumter Kontrolltermin stoppt die Auszahlung, **bis du persönlich** in der Geschäftsstelle vorsprichst. Ein ohne triftigen Grund abgelehntes Stellenangebot sperrt das Geld für **sechs Wochen**, im Wiederholungsfall für **acht**.",
     ],
   },
   {
     id: "aufenthaltstitel",
+    source: "https://www.oesterreich.gv.at/de/themen/menschen_aus_anderen_staaten/aufenthalt/3/1",
     title: "Aufenthaltstitel verlängern",
     teaser: "Rechtzeitig einreichen — zu spät ändert alles",
     paragraphs: [
-      "⚠️ Die wichtigste Regel auf dieser Seite: **stell den Verlängerungsantrag, bevor dein Titel abläuft** — am besten drei Monate vorher. Rechtzeitig eingebracht, darfst du bis zur Entscheidung rechtmäßig in Österreich bleiben.",
+      "⚠️ Die wichtigste Regel auf dieser Seite: **stell den Verlängerungsantrag persönlich, bevor dein Titel abläuft.** Frühestens **drei Monate davor** ist möglich, früher nicht. Rechtzeitig eingebracht, darfst du bis zur Entscheidung rechtmäßig in Österreich bleiben.",
       "Ist der Titel bereits abgelaufen, gilt der Antrag als **Erstantrag** und nicht als Verlängerung — ein deutlich schwierigerer Weg mit strengeren Voraussetzungen.",
       "Wo: in Wien die MA 35, in den anderen Bundesländern die Bezirkshauptmannschaft oder der Magistrat.",
       "Üblicherweise verlangt werden: gültiger Reisepass, Einkommensnachweis, Krankenversicherung, Mietvertrag oder Wohnnachweis, teils ein Deutschnachweis.",
       "Unterlagen und Voraussetzungen hängen von deinem Titel und deiner Situation ab. **Verlass dich nicht auf allgemeine Information aus dem Internet** — auch nicht auf diese Seite.",
       "In jedem Bundesland gibt es kostenlose Beratung (Caritas, Diakonie, ÖIF, Migrant:innenberatung). Beim Aufenthalt ist das zu wichtig, um es allein zu probieren.",
+      "Es gibt eine enge Ausnahme, wenn du zu spät dran bist: Als Verlängerung gilt der Antrag nur, wenn ein unvorhergesehenes oder unabwendbares Hindernis vorlag, dich kein oder nur geringes Verschulden trifft und du innerhalb von **zwei Wochen** nach Wegfall des Hindernisses einbringst. Verlass dich nicht darauf — das ist eine Ausnahme, kein Plan.",
     ],
   },
   {
     id: "kindergarten",
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/kinderbildung-und-betreuung/beitragsfreier-pflichtkindergarten.html",
     title: "Kindergarten anmelden",
     teaser: "Das letzte Jahr vor der Schule ist verpflichtend und gratis",
     paragraphs: [
@@ -552,10 +583,12 @@ const de: GuideArticle[] = [
       "Die Kosten sind sehr unterschiedlich: In Wien ist der Kindergarten gratis. In anderen Bundesländern gibt es Beiträge, abhängig von Einkommen und Stundenzahl.",
       "Meist gebraucht: Meldezettel, Geburtsurkunde des Kindes, e-card und Impfpass.",
       "Wenn dein Kind kein Deutsch spricht, ist das kein Hindernis — im Gegenteil, der Kindergarten ist der beste Ort, es vor der Schule zu lernen.",
+      "Ausblick: Ab Herbst 2027 soll auch das vorletzte Kindergartenjahr für Vierjährige verpflichtend werden — ebenfalls 20 Stunden pro Woche und beitragsfrei.",
     ],
   },
   {
     id: "arbeitnehmerveranlagung",
+    source: "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/verfahren-arbeitnehmerinnenveranlagung/verfahren-beim-finanzamt.html",
     title: "Arbeitnehmerveranlagung",
     teaser: "Geld, das dir zusteht — und das viele nie holen",
     paragraphs: [
@@ -565,6 +598,7 @@ const de: GuideArticle[] = [
       "Was den Betrag erhöht: Familienbonus Plus pro Kind, Alleinverdiener- oder Alleinerzieherabsetzbetrag, Pendlerpauschale, Kinderbetreuungskosten und berufsbedingte Ausgaben.",
       "Selbst bei geringem Einkommen ohne gezahlte Lohnsteuer kann etwas zurückkommen (Negativsteuer) — über die Sozialversicherungsbeiträge.",
       "Manchmal macht das Finanzamt eine automatische Veranlagung. Die fällt meist **niedriger** aus, als wenn du selbst einreichst und alles geltend machst, was dir zusteht.",
+      "Wichtig: Auch wenn das Finanzamt bereits eine antragslose Veranlagung gemacht hat, darfst du danach noch selbst einreichen und dir die Differenz holen. Die automatische Veranlagung ist nicht endgültig.",
     ],
   },
 ];
@@ -742,6 +776,7 @@ const tr: GuideArticle[] = [
   },
   {
     id: "familienbeihilfe",
+    source: "https://www.oesterreich.gv.at/de/themen/familie_und_partnerschaft/familienbeihilfe/Seite.450233",
     title: "Çocuk parası (Familienbeihilfe)",
     teaser: "Her çocuk için aylık destek — kim alır, nasıl başvurulur",
     paragraphs: [
@@ -755,6 +790,7 @@ const tr: GuideArticle[] = [
   },
   {
     id: "meldezettel",
+    source: "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes",
     title: "Adres kaydı (Meldezettel)",
     teaser: "Üç gün süre — ve o olmadan hiçbir işlem yürümez",
     paragraphs: [
@@ -763,10 +799,14 @@ const tr: GuideArticle[] = [
       "Gerekenler: doldurulmuş Meldezettel formu, **ev sahibi (Unterkunftgeber)** tarafından imzalanmış — en çok burada takılınır — ve geçerli pasaport veya kimlik.",
       "Üç durum var: Anmeldung (yeni kayıt), Ummeldung (adres değişikliği), Abmeldung (evden çıkarken iptal).",
       "Kayıt belgesi (Meldebestätigung) neredeyse her işlemde istenir: banka hesabı, okul kaydı, sigorta, oturum izni uzatma. Sakla ve bir fotoğrafını çek.",
+      "⚠️ Ev sahibi imzalamazsa: Yasal olarak kaydı mümkün kılmakla yükümlüdür ve imzayı sebepsiz reddedemez. Daha da önemlisi — **kayıt dairesi başvuruyu onun imzası olmadan da kabul eder**. Bunun yüzünden üç günlük süreyi kaçırma.",
+      "Daha kolay bir yol var: ID Austria'n varsa kayıt artık oesterreich.gv.at üzerinden **çevrimiçi** yapılabiliyor ve onay hemen geliyor.",
+      "Süreyi kaçırmak idari bir kabahattir; para cezası 726 avroya kadar çıkabilir, tekrarında daha fazla.",
     ],
   },
   {
     id: "ecard-oegk",
+    source: "https://www.oegk.at/cdscontent/?contentid=10007.870516",
     title: "Sağlık sigortası ve e-card",
     teaser: "Kassenarzt ile Wahlarzt farkı cebinden çıkıyor",
     paragraphs: [
@@ -776,10 +816,12 @@ const tr: GuideArticle[] = [
       "⚠️ **Pahalıya patlayan fark:** Kassenarzt doğrudan sigortayla hesaplaşır, sen bir şey ödemezsin. Wahlarzt'a önce sen ödersin, sonra faturayı ÖGK'ya verirsin ve **sigorta tarifesinin yaklaşık %80'ini** geri alırsın — ödediğin tutarın %80'ini değil. Aradaki fark büyük olabilir. Randevu alırken sor.",
       "e-card'ın arkasında Avrupa sağlık kartı (EHIC) vardır — AB ülkelerinde acil durumları kapsar.",
       "Kartını kaybedersen ÖGK'dan en kısa sürede yenisini iste.",
+      "Temmuz 2024'ten beri Wahlarzt faturasını vermek daha kolay — büyük bölümü elektronik ve hızlı işleniyor.",
     ],
   },
   {
     id: "ams-briefe",
+    source: "https://www.ams.at/arbeitsuchende/arbeitslos-was-tun/wichtige-informationen-zu-ams-leistungen",
     title: "AMS'ten gelen mektuplar",
     teaser: "Kaçırılan bir randevu ödemeyi haftalarca durdurabilir",
     paragraphs: [
@@ -789,23 +831,27 @@ const tr: GuideArticle[] = [
       "Bir iş önerisi (Vermittlungsvorschlag) geldiğinde gerçekten başvurmalı ve sonucu bildirmelisin. Görmezden gelmek reddetme sayılır ve kaçırılan randevuyla aynı sonucu doğurur.",
       "Her değişikliği bildir: kısa süreli ya da az saatli olsa bile yeni iş, yurt dışına çıkış, adres ya da hesap numarası değişikliği.",
       "Mektubu anlamıyorsan şubeye git ve sor. Yanında çeviri yapacak birini getirme hakkın var.",
+      "Kesin rakamlar: Kaçırılan bir kontrol randevusu, **şahsen** şubeye gidene kadar ödemeyi durdurur. Geçerli sebep olmadan reddedilen bir iş teklifi parayı **altı hafta**, tekrarında **sekiz hafta** bloke eder.",
     ],
   },
   {
     id: "aufenthaltstitel",
+    source: "https://www.oesterreich.gv.at/de/themen/menschen_aus_anderen_staaten/aufenthalt/3/1",
     title: "Oturum izni uzatma (Aufenthaltstitel)",
     teaser: "Süresi dolmadan başvur — geç kalmak her şeyi değiştirir",
     paragraphs: [
-      "⚠️ Bu sayfanın en önemli kuralı: **oturum iznin bitmeden uzatma başvurusu yap** — tercihen üç ay önce. Zamanında başvurursan karar çıkana kadar Avusturya'da yasal olarak kalabilirsin.",
+      "⚠️ Bu sayfanın en önemli kuralı: **uzatma başvurusunu şahsen ve oturum iznin bitmeden yap.** En erken **üç ay önce** verilebilir, daha erken değil. Zamanında başvurursan karar çıkana kadar Avusturya'da yasal olarak kalabilirsin.",
       "İzin çoktan bittiyse başvuru uzatma değil **ilk başvuru** sayılır — koşulları çok daha ağır bir yol.",
       "Nerede: Viyana'da MA 35, diğer eyaletlerde Bezirkshauptmannschaft ya da Magistrat.",
       "Genelde istenenler: geçerli pasaport, yeterli gelir belgesi, sağlık sigortası, kira sözleşmesi ya da konut belgesi, bazen Almanca belgesi.",
       "Belgeler ve koşullar iznin türüne ve durumuna göre değişir. **İnternetteki genel bilgiye güvenme** — bu sayfaya da.",
       "Her eyalette ücretsiz danışmanlık var (Caritas, Diakonie, ÖIF, göçmen danışma merkezleri). Oturum konusu kendi başına denemeye değmeyecek kadar önemli.",
+      "Geç kaldıysan dar bir istisna var: Başvuru ancak öngörülemez ya da kaçınılmaz bir engel varsa, kusurun yoksa veya çok azsa ve engel ortadan kalktıktan sonra **iki hafta** içinde verirsen uzatma sayılır. Buna güvenme — bu bir istisna, plan değil.",
     ],
   },
   {
     id: "kindergarten",
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/kinderbildung-und-betreuung/beitragsfreier-pflichtkindergarten.html",
     title: "Anaokulu kaydı (Kindergarten)",
     teaser: "Okuldan önceki son yıl zorunlu ve ücretsiz",
     paragraphs: [
@@ -814,10 +860,12 @@ const tr: GuideArticle[] = [
       "Ücretler çok farklıdır: Viyana'da anaokulu ücretsizdir. Diğer eyaletlerde gelire ve saat sayısına bağlı katkı payı vardır.",
       "Genelde gerekenler: Meldezettel, çocuğun doğum belgesi, e-card ve aşı karnesi.",
       "Çocuğun Almanca bilmiyorsa bu bir engel değil — tam tersine, anaokulu okuldan önce öğrenmesi için en iyi yer.",
+      "İleriye dönük: 2027 sonbaharından itibaren sondan bir önceki anaokulu yılının da dört yaşındakiler için zorunlu olması planlanıyor — yine haftada 20 saat ve ücretsiz.",
     ],
   },
   {
     id: "arbeitnehmerveranlagung",
+    source: "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/verfahren-arbeitnehmerinnenveranlagung/verfahren-beim-finanzamt.html",
     title: "Vergi iadesi (Arbeitnehmerveranlagung)",
     teaser: "Hakkın olan para — ve çoğu kişi hiç almıyor",
     paragraphs: [
@@ -827,6 +875,7 @@ const tr: GuideArticle[] = [
       "Tutarı artıranlar: her çocuk için Familienbonus Plus, tek geçindiren ya da tek ebeveyn indirimi, işe gidiş-geliş (Pendlerpauschale), çocuk bakım giderleri ve işle ilgili masraflar.",
       "Gelirin düşük olduğu ve hiç gelir vergisi ödemediğin durumda bile sigorta primleri üzerinden bir tutar geri gelebilir (Negativsteuer).",
       "Vergi dairesi bazen otomatik bir iade yapar. Bu genellikle kendin başvurup hakkın olan her şeyi yazdığındakinden **daha az** olur.",
+      "Önemli: Vergi dairesi otomatik bir hesaplama yapmış olsa bile sonradan kendin başvurup aradaki farkı alabilirsin. Otomatik hesaplama kesin değildir.",
     ],
   },
 ];
@@ -1004,6 +1053,7 @@ const fa: GuideArticle[] = [
   },
   {
     id: "familienbeihilfe",
+    source: "https://www.oesterreich.gv.at/de/themen/familie_und_partnerschaft/familienbeihilfe/Seite.450233",
     title: "کمک‌هزینهٔ فرزند (Familienbeihilfe)",
     teaser: "کمک ماهانه برای هر کودک — چه کسی می‌گیرد و چگونه",
     paragraphs: [
@@ -1017,6 +1067,7 @@ const fa: GuideArticle[] = [
   },
   {
     id: "meldezettel",
+    source: "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes",
     title: "ثبت آدرس (Meldezettel)",
     teaser: "فقط سه روز — و بدون آن هیچ کاری پیش نمی‌رود",
     paragraphs: [
@@ -1025,10 +1076,14 @@ const fa: GuideArticle[] = [
       "چه لازم داری: فرم Meldezettel پر شده و امضا شده توسط **صاحبخانه (Unterkunftgeber)** — بیشترین تأخیر همین‌جاست — و گذرنامه یا کارت شناسایی معتبر.",
       "سه حالت دارد: Anmeldung (ثبت تازه)، Ummeldung (تغییر آدرس)، Abmeldung (لغو هنگام تخلیه).",
       "گواهی ثبت (Meldebestätigung) را تقریباً در همهٔ کارها می‌خواهند: حساب بانکی، ثبت‌نام مدرسه، بیمه، تمدید اقامت. نگهش دار و از آن عکس بگیر.",
+      "⚠️ اگر صاحبخانه امضا نکرد: قانوناً موظف است ثبت را ممکن کند و بدون دلیل نمی‌تواند امضا را رد کند. مهم‌تر اینکه — **ادارهٔ ثبت، ثبت‌نام را حتی بدون امضای او می‌پذیرد**. نگذار این موضوع تو را از مهلت سه‌روزه بیندازد.",
+      "راه ساده‌تری هم هست: اگر ID Austria داری، ثبت را می‌توانی **آنلاین** از طریق oesterreich.gv.at انجام بدهی و تأییدیه فوراً صادر می‌شود.",
+      "از دست دادن مهلت تخلف اداری است؛ جریمه تا ۷۲۶ یورو و در تکرار بیشتر می‌شود.",
     ],
   },
   {
     id: "ecard-oegk",
+    source: "https://www.oegk.at/cdscontent/?contentid=10007.870516",
     title: "بیمهٔ درمانی و e-card",
     teaser: "تفاوت Kassenarzt و Wahlarzt از جیب تو کم می‌کند",
     paragraphs: [
@@ -1038,10 +1093,12 @@ const fa: GuideArticle[] = [
       "⚠️ **تفاوتی که گران تمام می‌شود:** Kassenarzt مستقیم با بیمه حساب می‌کند و تو چیزی نمی‌پردازی. به Wahlarzt اول خودت می‌پردازی، بعد صورتحساب را به ÖGK می‌دهی و حدود **۸۰٪ تعرفهٔ بیمه** برمی‌گردد — نه ۸۰٪ آنچه پرداختی. این فاصله می‌تواند زیاد باشد. هنگام گرفتن نوبت بپرس.",
       "پشت e-card کارت اروپایی (EHIC) هست — موارد اورژانسی در کشورهای اتحادیهٔ اروپا را پوشش می‌دهد.",
       "اگر کارت گم شد، هرچه زودتر از ÖGK کارت تازه بخواه.",
+      "از ژوئیهٔ ۲۰۲۴ ارائهٔ صورتحساب Wahlarzt آسان‌تر شده — بیشترش الکترونیکی و سریع رسیدگی می‌شود.",
     ],
   },
   {
     id: "ams-briefe",
+    source: "https://www.ams.at/arbeitsuchende/arbeitslos-was-tun/wichtige-informationen-zu-ams-leistungen",
     title: "نامه‌های ادارهٔ کار (AMS)",
     teaser: "یک نوبت از دست رفته می‌تواند هفته‌ها پرداخت را قطع کند",
     paragraphs: [
@@ -1051,23 +1108,27 @@ const fa: GuideArticle[] = [
       "وقتی پیشنهاد کاری (Vermittlungsvorschlag) می‌فرستند، باید واقعاً درخواست بدهی و نتیجه را گزارش کنی. بی‌اعتنایی، رد کردن حساب می‌شود و همان پیامد غیبت را دارد.",
       "هر تغییری را خبر بده: کار تازه حتی موقت یا کم‌ساعت، سفر به خارج، تغییر آدرس یا شمارهٔ حساب.",
       "اگر نامه را نمی‌فهمی، به شعبه برو و بپرس. حق داری کسی را برای ترجمه همراه ببری.",
+      "عددهای دقیق: نوبت کنترلی از دست رفته پرداخت را متوقف می‌کند **تا وقتی شخصاً** به شعبه بروی. رد کردن پیشنهاد کاری بدون دلیل موجه پول را **شش هفته** و در تکرار **هشت هفته** قطع می‌کند.",
     ],
   },
   {
     id: "aufenthaltstitel",
+    source: "https://www.oesterreich.gv.at/de/themen/menschen_aus_anderen_staaten/aufenthalt/3/1",
     title: "تمدید اقامت (Aufenthaltstitel)",
     teaser: "پیش از پایان اعتبار اقدام کن — دیر شدن همه‌چیز را عوض می‌کند",
     paragraphs: [
-      "⚠️ مهم‌ترین قاعدهٔ این صفحه: **درخواست تمدید را پیش از پایان اعتبار اقامتت بده** — بهتر است سه ماه زودتر. اگر به‌موقع بدهی، تا زمان تصمیم‌گیری می‌توانی قانوناً در اتریش بمانی.",
+      "⚠️ مهم‌ترین قاعدهٔ این صفحه: **درخواست تمدید را حضوری و پیش از پایان اعتبار اقامتت بده.** حداکثر **سه ماه پیش از** تاریخ انقضا می‌شود اقدام کرد، زودتر نه. اگر به‌موقع بدهی، تا زمان تصمیم‌گیری می‌توانی قانوناً در اتریش بمانی.",
       "اگر اقامت پیش‌تر تمام شده باشد، درخواست **درخواست نخست** به حساب می‌آید نه تمدید — مسیری به‌مراتب دشوارتر با شرایط سخت‌تر.",
       "کجا: در وین MA 35، در سایر ایالت‌ها Bezirkshauptmannschaft یا Magistrat.",
       "معمولاً می‌خواهند: گذرنامهٔ معتبر، سند درآمد کافی، بیمهٔ درمانی، قرارداد اجاره یا سند مسکن، و گاهی مدرک زبان آلمانی.",
       "مدارک و شرایط بسته به نوع اقامت و وضعیت تو فرق می‌کند. **به اطلاعات عمومی اینترنت تکیه نکن** — به این صفحه هم.",
       "در هر ایالت مشاورهٔ رایگان هست (Caritas، Diakonie، ÖIF و مراکز مشاورهٔ مهاجران). موضوع اقامت مهم‌تر از آن است که خودت امتحانش کنی.",
+      "اگر دیر شدی یک استثنای تنگ هست: درخواست فقط وقتی تمدید حساب می‌شود که مانعی پیش‌بینی‌نشده یا اجتناب‌ناپذیر وجود داشته باشد، تقصیری نداشته باشی یا بسیار کم باشد، و ظرف **دو هفته** پس از رفع مانع درخواست بدهی. به این تکیه نکن — استثناست، نه برنامه.",
     ],
   },
   {
     id: "kindergarten",
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/kinderbildung-und-betreuung/beitragsfreier-pflichtkindergarten.html",
     title: "ثبت‌نام مهدکودک (Kindergarten)",
     teaser: "سال آخر پیش از مدرسه اجباری و رایگان است",
     paragraphs: [
@@ -1076,10 +1137,12 @@ const fa: GuideArticle[] = [
       "هزینه‌ها بسیار متفاوت است: در وین مهدکودک رایگان است. در ایالت‌های دیگر سهمیه‌ای بسته به درآمد و تعداد ساعت‌ها هست.",
       "معمولاً لازم است: Meldezettel، شناسنامهٔ کودک، e-card و دفترچهٔ واکسیناسیون.",
       "اگر کودکت آلمانی بلد نیست، مانعی نیست — برعکس، مهدکودک بهترین جا برای یادگیری پیش از مدرسه است.",
+      "چشم‌انداز: از پاییز ۲۰۲۷ قرار است سال ماقبل آخر مهدکودک هم برای چهارساله‌ها اجباری شود — باز هم ۲۰ ساعت در هفته و رایگان.",
     ],
   },
   {
     id: "arbeitnehmerveranlagung",
+    source: "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/verfahren-arbeitnehmerinnenveranlagung/verfahren-beim-finanzamt.html",
     title: "بازگشت مالیات (Arbeitnehmerveranlagung)",
     teaser: "پولی که حق توست — و بسیاری هرگز نمی‌گیرند",
     paragraphs: [
@@ -1089,6 +1152,7 @@ const fa: GuideArticle[] = [
       "چه چیزی مبلغ را بیشتر می‌کند: Familienbonus Plus برای هر کودک، کمک‌هزینهٔ تک‌نان‌آور یا تک‌والد، هزینهٔ رفت‌وآمد به کار (Pendlerpauschale)، هزینهٔ نگهداری کودک، و هزینه‌های مربوط به کار.",
       "حتی اگر درآمدت کم بوده و اصلاً مالیات نداده‌ای، ممکن است مبلغی از محل حق بیمه برگردد (Negativsteuer).",
       "ادارهٔ مالیات گاهی بازگشت خودکار انجام می‌دهد. این معمولاً **کمتر** از حالتی است که خودت درخواست بدهی و همهٔ حقت را بنویسی.",
+      "مهم: حتی اگر ادارهٔ مالیات بازگشت خودکار انجام داده باشد، باز هم می‌توانی بعداً خودت درخواست بدهی و تفاوت را بگیری. بازگشت خودکار قطعی نیست.",
     ],
   },
 ];
@@ -1266,6 +1330,7 @@ const en: GuideArticle[] = [
   },
   {
     id: "familienbeihilfe",
+    source: "https://www.oesterreich.gv.at/de/themen/familie_und_partnerschaft/familienbeihilfe/Seite.450233",
     title: "Family allowance (Familienbeihilfe)",
     teaser: "Monthly support per child — who gets it and how to apply",
     paragraphs: [
@@ -1279,6 +1344,7 @@ const en: GuideArticle[] = [
   },
   {
     id: "meldezettel",
+    source: "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes",
     title: "Registering your address (Meldezettel)",
     teaser: "Three days — and without it almost nothing else works",
     paragraphs: [
@@ -1287,10 +1353,14 @@ const en: GuideArticle[] = [
       "What you need: the completed Meldezettel form, signed by the **landlord (Unterkunftgeber)** — this is where people most often get stuck — and a valid passport or ID.",
       "Three cases: Anmeldung (new registration), Ummeldung (change of address), Abmeldung (deregistering when you move out).",
       "The confirmation (Meldebestätigung) is asked for almost everywhere: opening a bank account, school enrolment, insurance, renewing a residence permit. Keep it and photograph it as a backup.",
+      "⚠️ If the landlord will not sign: they are legally obliged to enable the registration and may not refuse the signature without reason. More importantly — **the registration office accepts the registration even without it**. Do not let this push you past the three days.",
+      "There is an easier route too: registration can now be done **online** through oesterreich.gv.at if you have ID Austria, and the confirmation is issued immediately.",
+      "Missing the deadline is an administrative offence; the fine can reach 726 euros, and more if repeated.",
     ],
   },
   {
     id: "ecard-oegk",
+    source: "https://www.oegk.at/cdscontent/?contentid=10007.870516",
     title: "Health insurance and the e-card",
     teaser: "The Kassenarzt / Wahlarzt difference comes out of your pocket",
     paragraphs: [
@@ -1300,10 +1370,12 @@ const en: GuideArticle[] = [
       "⚠️ **The difference that costs money:** a Kassenarzt bills the insurer directly and you pay nothing. With a Wahlarzt you pay in full yourself, then submit the invoice to the ÖGK and get back roughly **80% of the insurance tariff** — not 80% of what you paid. The gap can be large. Ask when you book.",
       "On the back of the e-card is the European health card (EHIC), which covers emergencies in EU countries.",
       "If you lose the card, order a replacement from the ÖGK as soon as you can.",
+      "Since July 2024 submitting a Wahlarzt invoice has been easier — most are processed electronically and quickly.",
     ],
   },
   {
     id: "ams-briefe",
+    source: "https://www.ams.at/arbeitsuchende/arbeitslos-was-tun/wichtige-informationen-zu-ams-leistungen",
     title: "Letters from the AMS",
     teaser: "One missed appointment can stop the money for weeks",
     paragraphs: [
@@ -1313,23 +1385,27 @@ const en: GuideArticle[] = [
       "When they send you a job referral (Vermittlungsvorschlag), you have to actually apply and report back what happened. Ignoring it counts as a refusal and has the same consequences as a missed appointment.",
       "Report every change: a new job even if temporary or part-time, travel abroad, a new address or bank account.",
       "If you do not understand the letter, go to the office and ask. You are entitled to bring someone to translate.",
+      "The exact numbers: a missed check-in appointment stops the payment **until you appear in person** at the office. A job offer refused without good reason blocks the money for **six weeks**, and **eight** if it happens again.",
     ],
   },
   {
     id: "aufenthaltstitel",
+    source: "https://www.oesterreich.gv.at/de/themen/menschen_aus_anderen_staaten/aufenthalt/3/1",
     title: "Renewing your residence permit",
     teaser: "Apply before it expires — being late changes everything",
     paragraphs: [
-      "⚠️ The most important rule on this page: **apply for the extension before your permit expires** — ideally three months ahead. Applied for in time, you may stay in Austria lawfully until a decision is made.",
+      "⚠️ The most important rule on this page: **apply for the extension in person, before your permit expires.** The earliest you may apply is **three months before** the expiry date, no sooner. Applied for in time, you may stay in Austria lawfully until a decision is made.",
       "If the permit has already expired, the application counts as a **first application** rather than a renewal — a considerably harder route with stricter requirements.",
       "Where: MA 35 in Vienna; the Bezirkshauptmannschaft or Magistrat in the other federal states.",
       "Usually required: a valid passport, proof of sufficient income, health insurance, a tenancy agreement or proof of accommodation, and sometimes a German certificate.",
       "The documents and conditions depend on your permit type and your own situation. **Do not rely on general information from the internet** — including this page.",
       "Free advice exists in every federal state (Caritas, Diakonie, ÖIF, migrant advice centres). Residence is too important to work out alone.",
+      "There is a narrow exception if you are late: the application only counts as a renewal if there was an unforeseeable or unavoidable obstacle, you were not at fault or only slightly, and you file within **two weeks** of that obstacle ending. Do not rely on it — it is an exception, not a plan.",
     ],
   },
   {
     id: "kindergarten",
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/kinderbildung-und-betreuung/beitragsfreier-pflichtkindergarten.html",
     title: "Enrolling in Kindergarten",
     teaser: "The last year before school is compulsory and free",
     paragraphs: [
@@ -1338,10 +1414,12 @@ const en: GuideArticle[] = [
       "Costs vary a lot: in Vienna Kindergarten is free. In other states there are fees depending on household income and hours.",
       "Usually needed: Meldezettel, the child's birth certificate, the e-card, and the vaccination record.",
       "If your child speaks no German, that is not an obstacle — on the contrary, Kindergarten is the best place to learn it before school starts.",
+      "Looking ahead: from autumn 2027 the second-to-last Kindergarten year is planned to become compulsory for four-year-olds as well — again 20 hours a week and free.",
     ],
   },
   {
     id: "arbeitnehmerveranlagung",
+    source: "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/verfahren-arbeitnehmerinnenveranlagung/verfahren-beim-finanzamt.html",
     title: "Claiming tax back (Arbeitnehmerveranlagung)",
     teaser: "Money you are owed — and many people never claim it",
     paragraphs: [
@@ -1351,6 +1429,7 @@ const en: GuideArticle[] = [
       "What increases the amount: Familienbonus Plus per child, the sole-earner or single-parent allowance, commuting costs (Pendlerpauschale), childcare costs, and work-related expenses.",
       "Even on a low income where you paid no income tax at all, money can come back (Negativsteuer) through your social insurance contributions.",
       "The tax office sometimes issues an automatic assessment. It is usually **lower** than what you get by filing yourself and claiming everything you are entitled to.",
+      "Important: even if the tax office has already done an automatic assessment, you may still file yourself afterwards and collect the difference. The automatic one is not final.",
     ],
   },
 ];
@@ -1528,6 +1607,7 @@ const uk: GuideArticle[] = [
   },
   {
     id: "familienbeihilfe",
+    source: "https://www.oesterreich.gv.at/de/themen/familie_und_partnerschaft/familienbeihilfe/Seite.450233",
     title: "Допомога на дитину (Familienbeihilfe)",
     teaser: "Щомісячна підтримка на кожну дитину — кому належить і як подати",
     paragraphs: [
@@ -1541,6 +1621,7 @@ const uk: GuideArticle[] = [
   },
   {
     id: "meldezettel",
+    source: "https://www.oesterreich.gv.at/de/themen/persoenliche_dokumente_und_bestaetigungen/an__abmeldung_des_wohnsitzes",
     title: "Реєстрація адреси (Meldezettel)",
     teaser: "Лише три дні — а без неї майже нічого не оформити",
     paragraphs: [
@@ -1549,10 +1630,14 @@ const uk: GuideArticle[] = [
       "Що потрібно: заповнена форма Meldezettel, підписана **власником житла (Unterkunftgeber)** — саме тут найчастіше застрягають — і чинний закордонний паспорт чи посвідчення.",
       "Три випадки: Anmeldung (нова реєстрація), Ummeldung (зміна адреси), Abmeldung (зняття при виїзді).",
       "Довідку про реєстрацію (Meldebestätigung) вимагають майже скрізь: банківський рахунок, зарахування до школи, страхування, продовження дозволу на проживання. Зберігайте її та сфотографуйте про запас.",
+      "⚠️ Якщо власник житла не підписує: за законом він зобов'язаний уможливити реєстрацію і не може відмовити в підписі без причини. А головне — **реєстраційне бюро приймає заяву й без його підпису**. Не дайте цьому вибити вас за межі трьох днів.",
+      "Є й простіший шлях: реєстрацію тепер можна зробити **онлайн** через oesterreich.gv.at, якщо ви маєте ID Austria — підтвердження видають одразу.",
+      "Пропустити строк — адміністративне правопорушення; штраф сягає 726 євро, а при повторі більше.",
     ],
   },
   {
     id: "ecard-oegk",
+    source: "https://www.oegk.at/cdscontent/?contentid=10007.870516",
     title: "Медичне страхування та e-card",
     teaser: "Різниця між Kassenarzt і Wahlarzt б'є по кишені",
     paragraphs: [
@@ -1562,10 +1647,12 @@ const uk: GuideArticle[] = [
       "⚠️ **Різниця, яка коштує грошей:** Kassenarzt розраховується зі страховою напряму, ви не платите нічого. Wahlarzt'у ви платите самі, потім подаєте рахунок до ÖGK і отримуєте назад близько **80% страхового тарифу** — не 80% сплаченого. Різниця може бути велика. Питайте, коли записуєтеся.",
       "На звороті e-card є європейська картка (EHIC) — вона покриває невідкладні випадки в країнах ЄС.",
       "Якщо картку загублено, якнайшвидше замовте нову в ÖGK.",
+      "Від липня 2024 подати рахунок Wahlarzt стало простіше — більшість опрацьовують електронно і швидко.",
     ],
   },
   {
     id: "ams-briefe",
+    source: "https://www.ams.at/arbeitsuchende/arbeitslos-was-tun/wichtige-informationen-zu-ams-leistungen",
     title: "Листи від AMS",
     teaser: "Один пропущений візит може зупинити виплати на тижні",
     paragraphs: [
@@ -1575,23 +1662,27 @@ const uk: GuideArticle[] = [
       "Коли надсилають пропозицію роботи (Vermittlungsvorschlag), треба справді подати заявку і повідомити результат. Ігнорування вважається відмовою і має ті самі наслідки, що й пропущений візит.",
       "Повідомляйте про кожну зміну: нова робота, навіть тимчасова чи на кілька годин, виїзд за кордон, нова адреса чи рахунок.",
       "Якщо ви не розумієте листа, підіть у відділення і запитайте. Ви маєте право взяти когось для перекладу.",
+      "Точні цифри: пропущений контрольний візит зупиняє виплату, **доки ви особисто** не з'явитеся у відділенні. Відмова від пропозиції роботи без поважної причини блокує гроші на **шість тижнів**, а при повторі на **вісім**.",
     ],
   },
   {
     id: "aufenthaltstitel",
+    source: "https://www.oesterreich.gv.at/de/themen/menschen_aus_anderen_staaten/aufenthalt/3/1",
     title: "Продовження дозволу на проживання",
     teaser: "Подавайте до закінчення строку — запізнення змінює все",
     paragraphs: [
-      "⚠️ Найважливіше правило на цій сторінці: **подайте заяву на продовження до того, як дозвіл закінчиться** — найкраще за три місяці. Подавши вчасно, ви можете законно залишатися в Австрії до рішення.",
+      "⚠️ Найважливіше правило на цій сторінці: **подайте заяву на продовження особисто, до того як дозвіл закінчиться.** Найраніше — за **три місяці** до дати закінчення, не раніше. Подавши вчасно, ви можете законно залишатися в Австрії до рішення.",
       "Якщо дозвіл уже закінчився, заява вважається **первинною**, а не продовженням — значно складніший шлях із суворішими вимогами.",
       "Де: у Відні MA 35, в інших землях Bezirkshauptmannschaft або магістрат.",
       "Зазвичай вимагають: чинний паспорт, підтвердження достатнього доходу, медичне страхування, договір оренди чи підтвердження житла, іноді сертифікат з німецької.",
       "Документи й умови залежать від типу дозволу та вашої ситуації. **Не покладайтеся на загальну інформацію з інтернету** — і на цю сторінку теж.",
       "У кожній землі є безкоштовні консультації (Caritas, Diakonie, ÖIF, центри для мігрантів). Питання проживання надто важливе, щоб розбиратися самому.",
+      "Є вузький виняток, якщо ви запізнилися: заява вважається продовженням лише тоді, коли була непередбачувана чи невідворотна перешкода, вашої вини немає або вона незначна, і ви подали протягом **двох тижнів** після того, як перешкода відпала. Не розраховуйте на це — це виняток, а не план.",
     ],
   },
   {
     id: "kindergarten",
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/kinderbildung-und-betreuung/beitragsfreier-pflichtkindergarten.html",
     title: "Запис до дитсадка (Kindergarten)",
     teaser: "Останній рік перед школою обов'язковий і безкоштовний",
     paragraphs: [
@@ -1600,10 +1691,12 @@ const uk: GuideArticle[] = [
       "Вартість дуже різна: у Відні дитсадок безкоштовний. В інших землях є внески залежно від доходу родини та кількості годин.",
       "Зазвичай потрібно: Meldezettel, свідоцтво про народження дитини, e-card і щеплювальний паспорт.",
       "Якщо дитина не говорить німецькою — це не перешкода. Навпаки, дитсадок найкраще місце вивчити її до школи.",
+      "На перспективу: з осені 2027 передостанній рік дитсадка планують зробити обов'язковим і для чотирирічних — так само 20 годин на тиждень і безкоштовно.",
     ],
   },
   {
     id: "arbeitnehmerveranlagung",
+    source: "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/verfahren-arbeitnehmerinnenveranlagung/verfahren-beim-finanzamt.html",
     title: "Повернення податку (Arbeitnehmerveranlagung)",
     teaser: "Гроші, які вам належать — а багато хто їх ніколи не забирає",
     paragraphs: [
@@ -1613,6 +1706,7 @@ const uk: GuideArticle[] = [
       "Що збільшує суму: Familienbonus Plus на кожну дитину, надбавка для єдиного годувальника чи одинокого з батьків, витрати на дорогу до роботи (Pendlerpauschale), витрати на догляд за дітьми та витрати, пов'язані з роботою.",
       "Навіть за низького доходу, коли податку ви не платили взагалі, щось може повернутися (Negativsteuer) через внески соціального страхування.",
       "Податкова іноді робить автоматичний розрахунок. Він зазвичай **менший**, ніж коли ви подаєте самі й заявляєте все, що вам належить.",
+      "Важливо: навіть якщо податкова вже зробила автоматичний розрахунок, ви можете подати самі пізніше й отримати різницю. Автоматичний розрахунок не остаточний.",
     ],
   },
 ];
@@ -1704,6 +1798,8 @@ const arFeminineOverrides: Record<string, { title?: string; teaser?: string; par
       0: "لما تنتقلي لبيت جديد بالنمسا، لازم تسجّلي عنوانك خلال **٣ أيام**. إلزامي بالقانون وبينطبق على الكل، مواطنة أو مقيمة.",
       3: "في تلات حالات: Anmeldung (تسجيل جديد)، Ummeldung (نقل من عنوان لعنوان)، Abmeldung (إلغاء لما تتركي البيت).",
       4: "ورقة التسجيل (Meldebestätigung) رح تطلبيها بكل معاملة تقريباً: فتح حساب بنك، تسجيل المدرسة، التأمين، تمديد الإقامة. احتفظي فيها وصوّريها احتياط.",
+      5: "⚠️ إذا صاحب البيت رفض يوقّع: القانون بيلزمه يمكّنك من التسجيل، وما بيحق له يرفض بدون سبب. والأهم — **مكتب التسجيل بيقبل التسجيل حتى بدون توقيعه**. ما تخلّي هالنقطة تأخرك عن الـ٣ أيام.",
+      6: "وفي طريق أسهل: صار ممكن تسجّلي **أونلاين** عبر oesterreich.gv.at إذا عندك ID Austria، والتأكيد بينزل فوراً.",
     },
   },
   "ecard-oegk": {
@@ -1722,15 +1818,17 @@ const arFeminineOverrides: Record<string, { title?: string; teaser?: string; par
       3: "لما يبعتولك عرض شغل (Vermittlungsvorschlag)، لازم تقدّمي عليه فعلاً وترجعي تخبريهم بالنتيجة. تجاهله بينحسب رفض، وإلو نفس نتيجة الغياب.",
       4: "خبّريهم بأي تغيير: شغل جديد حتى لو مؤقت أو بسيط، سفر برّا النمسا، تغيير عنوان أو رقم حساب.",
       5: "إذا الرسالة مو مفهومة، روحي على الفرع واسألي. من حقك تجيبي معك حدا يترجملك.",
+      6: "الأرقام بالضبط: الغياب عن موعد رقابة بيوقف الصرف **لحد ما تروحي شخصياً** للفرع وتسجّلي حضورك. ورفض عرض شغل بدون سبب وجيه بيوقف الدعم **٦ أسابيع**، و**٨ أسابيع** إذا تكرر.",
     },
   },
   "aufenthaltstitel": {
     teaser: "قدّمي قبل ما تنتهي — التأخير بيغيّر كل شي",
     paragraphs: {
-      0: "⚠️ أهم قاعدة بهالصفحة كلها: **قدّمي طلب التمديد قبل ما تنتهي إقامتك.** الأفضل قبلها بـ٣ شهور. إذا قدّمتي بالوقت، بتقدري تضلي بالنمسا بشكل قانوني لحد ما ينبتّ بطلبك.",
+      0: "⚠️ أهم قاعدة بهالصفحة كلها: **قدّمي طلب التمديد شخصياً قبل ما تنتهي إقامتك.** وبتقدري تقدّميه **بحد أقصى ٣ شهور قبل** تاريخ الانتهاء، مو قبل هيك. إذا قدّمتي بالوقت، بتقدري تضلي بالنمسا بشكل قانوني لحد ما ينبتّ بطلبك.",
       1: "إذا انتهت الإقامة وما كنتي قدّمتي، الطلب بينحسب **طلب جديد** مو تمديد — وهاد مسار أصعب وشروطه أقسى.",
       4: "الأوراق والشروط بتختلف حسب نوع إقامتك ووضعك الشخصي. **لا تعتمدي على معلومة عامة من الإنترنت** — لا من هون ولا من غيره.",
       5: "في استشارة مجانية بكل ولاية (Caritas، Diakonie، ÖIF، ومراكز استشارة المهاجرين). موضوع الإقامة أهم وأخطر من إنك تجرّبي لحالك.",
+      6: "في استثناء ضيق إذا تأخرتي: بيتعامل معه كتمديد بس إذا كان في مانع مفاجئ ما كان بإيدك، وما عليكي ذنب (أو ذنب بسيط)، وقدّمتي خلال **أسبوعين** من زوال المانع. ما تعتمدي عليه — هو استثناء مو خطة.",
     },
   },
   "kindergarten": {
@@ -1745,6 +1843,7 @@ const arFeminineOverrides: Record<string, { title?: string; teaser?: string; par
       2: "فيكي تقدّمي عن **آخر ٥ سنين**. يعني حتى لو ما عملتيها ولا مرة، لسه فيكي تسترجعي عن سنين فاتت.",
       4: "حتى لو دخلك واطي وما دفعتي ضريبة دخل أصلاً، ممكن يرجعلك مبلغ (Negativsteuer) من اشتراكات التأمين.",
       5: "الدولة بتعمل أحياناً استرجاع تلقائي بدون طلب — بس عادةً بيطلع **أقل** من اللي بتاخديه لو قدّمتي بنفسك وحطّيتي كل ما بتستحقيه.",
+      6: "ومهم: حتى لو الدولة عملت الاسترجاع التلقائي، لسه من حقك تقدّمي بنفسك بعدين وتاخدي الفرق. الاسترجاع التلقائي مو نهائي.",
     },
   },
 };
