@@ -69,14 +69,25 @@ body {
      overflow-y to auto) instead of scrolling the page. That left the last cards
      unreachable with window.scrollY stuck at 0. */
   min-height: 100%;
-  /* Stops the page from rubber-band-bouncing sideways on a touch swipe near
-     the edges (reads as "the screen shifts left/right") — there's never a
-     legitimate reason for this app to scroll horizontally. */
+  /* Stops the page rubber-band-bouncing on a touch swipe past either end.
+     Sideways it read as "the screen shifts left/right"; vertically it dragged
+     the whole app down off the top of the screen and left a band of bare
+     background above the header. Neither axis has a legitimate reason to
+     overscroll — the app is one column that ends where its content ends. */
   overflow-x: hidden;
-  overscroll-behavior-x: none;
+  overscroll-behavior: none;
   /* Kills double-tap-to-zoom, which the viewport meta alone doesn't cover.
      Single taps and scrolling are unaffected. */
   touch-action: manipulation;
+}
+
+/* Belt and braces for the band above the header: body's background is a
+   radial gradient, which does not extend past the document, so anything the
+   browser still manages to expose there paints white — glaring in dark mode.
+   A flat colour on <html> is what fills that area, and because it reads the
+   same token the theme swaps, it follows light/dark without extra rules. */
+html {
+  background-color: var(--bg);
 }
 
 body {
