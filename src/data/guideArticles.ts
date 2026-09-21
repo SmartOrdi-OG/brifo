@@ -48,6 +48,7 @@ export interface GuideArticle {
 const ar: GuideArticle[] = [
   {
     id: 'school-types',
+    source: "https://www.bmb.gv.at/Themen/schule/schulsystem/sa.html",
     title: 'أنواع المدارس بالنمسا',
     teaser: 'Volksschule، Mittelschule، Gymnasium... شو الفرق؟',
     paragraphs: [
@@ -85,6 +86,7 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
+    source: "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10009576",
     title: 'حقوق وواجبات الأهل',
     teaser: 'شو إلك كأهل، وشو المطلوب منك',
     paragraphs: [
@@ -95,11 +97,12 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
+    source: "https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Bundesnormen&Dokumentnummer=NOR40100898",
     title: 'Frühwarnung: شو يعني وشو تعمل',
     teaser: '"إنذار مبكر" — مو معناها رسوب أكيد',
     paragraphs: [
       'شو هو الـ Frühwarnung؟ رسالة رسمية من المدرسة ("إنذار مبكر") بتوصل لما يكون في خطر إن الطالب يرسب بمادة معينة.',
-      'ليش بتوصل هلق بالتحديد؟ عادة بعد نص السنة، لما يكون لسا في وقت كافي يتحسّن فيه الوضع قبل الشهادة النهائية.',
+      "إيمتى بتوصل؟ حسب القانون (§ 19 SchUG)، أول ما يصير في خطر علامة «غير كافٍ» بأي فصل من التنين، المدرسة لازم تخبر الأهل **فوراً** — مو بآخر الفصل. وإلك **حق بجلسة استشارة** عن خطوات الدعم، والمدرسة ملزمة تعرضها عليك.",
       'شو لازم تعمل؟ خذها بجدية بس ما تنهار — احجز موعد Sprechstunde مع المعلم، اسأل شو بالضبط ناقص، وفكر بدروس تقوية (Nachhilfe) إذا لزم الأمر.',
       'مهم تعرف: الـ Frühwarnung مو معناها رسوب أكيد — هي فرصة تتحرك من بدري قبل ما يفوت الوقت.',
     ],
@@ -117,17 +120,19 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/ba/sprabi/dfk.html",
     title: 'صف دعم اللغة الألمانية (Deutschförderklasse)',
     teaser: 'لو طفلك لسا ما بيحكي ألماني منيح',
     paragraphs: [
       'إذا طفلك وصل حديثاً للنمسا وألمانيته لسا ضعيفة، المدرسة بتحطه بصف خاص (Deutschförderklasse) أو دعم إضافي (Deutschförderkurs) حتى يقوّي اللغة قبل ما يندمج كلياً بالصف العادي.',
       'الطالب بياخد أغلب حصصه بصف الدعم، بس بيشارك مع رفاقه بالصف العادي بمواد متل الرياضة أو الفن يلي ما بتحتاج لغة قوية كتير.',
-      'المدة عادة سنة إلى سنتين حسب مستوى الطفل، وبتتقيّم لغته بشكل دوري لتحديد متى جاهز ينتقل كلياً للصف العادي.',
+      "المدة أقصاها سنتين، وبحد أعلى 20 ساعة بالأسبوع. ومن العام الدراسي 2026/27 صار في تغييرين مهمين: الطفل فيه ينتقل للصف العادي **حتى بنص السنة** إذا تحسّن (قبل ما كان ممكن)، واختبار اللغة MIKA-D صار إلزامي بآخر الفصل الصيفي بس. وإذا طلعت نتيجته «ناقصة» بس علاماته بكل المواد إيجابية ومجلس المدرسة أعطى تقييم إيجابي — بيرفّع، ما بيعيد السنة.",
       'هاد الدعم مجاني وحق لكل طفل — لو حسّيت طفلك محتاج مساعدة إضافية باللغة وما تم اقتراحها عليكم، اسأل المدرسة مباشرة.',
     ],
   },
   {
     id: 'school-holidays',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/termine.html",
     title: 'العطل المدرسية بالنمسا',
     teaser: 'الصيفية، عيد الميلاد، السيميستر... شو الفرق',
     paragraphs: [
@@ -140,10 +145,11 @@ const ar: GuideArticle[] = [
   },
   {
     id: 'school-costs',
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/weitere-leistungen-fuer-familien/schulbuchaktion.html",
     title: 'تكاليف المدرسة: شو مجاني وشو لأ',
     teaser: 'الكتب المدرسية مجانية، بس في مصاريف تانية',
     paragraphs: [
-      'الكتب المدرسية مجانية أو شبه مجانية بفضل برنامج اسمه Schulbuchaktion — بتدفع مبلغ رمزي بسيط بس مو الثمن الكامل.',
+      "الكتب المدرسية **مجانية بالكامل** بفضل برنامج Schulbuchaktion — ما بتدفع ولا يورو. (كان في مبلغ رمزي زمان، بس انلغى من العام الدراسي 2011/12.)",
       'التعليم الرسمي بالمدارس الحكومية مجاني، بس في مصاريف إضافية عادة: الرحلات المدرسية (Schulveranstaltungen)، بعض الأدوات المدرسية، وأحياناً وجبات الظهر لو الطفل بدوام ممتد.',
       'إذا الوضع المادي للعيلة صعب، اسأل المدرسة أو البلدية عن إمكانية دعم أو إعفاء من بعض هالمصاريف — كتير مدارس عندها حلول لهيك حالات، بس لازم تسأل وتوضح وضعك.',
       'أي طلب دفع من المدرسة لازم يوصلك برسالة رسمية واضحة (المبلغ، السبب، آخر موعد) — إذا وصلتك رسالة مو واضحة، اسأل المدرسة تشرحلك قبل ما تدفع.',
@@ -329,6 +335,7 @@ const ar: GuideArticle[] = [
 const de: GuideArticle[] = [
   {
     id: 'school-types',
+    source: "https://www.bmb.gv.at/Themen/schule/schulsystem/sa.html",
     title: 'Schularten in Österreich',
     teaser: 'Volksschule, Mittelschule, Gymnasium — was ist der Unterschied?',
     paragraphs: [
@@ -362,6 +369,7 @@ const de: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
+    source: "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10009576",
     title: 'Rechte und Pflichten der Eltern',
     teaser: 'Was Eltern dürfen — und was von ihnen erwartet wird',
     paragraphs: [
@@ -372,11 +380,12 @@ const de: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
+    source: "https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Bundesnormen&Dokumentnummer=NOR40100898",
     title: 'Frühwarnung: Was sie bedeutet und was zu tun ist',
     teaser: 'Eine "frühe Warnung" — kein sicheres Sitzenbleiben',
     paragraphs: [
       'Was ist eine Frühwarnung? Eine offizielle Mitteilung der Schule, wenn die Gefahr besteht, dass ein Kind in einem Fach eine negative Note bekommt.',
-      'Warum kommt sie zu diesem Zeitpunkt? Meist nach dem Semester, wenn noch genug Zeit bleibt, die Situation bis zum Jahreszeugnis zu verbessern.',
+      "Wann kommt sie? Sobald im ersten oder zweiten Semester ein 'Nicht genügend' droht, muss die Schule die Eltern laut § 19 SchUG **unverzüglich** verständigen — nicht erst am Semesterende. Und ihr habt ein **Recht auf ein Beratungsgespräch** über Fördermaßnahmen; die Schule muss es anbieten.",
       'Was sollte man tun? Ernst nehmen, aber nicht in Panik geraten — einen Sprechstunden-Termin vereinbaren, genau nachfragen, was fehlt, und bei Bedarf Nachhilfe in Betracht ziehen.',
       'Wichtig zu wissen: Eine Frühwarnung bedeutet nicht automatisch ein Sitzenbleiben — sie ist eine Chance, frühzeitig zu handeln.',
     ],
@@ -394,17 +403,19 @@ const de: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/ba/sprabi/dfk.html",
     title: 'Deutschförderklasse',
     teaser: 'Wenn dein Kind noch nicht gut Deutsch spricht',
     paragraphs: [
       'Ist ein Kind neu nach Österreich gekommen und spricht noch wenig Deutsch, kommt es meist in eine Deutschförderklasse oder einen Deutschförderkurs, um die Sprache gezielt aufzubauen, bevor es voll in die Regelklasse integriert wird.',
       'Das Kind verbringt die meiste Zeit in der Förderklasse, nimmt aber bei Fächern wie Sport oder Kunst, die weniger Sprache brauchen, gemeinsam mit der Regelklasse teil.',
-      'Die Dauer beträgt meist ein bis zwei Jahre, abhängig vom Sprachniveau — es gibt regelmäßige Sprachstandsfeststellungen, die den Übertritt in die Regelklasse bestimmen.',
+      "Die Dauer beträgt höchstens zwei Jahre, maximal 20 Stunden pro Woche. Seit dem Schuljahr 2026/27 gilt zweierlei neu: Das Kind kann bei guten Fortschritten **auch unterjährig** in die Regelklasse wechseln (vorher nicht möglich), und MIKA-D wird verpflichtend nur mehr am Ende des Sommersemesters erhoben. Ein Ergebnis 'mangelhaft' führt nicht mehr automatisch zum Wiederholen, wenn alle Noten positiv sind und die Konferenz eine positive Prognose stellt.",
       'Diese Förderung ist kostenlos und steht jedem Kind zu — falls euer Kind zusätzliche Sprachunterstützung braucht und das noch nicht angesprochen wurde, direkt bei der Schule nachfragen.',
     ],
   },
   {
     id: 'school-holidays',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/termine.html",
     title: 'Schulferien in Österreich',
     teaser: 'Sommer, Weihnachten, Semester — was ist wann',
     paragraphs: [
@@ -417,10 +428,11 @@ const de: GuideArticle[] = [
   },
   {
     id: 'school-costs',
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/weitere-leistungen-fuer-familien/schulbuchaktion.html",
     title: 'Schulkosten: Was kostenlos ist und was nicht',
     teaser: 'Schulbücher sind gratis — aber es gibt weitere Kosten',
     paragraphs: [
-      'Schulbücher sind dank der Schulbuchaktion kostenlos oder fast kostenlos — es fällt nur ein kleiner Selbstbehalt an, nicht der volle Preis.',
+      "Schulbücher sind dank der Schulbuchaktion **vollständig kostenlos** — Eltern zahlen keinen Cent. (Den früheren Selbstbehalt gibt es seit dem Schuljahr 2011/12 nicht mehr.)",
       'Der Unterricht an öffentlichen Schulen ist kostenlos, aber es gibt oft zusätzliche Kosten: Schulveranstaltungen (Ausflüge), manche Unterrichtsmaterialien, und teils das Mittagessen bei Ganztagsbetreuung.',
       'Bei finanziellen Schwierigkeiten lohnt es sich, bei Schule oder Gemeinde nach Unterstützung oder Befreiung von bestimmten Kosten zu fragen — viele Schulen haben dafür Lösungen, man muss aber aktiv nachfragen und die Situation erklären.',
       'Jede Zahlungsaufforderung der Schule sollte klar und offiziell sein (Betrag, Grund, Frist) — bei einer unklaren Mitteilung vor der Zahlung bei der Schule nachfragen.',
@@ -606,6 +618,7 @@ const de: GuideArticle[] = [
 const tr: GuideArticle[] = [
   {
     id: 'school-types',
+    source: "https://www.bmb.gv.at/Themen/schule/schulsystem/sa.html",
     title: 'Avusturya\'da okul türleri',
     teaser: 'Volksschule, Mittelschule, Gymnasium — aralarındaki fark ne?',
     paragraphs: [
@@ -639,6 +652,7 @@ const tr: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
+    source: "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10009576",
     title: 'Ebeveynlerin hakları ve sorumlulukları',
     teaser: 'Ebeveyn olarak hakların neler, senden ne bekleniyor',
     paragraphs: [
@@ -649,11 +663,12 @@ const tr: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
+    source: "https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Bundesnormen&Dokumentnummer=NOR40100898",
     title: 'Frühwarnung: Ne anlama gelir, ne yapılmalı',
     teaser: '"Erken uyarı" — kesin sınıfta kalma anlamına gelmez',
     paragraphs: [
       'Frühwarnung nedir? Bir öğrencinin belirli bir dersten kalma riski olduğunda okuldan gelen resmi bir bildirim ("erken uyarı").',
-      'Neden tam bu zamanda gelir? Genellikle yarıyıl sonrasında, yıl sonu karnesinden önce durumu düzeltecek yeterli zaman kalmışken gönderilir.',
+      "Ne zaman gelir? Birinci ya da ikinci yarıyılda 'Nicht genügend' riski doğar doğmaz okul, § 19 SchUG uyarınca velileri **gecikmeksizin** bilgilendirmek zorundadır — yarıyıl sonunu beklemez. Ayrıca destek önlemleri hakkında **danışma görüşmesi hakkınız** vardır; okul bunu sunmakla yükümlüdür.",
       'Ne yapılmalı? Ciddiye alın ama paniğe kapılmayın — öğretmenle bir Sprechstunde randevusu alın, tam olarak neyin eksik olduğunu sorun, gerekirse özel ders (Nachhilfe) düşünün.',
       'Bilinmesi gereken önemli nokta: Frühwarnung kesin sınıfta kalma anlamına gelmez — vakit varken harekete geçme fırsatıdır.',
     ],
@@ -671,17 +686,19 @@ const tr: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/ba/sprabi/dfk.html",
     title: 'Almanca destek sınıfı (Deutschförderklasse)',
     teaser: 'Çocuğunuz henüz iyi Almanca konuşmuyorsa',
     paragraphs: [
       'Çocuğunuz Avusturya\'ya yeni geldiyse ve Almancası henüz zayıfsa, okul onu normal sınıfa tam olarak katılmadan önce dili güçlendirmesi için özel bir destek sınıfına (Deutschförderklasse) veya ek desteğe (Deutschförderkurs) yerleştirir.',
       'Öğrenci derslerinin çoğunu destek sınıfında alır, ancak spor veya sanat gibi fazla dil gerektirmeyen derslerde normal sınıf arkadaşlarıyla birlikte olur.',
-      'Süre genellikle çocuğun seviyesine göre bir ila iki yıldır; dil düzeyi düzenli olarak değerlendirilerek normal sınıfa ne zaman tam olarak geçebileceği belirlenir.',
+      "Süre en fazla iki yıl, haftada en çok 20 saattir. 2026/27 öğretim yılından beri iki şey yeni: Çocuk iyi ilerleme gösterirse **yıl ortasında da** normal sınıfa geçebiliyor (önceden mümkün değildi) ve MIKA-D dil testi zorunlu olarak yalnızca yaz döneminin sonunda yapılıyor. 'Yetersiz' sonucu artık otomatik olarak sınıf tekrarı anlamına gelmiyor — tüm notlar olumluysa ve kurul olumlu görüş verirse çocuk geçer.",
       'Bu destek ücretsizdir ve her çocuğun hakkıdır — çocuğunuzun dil konusunda ek desteğe ihtiyacı olduğunu düşünüyorsanız ve bu size önerilmediyse, doğrudan okula sorun.',
     ],
   },
   {
     id: 'school-holidays',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/termine.html",
     title: 'Avusturya\'da okul tatilleri',
     teaser: 'Yaz, Noel, yarıyıl... aralarındaki fark',
     paragraphs: [
@@ -694,10 +711,11 @@ const tr: GuideArticle[] = [
   },
   {
     id: 'school-costs',
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/weitere-leistungen-fuer-familien/schulbuchaktion.html",
     title: 'Okul masrafları: neler ücretsiz, neler değil',
     teaser: 'Ders kitapları ücretsiz, ama başka masraflar da var',
     paragraphs: [
-      'Ders kitapları, Schulbuchaktion adlı bir program sayesinde ücretsiz veya neredeyse ücretsizdir — tam fiyat değil, küçük sembolik bir katkı payı ödersiniz.',
+      "Ders kitapları Schulbuchaktion sayesinde **tamamen ücretsizdir** — veliler tek kuruş ödemez. (Eskiden var olan katkı payı 2011/12 öğretim yılından beri kaldırıldı.)",
       'Devlet okullarında resmi eğitim ücretsizdir, ancak genellikle ek masraflar olur: okul gezileri (Schulveranstaltungen), bazı okul malzemeleri, ve tam gün bakımdaysa bazen öğle yemeği.',
       'Ailenin maddi durumu zorsa, bazı bu masraflardan destek veya muafiyet olup olmadığını okula veya belediyeye sorun — birçok okulun bu tür durumlar için çözümleri vardır, ama durumu açıklayıp sormanız gerekir.',
       'Okuldan gelen her ödeme talebi net ve resmi bir mektupla gelmelidir (tutar, sebep, son tarih) — belirsiz bir mesaj alırsanız, ödemeden önce okuldan açıklama isteyin.',
@@ -883,6 +901,7 @@ const tr: GuideArticle[] = [
 const fa: GuideArticle[] = [
   {
     id: 'school-types',
+    source: "https://www.bmb.gv.at/Themen/schule/schulsystem/sa.html",
     title: 'انواع مدارس در اتریش',
     teaser: 'Volksschule، Mittelschule، Gymnasium — چه فرقی دارند؟',
     paragraphs: [
@@ -916,6 +935,7 @@ const fa: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
+    source: "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10009576",
     title: 'حقوق و وظایف والدین',
     teaser: 'به‌عنوان والدین چه حقی داری، و چه چیزی از تو انتظار می‌ره',
     paragraphs: [
@@ -926,11 +946,12 @@ const fa: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
+    source: "https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Bundesnormen&Dokumentnummer=NOR40100898",
     title: 'Frühwarnung: یعنی چی و چه باید کرد',
     teaser: '"هشدار زودهنگام" — به معنای مردودی قطعی نیست',
     paragraphs: [
       'Frühwarnung چیست؟ اطلاعیه رسمی مدرسه ("هشدار زودهنگام") وقتی که خطر افت نمره یک دانش‌آموز در یک درس وجود داره.',
-      'چرا دقیقاً این زمان می‌رسه؟ معمولاً بعد از نیم‌سال، وقتی هنوز زمان کافی برای بهبود وضعیت قبل از کارنامه پایان سال هست.',
+      "چه زمانی می‌آید؟ به‌محض اینکه در نیم‌سال اول یا دوم خطر نمرهٔ «ناکافی» پیش بیاید، مدرسه طبق § 19 SchUG باید **بی‌درنگ** به والدین اطلاع بدهد — نه در پایان نیم‌سال. و شما **حق جلسهٔ مشاوره** دربارهٔ اقدامات حمایتی را دارید؛ مدرسه موظف است آن را پیشنهاد کند.",
       'چه باید کرد؟ جدی بگیر ولی نگران نشو — یک وقت Sprechstunde با معلم بگیر، دقیقاً بپرس چی کم داره، و در صورت نیاز به کلاس تقویتی (Nachhilfe) فکر کن.',
       'نکته مهم: Frühwarnung به معنای مردودی قطعی نیست — فرصتیه برای اقدام زودهنگام قبل از اینکه دیر بشه.',
     ],
@@ -948,17 +969,19 @@ const fa: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/ba/sprabi/dfk.html",
     title: 'کلاس تقویت زبان آلمانی (Deutschförderklasse)',
     teaser: 'اگه فرزندت هنوز آلمانی خوبی صحبت نمی‌کنه',
     paragraphs: [
       'اگه فرزندت تازه به اتریش اومده و آلمانیش هنوز ضعیفه، مدرسه اونو در یک کلاس ویژه (Deutschförderklasse) یا حمایت اضافی (Deutschförderkurs) قرار می‌ده تا قبل از ادغام کامل در کلاس عادی، زبان رو تقویت کنه.',
       'دانش‌آموز بیشتر ساعات درسی رو در کلاس تقویتی می‌گذرونه، ولی در درس‌هایی مثل ورزش یا هنر که نیاز کمتری به زبان دارن، با همکلاسی‌های عادیش همراهه.',
-      'مدت زمان معمولاً یک تا دو سال بسته به سطح کودکه، و سطح زبانش به‌طور مرتب ارزیابی می‌شه تا مشخص بشه کی آماده انتقال کامل به کلاس عادیه.',
+      "مدت آن حداکثر دو سال و هفته‌ای حداکثر ۲۰ ساعت است. از سال تحصیلی ۲۰۲۶/۲۷ دو چیز تازه است: کودک در صورت پیشرفت خوب **حتی در میانهٔ سال** می‌تواند به کلاس عادی برود (پیش‌تر ممکن نبود) و آزمون زبان MIKA-D فقط در پایان نیم‌سال تابستانی اجباری است. نتیجهٔ «ناکافی» دیگر خودبه‌خود به تکرار سال نمی‌انجامد — اگر همهٔ نمره‌ها مثبت باشد و شورای مدرسه نظر مثبت بدهد، کودک ارتقا می‌یابد.",
       'این حمایت رایگانه و حق هر کودکیه — اگه فکر می‌کنی فرزندت به حمایت اضافی زبانی نیاز داره و بهتون پیشنهاد نشده، مستقیم از مدرسه بپرس.',
     ],
   },
   {
     id: 'school-holidays',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/termine.html",
     title: 'تعطیلات مدارس در اتریش',
     teaser: 'تابستان، کریسمس، نیم‌سال... فرقشون چیه',
     paragraphs: [
@@ -971,10 +994,11 @@ const fa: GuideArticle[] = [
   },
   {
     id: 'school-costs',
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/weitere-leistungen-fuer-familien/schulbuchaktion.html",
     title: 'هزینه‌های مدرسه: چی رایگانه و چی نه',
     teaser: 'کتاب‌های درسی رایگانن، ولی هزینه‌های دیگه‌ای هم هست',
     paragraphs: [
-      'کتاب‌های درسی به لطف برنامه‌ای به نام Schulbuchaktion رایگان یا تقریباً رایگانن — فقط یه مبلغ سمبلیک کوچیک پرداخت می‌کنی، نه قیمت کامل.',
+      "کتاب‌های درسی به لطف Schulbuchaktion **کاملاً رایگان** هستند — والدین هیچ پولی نمی‌پردازند. (سهم پرداختی سابق از سال تحصیلی ۲۰۱۱/۱۲ برداشته شده است.)",
       'آموزش رسمی در مدارس دولتی رایگانه، ولی معمولاً هزینه‌های اضافی هم هست: اردوهای مدرسه (Schulveranstaltungen)، بعضی لوازم مدرسه، و گاهی ناهار اگه کودک در برنامه تمام‌وقت باشه.',
       'اگه وضعیت مالی خانواده سخته، از مدرسه یا شهرداری درباره امکان کمک یا معافیت از بعضی هزینه‌ها بپرس — خیلی از مدارس برای این موارد راه‌حل دارن، فقط باید بپرسی و وضعیتت رو توضیح بدی.',
       'هر درخواست پرداختی از طرف مدرسه باید با یک پیام رسمی و واضح بهت برسه (مبلغ، دلیل، مهلت) — اگه پیام نامشخصی دریافت کردی، قبل از پرداخت از مدرسه توضیح بخواه.',
@@ -1160,6 +1184,7 @@ const fa: GuideArticle[] = [
 const en: GuideArticle[] = [
   {
     id: 'school-types',
+    source: "https://www.bmb.gv.at/Themen/schule/schulsystem/sa.html",
     title: 'Types of schools in Austria',
     teaser: 'Volksschule, Mittelschule, Gymnasium — what is the difference?',
     paragraphs: [
@@ -1193,6 +1218,7 @@ const en: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
+    source: "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10009576",
     title: 'Parents\' rights and responsibilities',
     teaser: 'What you\'re entitled to as a parent, and what\'s expected of you',
     paragraphs: [
@@ -1203,11 +1229,12 @@ const en: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
+    source: "https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Bundesnormen&Dokumentnummer=NOR40100898",
     title: 'Frühwarnung: what it means and what to do',
     teaser: 'An "early warning" — not necessarily a failing grade',
     paragraphs: [
       'What is a Frühwarnung? An official notice from the school ("early warning") sent when there\'s a risk that a student will fail a particular subject.',
-      'Why does it arrive at this specific time? Usually after mid-year, while there\'s still enough time to improve the situation before the year-end report.',
+      "When does it come? As soon as a 'Nicht genügend' threatens in either semester, the school must inform the parents **immediately** under § 19 SchUG — not at the end of the semester. And you have a **right to an advisory meeting** about support measures; the school has to offer it.",
       'What should you do? Take it seriously but don\'t panic — book a Sprechstunde appointment with the teacher, ask exactly what\'s missing, and consider tutoring (Nachhilfe) if needed.',
       'Important to know: a Frühwarnung doesn\'t automatically mean failing — it\'s a chance to act early before it\'s too late.',
     ],
@@ -1225,17 +1252,19 @@ const en: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/ba/sprabi/dfk.html",
     title: 'German support class (Deutschförderklasse)',
     teaser: 'If your child doesn\'t speak German well yet',
     paragraphs: [
       'If your child has recently arrived in Austria and their German is still weak, the school places them in a special support class (Deutschförderklasse) or extra support (Deutschförderkurs) to strengthen the language before fully joining the regular class.',
       'The student spends most lessons in the support class, but joins their regular classmates for subjects like sports or art that don\'t require strong language skills.',
-      'The duration is usually one to two years depending on the child\'s level, and their language is assessed regularly to determine when they\'re ready to move fully into the regular class.',
+      "It lasts at most two years, and at most 20 hours a week. Two things are new from the 2026/27 school year: a child making good progress can move into the regular class **mid-year** as well (previously not possible), and the MIKA-D language test is only compulsory at the end of the summer semester. A result of 'insufficient' no longer means automatically repeating the year — if all subject grades are positive and the school conference gives a positive assessment, the child moves up.",
       'This support is free and every child\'s right — if you feel your child needs extra language support and it hasn\'t been offered, ask the school directly.',
     ],
   },
   {
     id: 'school-holidays',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/termine.html",
     title: 'School holidays in Austria',
     teaser: 'Summer, Christmas, mid-year... what\'s the difference',
     paragraphs: [
@@ -1248,10 +1277,11 @@ const en: GuideArticle[] = [
   },
   {
     id: 'school-costs',
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/weitere-leistungen-fuer-familien/schulbuchaktion.html",
     title: 'School costs: what\'s free and what isn\'t',
     teaser: 'Textbooks are free, but there are other costs',
     paragraphs: [
-      'Textbooks are free or nearly free thanks to a program called Schulbuchaktion — you pay a small symbolic contribution, not the full price.',
+      "School books are **completely free** through the Schulbuchaktion — parents pay nothing at all. (The small co-payment that used to exist was abolished in the 2011/12 school year.)",
       'Official education at public schools is free, but there are usually additional costs: school trips (Schulveranstaltungen), some school supplies, and sometimes lunch if your child is in all-day care.',
       'If your family\'s financial situation is difficult, ask the school or municipality about support or exemption from some of these costs — many schools have solutions for this, but you need to ask and explain your situation.',
       'Any request for payment from the school should come to you as a clear, official message (amount, reason, deadline) — if you receive an unclear message, ask the school to explain before paying.',
@@ -1437,6 +1467,7 @@ const en: GuideArticle[] = [
 const uk: GuideArticle[] = [
   {
     id: 'school-types',
+    source: "https://www.bmb.gv.at/Themen/schule/schulsystem/sa.html",
     title: 'Типи шкіл в Австрії',
     teaser: 'Volksschule, Mittelschule, Gymnasium — у чому різниця?',
     paragraphs: [
@@ -1470,6 +1501,7 @@ const uk: GuideArticle[] = [
   },
   {
     id: 'parent-rights',
+    source: "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10009576",
     title: 'Права та обов\'язки батьків',
     teaser: 'На що ви маєте право як батьки, і чого від вас очікують',
     paragraphs: [
@@ -1480,11 +1512,12 @@ const uk: GuideArticle[] = [
   },
   {
     id: 'fruehwarnung',
+    source: "https://www.ris.bka.gv.at/Dokument.wxe?Abfrage=Bundesnormen&Dokumentnummer=NOR40100898",
     title: 'Frühwarnung: що це означає і що робити',
     teaser: '"Раннє попередження" — не обов\'язково означає незадовільну оцінку',
     paragraphs: [
       'Що таке Frühwarnung? Офіційне повідомлення від школи ("раннє попередження"), яке надсилають, коли є ризик, що учень отримає незадовільну оцінку з певного предмета.',
-      'Чому воно приходить саме в цей час? Зазвичай після півріччя, коли ще є достатньо часу, щоб покращити ситуацію до річного табеля.',
+      "Коли вона приходить? Щойно в першому чи другому семестрі виникає загроза оцінки «Nicht genügend», школа за § 19 SchUG зобов'язана повідомити батьків **невідкладно** — а не наприкінці семестру. І ви маєте **право на консультаційну розмову** про заходи підтримки; школа має її запропонувати.",
       'Що робити? Поставтеся серйозно, але не панікуйте — запишіться на Sprechstunde до вчителя, з\'ясуйте, чого саме бракує, і, якщо потрібно, розгляньте репетиторство (Nachhilfe).',
       'Важливо знати: Frühwarnung не означає автоматично незадовільну оцінку — це шанс діяти заздалегідь, поки не пізно.',
     ],
@@ -1502,17 +1535,19 @@ const uk: GuideArticle[] = [
   },
   {
     id: 'deutschfoerderklasse',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/ba/sprabi/dfk.html",
     title: 'Клас підтримки німецької мови (Deutschförderklasse)',
     teaser: 'Якщо ваша дитина ще не дуже добре говорить німецькою',
     paragraphs: [
       'Якщо ваша дитина нещодавно приїхала до Австрії і її німецька ще слабка, школа розміщує її в спеціальному класі підтримки (Deutschförderklasse) або надає додаткову підтримку (Deutschförderkurs), щоб зміцнити мову перед повною інтеграцією до звичайного класу.',
       'Учень проводить більшість уроків у класі підтримки, але приєднується до звичайних однокласників на предметах на кшталт спорту чи мистецтва, які не потребують сильних мовних навичок.',
-      'Тривалість зазвичай від одного до двох років залежно від рівня дитини, і її мовний рівень регулярно оцінюють, щоб визначити, коли вона готова повністю перейти до звичайного класу.',
+      "Триває щонайбільше два роки і не більше 20 годин на тиждень. З 2026/27 навчального року є дві новини: дитина з добрим поступом може перейти до звичайного класу **і посеред року** (раніше це було неможливо), а мовний тест MIKA-D обов'язковий лише наприкінці літнього семестру. Результат «недостатньо» більше не означає автоматичного повторення року — якщо всі оцінки позитивні і конференція дає позитивний прогноз, дитина переходить далі.",
       'Ця підтримка безкоштовна і є правом кожної дитини — якщо вважаєте, що вашій дитині потрібна додаткова мовна підтримка, а її не запропонували, запитайте безпосередньо в школі.',
     ],
   },
   {
     id: 'school-holidays',
+    source: "https://www.bmb.gv.at/Themen/schule/schulpraxis/termine.html",
     title: 'Шкільні канікули в Австрії',
     teaser: 'Літо, Різдво, півріччя... у чому різниця',
     paragraphs: [
@@ -1525,10 +1560,11 @@ const uk: GuideArticle[] = [
   },
   {
     id: 'school-costs',
+    source: "https://www.bundeskanzleramt.gv.at/agenda/familie/weitere-leistungen-fuer-familien/schulbuchaktion.html",
     title: 'Шкільні витрати: що безкоштовно, а що ні',
     teaser: 'Підручники безкоштовні, але є й інші витрати',
     paragraphs: [
-      'Підручники безкоштовні або майже безкоштовні завдяки програмі Schulbuchaktion — ви сплачуєте лише невеликий символічний внесок, а не повну ціну.',
+      "Підручники завдяки Schulbuchaktion **повністю безкоштовні** — батьки не платять нічого. (Колишню доплату скасували з 2011/12 навчального року.)",
       'Офіційна освіта в державних школах безкоштовна, але зазвичай є додаткові витрати: шкільні поїздки (Schulveranstaltungen), деяке шкільне приладдя і часом обід, якщо дитина перебуває в групі повного дня.',
       'Якщо фінансове становище родини складне, запитайте в школі або громаді про можливість підтримки чи звільнення від деяких витрат — багато шкіл мають рішення для таких випадків, але потрібно запитати й пояснити свою ситуацію.',
       'Будь-яка вимога оплати від школи має надходити чітким офіційним повідомленням (сума, причина, термін) — якщо повідомлення незрозуміле, попросіть школу пояснити перед оплатою.',
@@ -1734,7 +1770,7 @@ const arFeminineOverrides: Record<string, { title?: string; teaser?: string; par
   },
   "school-costs": {
     paragraphs: {
-      0: "الكتب المدرسية مجانية أو شبه مجانية بفضل برنامج اسمه Schulbuchaktion — بتدفعي مبلغ رمزي بسيط بس مو الثمن الكامل.",
+      0: "الكتب المدرسية **مجانية بالكامل** بفضل برنامج Schulbuchaktion — ما بتدفعي ولا يورو. (كان في مبلغ رمزي زمان، بس انلغى من العام الدراسي 2011/12.)",
       2: "إذا الوضع المادي للعيلة صعب، اسألي المدرسة أو البلدية عن إمكانية دعم أو إعفاء من بعض هالمصاريف — كتير مدارس عندها حلول لهيك حالات، بس لازم تسألي وتوضحي وضعك.",
       3: "أي طلب دفع من المدرسة لازم يوصلك برسالة رسمية واضحة (المبلغ، السبب، آخر موعد) — إذا وصلتك رسالة مو واضحة، اسألي المدرسة تشرحلك قبل ما تدفعي.",
     },
@@ -1844,6 +1880,11 @@ const arFeminineOverrides: Record<string, { title?: string; teaser?: string; par
       4: "حتى لو دخلك واطي وما دفعتي ضريبة دخل أصلاً، ممكن يرجعلك مبلغ (Negativsteuer) من اشتراكات التأمين.",
       5: "الدولة بتعمل أحياناً استرجاع تلقائي بدون طلب — بس عادةً بيطلع **أقل** من اللي بتاخديه لو قدّمتي بنفسك وحطّيتي كل ما بتستحقيه.",
       6: "ومهم: حتى لو الدولة عملت الاسترجاع التلقائي، لسه من حقك تقدّمي بنفسك بعدين وتاخدي الفرق. الاسترجاع التلقائي مو نهائي.",
+    },
+  },
+  "fruehwarnung": {
+    paragraphs: {
+      1: "إيمتى بتوصل؟ حسب القانون (§ 19 SchUG)، أول ما يصير في خطر علامة «غير كافٍ» بأي فصل من التنين، المدرسة لازم تخبر الأهل **فوراً** — مو بآخر الفصل. وإلك **حق بجلسة استشارة** عن خطوات الدعم، والمدرسة ملزمة تعرضها عليكي.",
     },
   },
 };
