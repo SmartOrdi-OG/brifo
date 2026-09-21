@@ -18,3 +18,23 @@
 .article-paragraph:last-child {
   margin-bottom: 0;
 }
+
+/* Source link under an article's last paragraph. Quiet by default — it is a
+   footnote, not a call to action — but a real tap target on a phone. */
+.article-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.article-source:active {
+  color: var(--text);
+}
