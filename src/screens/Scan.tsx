@@ -10,6 +10,7 @@ import { compressImage, compressImageForStorage, type CompressedImage } from '..
 import { isolateBidiRuns } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
 import { isTelegramMiniApp } from '../lib/telegramWebApp';
+import { authHeader } from '../lib/authHeader';
 import type { LetterAnalysis } from '../types/analysis';
 import './Scan.css';
 
@@ -157,11 +158,20 @@ export function Scan() {
       ]);
       const response = await fetch('/api/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await authHeader()) },
         body: JSON.stringify({ image: base64, mediaType, lang }),
       });
       if (!response.ok) {
         status = response.status;
+        // The server says this account is out of trial and not subscribed.
+        // PremiumGate should already have caught that, so reaching here means
+        // the two disagreed — a stale cached status, a clock skew. Showing the
+        // paywall is both the honest answer and the one with a way forward,
+        // where a generic error would just look broken.
+        if (status === 402) {
+          navigate('/paywall');
+          return;
+        }
         const body = await response.text().catch(() => '');
         console.error(`[Scan] /api/analyze failed: ${response.status} ${response.statusText}`, body);
         throw new Error('request failed');

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ThermometerSun,
   CalendarDays,
@@ -18,6 +18,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
+import { authHeader } from '../lib/authHeader';
 import type { TranslationKey } from '../context/translations';
 import type { ReplyIntent, ReplyLetter } from '../types/reply';
 import type { ReplyPrefill } from '../lib/replyPrefill';
@@ -47,6 +48,7 @@ const INTENT_ICON: Record<ReplyIntent, LucideIcon> = {
 export function Reply() {
   const { t, lang } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
 
   /** Arriving from a letter's or an appointment's ⋮ menu rather than from the
    * blank quick tool. The app already knows who wrote in, or who the
@@ -78,7 +80,7 @@ export function Reply() {
     try {
       const response = await fetch('/api/reply', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await authHeader()) },
         body: JSON.stringify({
           intent,
           recipient: recipient.trim() || undefined,
@@ -91,6 +93,13 @@ export function Reply() {
       });
       if (!response.ok) {
         status = response.status;
+        // See the same branch in Scan.tsx: a 402 here means the server and
+        // PremiumGate disagreed about this account, and the paywall is the
+        // only answer with a way forward.
+        if (status === 402) {
+          navigate('/paywall');
+          return;
+        }
         throw new Error('request failed');
       }
       const result: ReplyLetter = await response.json();
