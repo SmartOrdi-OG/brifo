@@ -8,6 +8,7 @@ import {
   type ReminderEvent,
 } from '../src/server/push.js';
 import { ConfigError } from '../src/server/errors.js';
+import { getUserFromRequest } from '../src/server/auth.js';
 
 // Consolidates push-public-key/subscribe/unsubscribe/sync into one function —
 // Vercel's Hobby plan caps a deployment at 12 serverless functions, and each
@@ -67,6 +68,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'method not allowed' });
     return;
+  }
+
+  // subscribe and sync write to the store, so they need a signed-in caller.
+  // Without this anyone could register push endpoints and hang reminders off
+  // them, and the daily cron would spend its single Hobby-plan run delivering
+  // to strangers. The other two actions stay open on purpose: public-key
+  // returns the VAPID *public* key, and unsubscribe only ever removes — it
+  // needs the device's own unguessable id, and src/lib/eraseData.ts calls it
+  // deliberately without a token, because a phone must still be able to stop
+  // reminders while the account is being erased or signed out.
+  if (action === 'subscribe' || action === 'sync') {
+    const user = await getUserFromRequest(req);
+    if (!user) {
+      res.status(401).json({ error: 'not signed in' });
+      return;
+    }
   }
 
   if (action === 'subscribe') {

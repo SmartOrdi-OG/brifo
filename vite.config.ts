@@ -29,95 +29,84 @@ function jsonPostRoute(
   }
 }
 
+type VercelHandler = (req: never, res: never) => void | Promise<void>
+
+/** api/ is a CommonJS corner of the project (api/package.json says so, because
+ * that is what Vercel's functions want) while this config is ESM, so the
+ * `default` of an api/ module arrives wrapped one level deeper in some
+ * loaders and not in others. Unwrap whichever shape turned up rather than
+ * guessing one and crashing dev on the other. */
+function interopHandler(mod: unknown): VercelHandler {
+  const outer = (mod as { default?: unknown }).default
+  if (typeof outer === 'function') return outer as VercelHandler
+  const inner = (outer as { default?: unknown } | undefined)?.default
+  if (typeof inner === 'function') return inner as VercelHandler
+  throw new Error('api module has no default export')
+}
+
+/** Runs a real handler out of api/ in dev, instead of a second copy of the
+ * same logic written against the server modules.
+ *
+ * The second copy is what this solves. /api/analyze had one, it was never
+ * updated when the deployed route gained non-school senders, six output
+ * languages and the entitlement check, and so `npm run dev` quietly kept
+ * answering with the old Arabic-school-only prompt and no paywall. A dev
+ * route that *is* the production route cannot drift that way.
+ *
+ * Vercel hands a handler a parsed `body`, a `query` and a response carrying
+ * status()/json(); Connect gives none of those, so this fills them in. Note
+ * that gated routes are genuinely gated here too: scanning locally needs the
+ * Supabase env vars set, exactly as in production. */
+function vercelDevRoute(
+  load: () => Promise<unknown>,
+  query: Record<string, string> = {},
+): Connect.SimpleHandleFunction {
+  return (req, res) => {
+    let raw = ''
+    req.on('data', (chunk) => (raw += chunk))
+    req.on('end', async () => {
+      const vercelRes = Object.assign(res, {
+        status(code: number) {
+          res.statusCode = code
+          return vercelRes
+        },
+        json(body: unknown) {
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify(body))
+        },
+      })
+
+      let body: unknown
+      try {
+        body = raw ? JSON.parse(raw) : {}
+      } catch {
+        vercelRes.status(400).json({ error: 'invalid request body' })
+        return
+      }
+
+      try {
+        const handler = interopHandler(await load())
+        await handler(Object.assign(req, { body, query }) as never, vercelRes as never)
+      } catch (err) {
+        console.error('dev api route failed', err)
+        if (!res.writableEnded) vercelRes.status(500).json({ error: 'unexpected error' })
+      }
+    })
+  }
+}
+
 function apiDevMiddleware(): Plugin {
   return {
     name: 'brifo-api-dev-middleware',
     configureServer(server) {
-      server.middlewares.use(
-        '/api/analyze',
-        jsonPostRoute(async (body) => {
-          const { image, mediaType } = (body ?? {}) as { image?: string; mediaType?: string }
-          const { analyzeLetterImage, AnalyzeError } = await import('./src/server/analyze.ts')
-          try {
-            if (!image || !mediaType) throw new AnalyzeError('missing image or mediaType')
-            const result = await analyzeLetterImage(image, mediaType)
-            return { status: 200, body: result }
-          } catch (err) {
-            if (err instanceof AnalyzeError) return { status: 400, body: { error: err.message } }
-            console.error('analyze failed', err)
-            return { status: 500, body: { error: 'analysis failed' } }
-          }
-        }),
-      )
+      server.middlewares.use('/api/analyze', vercelDevRoute(() => import('./api/analyze.ts')))
 
-      server.middlewares.use(
-        '/api/reply',
-        jsonPostRoute(async (body) => {
-          const { generateReplyLetter, ReplyError } = await import('./src/server/reply.ts')
-          try {
-            const result = await generateReplyLetter(body)
-            return { status: 200, body: result }
-          } catch (err) {
-            if (err instanceof ReplyError) return { status: 400, body: { error: err.message } }
-            console.error('reply generation failed', err)
-            return { status: 500, body: { error: 'reply generation failed' } }
-          }
-        }),
-      )
+      server.middlewares.use('/api/reply', vercelDevRoute(() => import('./api/reply.ts')))
 
-      server.middlewares.use('/api/push-public-key', async (req, res) => {
-        if (req.method !== 'GET') {
-          res.statusCode = 405
-          res.end(JSON.stringify({ error: 'method not allowed' }))
-          return
-        }
-        const { getVapidPublicKey } = await import('./src/server/push.ts')
-        res.setHeader('Content-Type', 'application/json')
-        try {
-          res.end(JSON.stringify({ publicKey: getVapidPublicKey() }))
-        } catch (err) {
-          res.statusCode = 500
-          res.end(JSON.stringify({ error: err instanceof Error ? err.message : 'unexpected error' }))
-        }
-      })
-
-      server.middlewares.use(
-        '/api/push-subscribe',
-        jsonPostRoute(async (body) => {
-          const { saveSubscription } = await import('./src/server/push.ts')
-          const { deviceId, subscription } = (body ?? {}) as { deviceId?: string; subscription?: unknown }
-          if (!deviceId || !subscription) return { status: 400, body: { error: 'invalid request' } }
-          await saveSubscription(deviceId, subscription as never)
-          return { status: 200, body: { ok: true } }
-        }),
-      )
-
-      server.middlewares.use(
-        '/api/push-unsubscribe',
-        jsonPostRoute(async (body) => {
-          const { removeSubscription } = await import('./src/server/push.ts')
-          const { deviceId } = (body ?? {}) as { deviceId?: string }
-          if (!deviceId) return { status: 400, body: { error: 'missing deviceId' } }
-          await removeSubscription(deviceId)
-          return { status: 200, body: { ok: true } }
-        }),
-      )
-
-      server.middlewares.use(
-        '/api/push-sync',
-        jsonPostRoute(async (body) => {
-          const { syncReminders } = await import('./src/server/push.ts')
-          const { deviceId, events, offsets, lang } = (body ?? {}) as {
-            deviceId?: string
-            events?: never[]
-            offsets?: number[]
-            lang?: 'ar' | 'de' | 'tr' | 'fa' | 'en' | 'uk'
-          }
-          if (!deviceId || !events || !offsets) return { status: 400, body: { error: 'invalid request' } }
-          await syncReminders(deviceId, events, offsets, lang === 'de' ? 'de' : lang === 'tr' ? 'tr' : lang === 'fa' ? 'fa' : lang === 'en' ? 'en' : lang === 'uk' ? 'uk' : 'ar')
-          return { status: 200, body: { ok: true } }
-        }),
-      )
+      // The ?action= values match the rewrites in vercel.json.
+      for (const action of ['public-key', 'subscribe', 'unsubscribe', 'sync'] as const) {
+        server.middlewares.use(`/api/push-${action}`, vercelDevRoute(() => import('./api/push.ts'), { action }))
+      }
 
       server.middlewares.use(
         '/api/backup-sync',

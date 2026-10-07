@@ -3,6 +3,7 @@
  * access to this browser's localStorage, so every event we want reminders
  * for has to be explicitly synced up via syncPushReminders. */
 import type { Lang } from '../context/translations';
+import { authHeader } from './authHeader';
 
 const DEVICE_ID_KEY = 'brifo_device_id';
 const PUSH_ENABLED_KEY = 'brifo_push_enabled';
@@ -52,7 +53,7 @@ export async function subscribeToPush(): Promise<boolean> {
 
     const subRes = await fetch('/api/push-subscribe', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', ...(await authHeader()) },
       body: JSON.stringify({ deviceId: getDeviceId(), subscription: subscription.toJSON() }),
     });
     if (!subRes.ok) return false;
@@ -76,6 +77,9 @@ export async function unsubscribeFromPush(): Promise<void> {
   } catch (err) {
     console.error('[push] unsubscribe failed:', err);
   }
+  // No auth header here, unlike subscribe/sync: this runs from the erase and
+  // sign-out paths too, where there is no longer a session to attach, and all
+  // it can do is remove this device's own subscription. See api/push.ts.
   try {
     await fetch('/api/push-unsubscribe', {
       method: 'POST',
@@ -101,7 +105,7 @@ export async function syncPushReminders(events: SyncablePushEvent[], offsets: nu
   try {
     await fetch('/api/push-sync', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', ...(await authHeader()) },
       body: JSON.stringify({ deviceId: getDeviceId(), events, offsets, lang }),
     });
   } catch (err) {
