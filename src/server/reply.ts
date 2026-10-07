@@ -1,12 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
-import { ConfigError } from './analyze.js';
+import { ConfigError } from './errors.js';
 import { toStructuredOutputFormat } from './structuredOutput.js';
 
 let client: Anthropic | null = null;
 
-/** See analyze.ts getClient() — lazy construction turns a missing key into a
- * normal catchable error instead of an uncaught throw at module load. */
+/** Lazily, because constructing the client at module load would throw before
+ * the handler's try/catch exists — an uncaught cold-start crash rather than a
+ * catchable error about a missing key. */
 function getClient(): Anthropic {
   if (client) return client;
   if (!process.env.ANTHROPIC_API_KEY) {
