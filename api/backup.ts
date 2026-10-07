@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { saveCloudBackup, loadCloudBackup } from '../src/server/backup.js';
 import { saveConsentRecord } from '../src/server/consent.js';
 import { getUserFromRequest } from '../src/server/auth.js';
+import { eraseAccountData } from '../src/server/eraseAccount.js';
 
 // Consolidates backup-sync/backup-restore/consent-accept into one function —
 // see push.ts for why (Vercel's Hobby plan caps a deployment at 12
@@ -81,6 +82,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (err) {
       console.error('[api/backup:consent] failed:', err);
       res.status(500).json({ error: 'failed to save consent record' });
+    }
+    return;
+  }
+
+  if (action === 'erase') {
+    try {
+      const result = await eraseAccountData(user.id);
+      if (!result.ok) {
+        // 409, not 403: nothing is wrong with the request or the caller — the
+        // account is simply in a state that has to be resolved first, and the
+        // screen turns this into "cancel your subscription, then come back".
+        res.status(409).json({ error: result.reason });
+        return;
+      }
+      console.log(`[api/backup:erase] removed ${result.deleted.length} keys for a user on request`);
+      res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error('[api/backup:erase] failed:', err);
+      res.status(500).json({ error: 'failed to erase data' });
     }
     return;
   }

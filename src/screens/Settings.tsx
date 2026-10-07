@@ -5,6 +5,7 @@ import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
 import { LanguagePicker } from '../components/LanguagePicker';
+import { eraseEverything, type EraseOutcome } from '../lib/eraseData';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
@@ -46,6 +47,10 @@ export function Settings() {
   const { session, signOut } = useAuth();
   const { active: subscriptionActive, bonusTrialDays } = useSubscription();
   const [referralCopied, setReferralCopied] = useState(false);
+  /** Erasure is two taps: the first arms it, the second does it. */
+  const [eraseArmed, setEraseArmed] = useState(false);
+  const [erasing, setErasing] = useState(false);
+  const [eraseOutcome, setEraseOutcome] = useState<EraseOutcome | null>(null);
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -436,6 +441,68 @@ export function Settings() {
           </span>
           <p style={{ fontSize: 15, fontWeight: 700 }}>{t('home_add_child')}</p>
         </div>
+      </div>
+
+
+      <div className="sec">
+        <h3>{t('settings_erase_section')}</h3>
+      </div>
+      <div className="card" style={{ padding: 16 }}>
+        <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--muted)', lineHeight: 1.6 }}>
+          {t('settings_erase_body')}
+        </p>
+        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', lineHeight: 1.6, marginTop: 8 }}>
+          {t('settings_erase_note')}
+        </p>
+
+        {eraseOutcome === 'active-subscription' && (
+          <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--red)', marginTop: 12, lineHeight: 1.6 }}>
+            {t('settings_erase_blocked')}
+          </p>
+        )}
+        {eraseOutcome === 'failed' && (
+          <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--red)', marginTop: 12 }}>
+            {t('settings_erase_error')}
+          </p>
+        )}
+
+        {/* Two taps, not a dialog: the second tap is the confirmation, and the
+            label changes to say so. Irreversible and one tap away is the
+            combination worth avoiding — but a native confirm() is dismissed by
+            reflex and reads as a browser alert, not as the app asking. */}
+        <button
+          className="scan-btn"
+          disabled={erasing}
+          onClick={async () => {
+            if (!eraseArmed) {
+              setEraseArmed(true);
+              setEraseOutcome(null);
+              return;
+            }
+            setErasing(true);
+            const outcome = await eraseEverything();
+            setErasing(false);
+            setEraseArmed(false);
+            setEraseOutcome(outcome);
+            // On success the session is gone, so sending them to the root puts
+            // them back at the sign-in screen rather than on a settings page
+            // for an account that no longer has anything behind it.
+            if (outcome === 'done') navigate('/');
+          }}
+          style={{ marginTop: 14, width: '100%', color: 'var(--red)', borderColor: 'var(--red)' }}
+        >
+          {erasing ? t('settings_manage_subscription_loading') : eraseArmed ? t('settings_erase_confirm') : t('settings_erase_button')}
+        </button>
+
+        {eraseArmed && !erasing && (
+          <button
+            className="scan-btn"
+            onClick={() => setEraseArmed(false)}
+            style={{ marginTop: 8, width: '100%' }}
+          >
+            {t('settings_erase_cancel')}
+          </button>
+        )}
       </div>
 
       <div className="sec">
