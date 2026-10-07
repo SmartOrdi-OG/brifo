@@ -7,7 +7,7 @@ import type { TranslationKey } from '../context/translations';
  * A single "something went wrong, try again" told someone with no signal to
  * do the one thing that cannot work, which is how an app earns a reputation
  * for being broken. */
-export type RequestErrorKind = 'offline' | 'connection' | 'busy' | 'unreadable' | 'generic';
+export type RequestErrorKind = 'offline' | 'connection' | 'busy' | 'limit' | 'unreadable' | 'generic';
 
 /** Cheap pre-flight check. `false` here is definitive — the browser knows it
  * has no network — so there's no point compressing an image and firing a
@@ -25,9 +25,14 @@ export function isDefinitelyOffline(): boolean {
 export function classifyRequestError(status?: number): RequestErrorKind {
   if (isDefinitelyOffline()) return 'offline';
   if (status === undefined) return 'connection';
-  if (status === 429 || status === 503) return 'busy';
+  // 429 now has one meaning on these routes: the per-account daily ceiling in
+  // server/entitlement.ts, checked before anything upstream is called. It is
+  // not "try again in a minute" — the answer is tomorrow — so it is separated
+  // from 503, which really is a busy server.
+  if (status === 429) return 'limit';
+  if (status === 503) return 'busy';
   // 502 is this API's "the model failed or answered with something unusable"
-  // (see api/analyze.js) — the request was fine, the reading of it wasn't.
+  // (see api/analyze.ts) — the request was fine, the reading of it wasn't.
   if (status === 502) return 'unreadable';
   return 'generic';
 }
@@ -43,6 +48,7 @@ export function requestErrorKey(
   if (kind === 'offline') return 'error_offline';
   if (kind === 'connection') return 'error_connection';
   if (kind === 'busy') return 'error_busy';
+  if (kind === 'limit') return 'error_daily_limit';
   if (kind === 'unreadable') return unreadableKey;
   return genericKey;
 }

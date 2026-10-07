@@ -1,16 +1,9 @@
-import { supabase } from './supabaseClient';
+import { authHeader } from './authHeader';
 
 export interface SubscriptionStatus {
   active: boolean;
   currentPeriodEnd: string | null;
   bonusTrialDays: number;
-}
-
-async function authHeader(): Promise<Record<string, string>> {
-  if (!supabase) return {};
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
-  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 export async function fetchSubscriptionStatus(): Promise<SubscriptionStatus | null> {

@@ -90,3 +90,21 @@ export async function kvMarkSentOnce(key: string, ttlSeconds: number): Promise<b
   memStrings.set(key, { value: '1', expiresAt: Date.now() + ttlSeconds * 1000 });
   return true;
 }
+
+/** Atomically increments a counter and returns its new value, setting the TTL
+ * on the first increment so the window expires on its own.
+ *
+ * Atomic on purpose: this backs the per-user rate limit, and a read-modify-
+ * write would let a burst of parallel requests all read the same low count and
+ * sail past the ceiling together — which is exactly the shape of the abuse it
+ * exists to stop. */
+export async function kvIncr(key: string, ttlSeconds: number): Promise<number> {
+  if (hasKv()) {
+    const count = await restCommand<number>(['incr', key]);
+    if (count === 1) await restCommand(['expire', key, ttlSeconds]);
+    return count;
+  }
+  const current = Number(memGet(key) ?? 0) + 1;
+  memStrings.set(key, { value: String(current), expiresAt: Date.now() + ttlSeconds * 1000 });
+  return current;
+}

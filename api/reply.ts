@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { generateReplyLetter, ReplyError } from '../src/server/reply.js';
-import { ConfigError } from '../src/server/analyze.js';
+import { checkEntitlement } from '../src/server/entitlement.js';
+import { ConfigError } from '../src/server/errors.js';
 
 interface VercelRequest extends IncomingMessage {
   body?: unknown;
@@ -17,6 +18,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  // Same gate as /api/analyze, and for the same reason: this route spends
+  // money at Anthropic on every call, and PremiumGate only governs the screen.
+  const entitlement = await checkEntitlement(req, 'reply');
+  if (!entitlement.ok) {
+    res.status(entitlement.failure.status).json({ error: entitlement.failure.error });
+    return;
+  }
+
   try {
     const result = await generateReplyLetter(req.body);
     res.status(200).json(result);
@@ -30,8 +39,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(400).json({ error: err.message });
       return;
     }
+    // No `detail` in the response: it echoed the upstream error message to
+    // the caller, which is server internals leaking through a public route.
     console.error('[api/reply] reply generation failed:', err);
-    const detail = err instanceof Error ? err.message : String(err);
-    res.status(500).json({ error: 'reply generation failed', detail });
+    res.status(500).json({ error: 'reply generation failed' });
   }
 }

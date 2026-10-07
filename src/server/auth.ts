@@ -4,6 +4,11 @@
 export interface AuthedUser {
   id: string;
   email: string | null;
+  /** When the account was created, as Supabase reports it. The trial is
+   * measured from here, so taking it from the verified token response rather
+   * than from anything the client sends is what stops a trial being reset by
+   * editing a request. */
+  createdAt: string | null;
 }
 
 interface RequestLike {
@@ -25,9 +30,9 @@ export async function getUserFromRequest(req: RequestLike): Promise<AuthedUser |
       headers: { Authorization: `Bearer ${token}`, apikey: anonKey },
     });
     if (!res.ok) return null;
-    const data = (await res.json()) as { id?: string; email?: string };
+    const data = (await res.json()) as { id?: string; email?: string; created_at?: string };
     if (!data.id) return null;
-    return { id: data.id, email: data.email ?? null };
+    return { id: data.id, email: data.email ?? null, createdAt: data.created_at ?? null };
   } catch {
     return null;
   }

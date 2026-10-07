@@ -16,7 +16,7 @@ function getClient(): Anthropic {
   return client;
 }
 
-/** Kept in sync with api/analyze.js's OUTPUT_LANGUAGE. */
+/** Kept in sync with api/analyze.ts's OUTPUT_LANGUAGE. */
 const OUTPUT_LANGUAGE: Record<string, string> = {
   ar: 'Arabic',
   de: 'German',
@@ -29,7 +29,7 @@ const OUTPUT_LANGUAGE: Record<string, string> = {
 /** Deliberately does not mention schools first, and says so explicitly.
  *
  * This prompt used to read "communicate with their children's school", left
- * over from when the app only handled school letters. api/analyze.js was
+ * over from when the app only handled school letters. api/analyze.ts was
  * broadened when the app was; this was not — so a parent asking to excuse an
  * appointment with their child's paediatrician got back a letter addressed to
  * a school, about a two-month-old missing lessons. */

@@ -2,18 +2,9 @@ import Stripe from 'stripe';
 import { kvGet, kvSet } from './kv.js';
 import { ConfigError } from './errors.js';
 
-// Stripe ids are scoped to the mode that created them: a price/customer made
-// with a test key does not exist under a live key. Namespacing every cached id
-// by mode means flipping STRIPE_SECRET_KEY from test to live (or back) starts
-// from a clean slate instead of replaying ids Stripe will reject with "No such
-// price"/"No such customer".
-function stripeMode(): 'test' | 'live' {
-  const key = process.env.STRIPE_SECRET_KEY ?? '';
-  return key.includes('_test_') ? 'test' : 'live';
-}
-
-const subscriptionKey = (userId: string) => `stripe:${stripeMode()}:subscription:${userId}`;
-const customerKey = (userId: string) => `stripe:${stripeMode()}:customer:${userId}`;
+// The key layout lives in stripeKeys.ts so the entitlement check can read a
+// subscription without importing this file, and the Stripe SDK with it.
+import { stripeMode, subscriptionKey, customerKey, isActiveStatus } from './stripeKeys.js';
 
 export type Plan = 'monthly' | 'annual';
 
@@ -140,7 +131,7 @@ export interface SubscriptionStatus {
 export async function getSubscriptionStatus(userId: string): Promise<SubscriptionStatus> {
   const stored = await kvGet<{ status: Stripe.Subscription.Status; currentPeriodEnd: string }>(subscriptionKey(userId));
   if (!stored) return { active: false, currentPeriodEnd: null };
-  return { active: stored.status === 'active' || stored.status === 'trialing', currentPeriodEnd: stored.currentPeriodEnd };
+  return { active: isActiveStatus(stored.status), currentPeriodEnd: stored.currentPeriodEnd };
 }
 
 /** The delivery did not come from Stripe, or STRIPE_WEBHOOK_SECRET is wrong.

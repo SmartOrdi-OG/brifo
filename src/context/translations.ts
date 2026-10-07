@@ -115,6 +115,7 @@ const ar = {
   error_offline: "ما في اتصال بالإنترنت. تأكد من الشبكة وجرّب مرة تانية.",
   error_connection: "ما قدرنا نوصل للخدمة. تأكد من الإنترنت وجرّب مرة تانية.",
   error_busy: "الخدمة مشغولة هلق. جرّب بعد دقيقة.",
+  error_daily_limit: "وصلت للحد اليومي لقراءة الرسائل. جرّب بكرا.",
   scan_error_unreadable: "ما قدرنا نقرأ الرسالة من الصورة. صوّرها بضوء أحسن والورقة كلها داخل الكادر.",
   scan_try_again: 'حاول مرة ثانية',
 
@@ -456,6 +457,7 @@ const de: Record<keyof typeof ar, string> = {
   error_offline: "Keine Internetverbindung. Prüfen Sie das Netz und versuchen Sie es erneut.",
   error_connection: "Der Dienst war nicht erreichbar. Prüfen Sie die Verbindung und versuchen Sie es erneut.",
   error_busy: "Der Dienst ist gerade ausgelastet. Bitte in einer Minute erneut versuchen.",
+  error_daily_limit: "Du hast das Tageslimit für Briefe erreicht. Bitte morgen wieder versuchen.",
   scan_error_unreadable: "Der Brief konnte auf dem Foto nicht gelesen werden. Fotografieren Sie ihn bei besserem Licht und mit dem ganzen Blatt im Bild.",
   scan_try_again: 'Erneut versuchen',
 
@@ -797,6 +799,7 @@ const tr: Record<keyof typeof ar, string> = {
   error_offline: "İnternet bağlantısı yok. Ağı kontrol edip tekrar dene.",
   error_connection: "Hizmete ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
   error_busy: "Hizmet şu anda yoğun. Bir dakika sonra tekrar dene.",
+  error_daily_limit: "Günlük mektup sınırına ulaştın. Yarın tekrar dene.",
   scan_error_unreadable: "Mektup fotoğraftan okunamadı. Daha iyi ışıkta ve kâğıdın tamamı kadraja girecek şekilde çek.",
   scan_try_again: 'Tekrar dene',
 
@@ -1138,6 +1141,7 @@ const fa: Record<keyof typeof ar, string> = {
   error_offline: "اتصال اینترنت وجود ندارد. شبکه را بررسی کن و دوباره امتحان کن.",
   error_connection: "دسترسی به سرویس ممکن نشد. اتصالت را بررسی کن و دوباره امتحان کن.",
   error_busy: "سرویس در حال حاضر شلوغ است. یک دقیقه بعد دوباره امتحان کن.",
+  error_daily_limit: "به سقف روزانهٔ نامه‌ها رسیدی. فردا دوباره امتحان کن.",
   scan_error_unreadable: "نامه از روی عکس خوانده نشد. با نور بهتر و طوری که تمام برگه در کادر باشد عکس بگیر.",
   scan_try_again: 'دوباره امتحان کن',
 
@@ -1479,6 +1483,7 @@ const en: Record<keyof typeof ar, string> = {
   error_offline: "No internet connection. Check your network and try again.",
   error_connection: "Couldn't reach the service. Check your connection and try again.",
   error_busy: "The service is busy right now. Please try again in a minute.",
+  error_daily_limit: "You have reached the daily limit for letters. Please try again tomorrow.",
   scan_error_unreadable: "The letter couldn't be read from the photo. Take it in better light, with the whole page in frame.",
   scan_try_again: 'Try again',
 
@@ -1820,6 +1825,7 @@ const uk: Record<keyof typeof ar, string> = {
   error_offline: "Немає з'єднання з інтернетом. Перевірте мережу та спробуйте ще раз.",
   error_connection: "Не вдалося зв'язатися із сервісом. Перевірте з'єднання та спробуйте ще раз.",
   error_busy: "Сервіс зараз завантажений. Спробуйте за хвилину.",
+  error_daily_limit: "Ви досягли денного ліміту листів. Спробуйте завтра.",
   scan_error_unreadable: "Лист не вдалося прочитати з фотографії. Сфотографуйте при кращому освітленні, щоб увесь аркуш був у кадрі.",
   scan_try_again: 'Спробувати ще раз',
 
@@ -2094,6 +2100,7 @@ export const arByGender: Record<Gender, Partial<Record<TranslationKey, string>>>
     error_offline: "ما في اتصال بالإنترنت. تأكدي من الشبكة وجرّبي مرة تانية.",
     error_connection: "ما قدرنا نوصل للخدمة. تأكدي من الإنترنت وجرّبي مرة تانية.",
     error_busy: "الخدمة مشغولة هلق. جرّبي بعد دقيقة.",
+    error_daily_limit: "وصلتي للحد اليومي لقراءة الرسائل. جرّبي بكرا.",
     scan_error_unreadable: "ما قدرنا نقرأ الرسالة من الصورة. صوّريها بضوء أحسن والورقة كلها داخل الكادر.",
     result_tip_label: "مفيد تعرفي",
     home_no_children_title: "أضيفي أول فرد من العائلة",
