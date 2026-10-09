@@ -1,0 +1,40 @@
+# Runs on every pull request into main and on main itself.
+#
+# Vercel deploys whatever lands on main, and until now nothing stood between a
+# merge and the people using the app: the only check was whoever opened the PR
+# remembering to run the build locally. These three commands are the ones that
+# would have caught the mistakes this project has actually shipped — a missing
+# guide icon (a blank screen), a type error in a route, an article added in one
+# language and forgotten in five.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # `tsc -b` first, then the Vite build — so this also type-checks the
+      # three source trees and the tests. `tsc -p .` on its own does nothing
+      # here: the root tsconfig only holds project references.
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test

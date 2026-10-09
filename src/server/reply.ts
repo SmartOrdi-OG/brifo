@@ -17,8 +17,14 @@ function getClient(): Anthropic {
   return client;
 }
 
-/** Kept in sync with api/analyze.ts's OUTPUT_LANGUAGE. */
-const OUTPUT_LANGUAGE: Record<string, string> = {
+/** What language to write the reply's explanation in, per app language.
+ *
+ * Different wording from api/analyze.ts's map of the same name — that one
+ * describes a reading level too — but it must cover the same set of languages,
+ * which tests/outputLanguage.test.ts checks against the app's own list.
+ * Exported for that test only; an app language missing from here falls back to
+ * Arabic silently, which is exactly the kind of thing nobody notices. */
+export const OUTPUT_LANGUAGE: Record<string, string> = {
   ar: 'Arabic',
   de: 'German',
   tr: 'Turkish',

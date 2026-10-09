@@ -1754,7 +1754,13 @@ const uk: GuideArticle[] = [
  * twenty-two articles — so the articles themselves stay in one
  * place and cannot drift apart. Applied by id and paragraph index in
  * getGuideArticles below. */
-const arFeminineOverrides: Record<string, { title?: string; teaser?: string; paragraphs?: Record<number, string> }> = {
+/** Keyed on GuideArticleId, not string: an override under a misspelled or
+ * renamed id would otherwise be silently ignored — the article keeps its
+ * masculine wording and nothing anywhere says so. Partial because most
+ * articles need no override at all. */
+const arFeminineOverrides: Partial<
+  Record<GuideArticleId, { title?: string; teaser?: string; paragraphs?: Record<number, string> }>
+> = {
   "enrollment": {
     title: "كيف تسجّلي طفلك بالمدرسة (Schulanmeldung)",
     paragraphs: {
