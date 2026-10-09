@@ -13,10 +13,17 @@ import type { ReactNode } from 'react';
  * "tigungäMeldebest" on screen — a word the reader cannot even search for.
  * Every umlaut word in the guide had this: Frühwarnung, Deutschförderklasse,
  * Behörde, Gebühr.
+ *
+ * The joining whitespace is spaces and tabs only, never a newline. A run is
+ * something that sits on one line; letting it cross a break put two lines
+ * inside one inline-block span, which is two lines tall and drags the text
+ * around it off its baseline. The reply screen renders a whole translated
+ * letter through here with `white-space: pre-wrap`, so its closing line and
+ * signature — both Latin — were exactly that case.
  */
 const LATIN_LETTER = 'A-Za-z0-9€$%\\u00C0-\\u024F';
 const LATIN_NUMERIC_RUN = new RegExp(
-  `[${LATIN_LETTER}]+(?:(?:[.,:/-]|\\s+(?=[${LATIN_LETTER}]))[${LATIN_LETTER}]+)*`,
+  `[${LATIN_LETTER}]+(?:(?:[.,:/-]|[ \\t]+(?=[${LATIN_LETTER}]))[${LATIN_LETTER}]+)*`,
   'g',
 );
 

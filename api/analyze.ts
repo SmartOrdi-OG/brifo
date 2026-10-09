@@ -18,8 +18,13 @@ interface VercelResponse extends ServerResponse {
   json(body: unknown): void;
 }
 
-// Kept in sync with src/lib/aiLanguage.ts on the client side.
-const OUTPUT_LANGUAGE: Record<string, string> = {
+// The language and reading level to write the analysis in, per app language.
+// The client sends whatever language it is set to (src/screens/Scan.tsx), so
+// this has to cover all of them — an app language missing here falls back to
+// Arabic without any sign that it did. tests/outputLanguage.test.ts holds this
+// map and src/server/reply.ts's to the app's own list of languages; the export
+// is for that test.
+export const OUTPUT_LANGUAGE: Record<string, string> = {
   ar: 'simple Levantine-influenced Modern Standard Arabic',
   de: 'simple, clear German',
   tr: 'simple, clear Turkish',
