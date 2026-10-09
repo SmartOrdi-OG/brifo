@@ -10,6 +10,11 @@ import { AuthProvider } from './context/AuthContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
 import { TelegramChrome } from './components/TelegramChrome'
 import { enableServiceWorkerAutoReload } from './lib/swAutoReload'
+import { installErrorReporting } from './lib/reportError'
+
+// Before the first render, so a fault during start-up is reported too — that
+// is the one that takes the screen blank with nothing on it to report from.
+installErrorReporting()
 
 enableServiceWorkerAutoReload()
 
