@@ -108,6 +108,10 @@ function apiDevMiddleware(): Plugin {
         server.middlewares.use(`/api/push-${action}`, vercelDevRoute(() => import('./api/push.ts'), { action }))
       }
 
+      server.middlewares.use('/api/error-report', vercelDevRoute(() => import('./api/errors.ts'), { action: 'report' }))
+      server.middlewares.use('/api/admin/errors-clear', vercelDevRoute(() => import('./api/errors.ts'), { action: 'clear' }))
+      server.middlewares.use('/api/admin/errors', vercelDevRoute(() => import('./api/errors.ts'), { action: 'list' }))
+
       server.middlewares.use(
         '/api/backup-sync',
         jsonPostRoute(async (body, req) => {
@@ -322,6 +326,14 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    // Which build this is, for the error log — a fault that is already fixed
+    // has to be tellable from one that is still live. Vercel sets
+    // VERCEL_GIT_COMMIT_SHA at build time; a local build says so.
+    define: {
+      'import.meta.env.VITE_APP_VERSION': JSON.stringify(
+        (process.env.VERCEL_GIT_COMMIT_SHA ?? '').slice(0, 7) || 'local',
+      ),
+    },
     plugins: [
       react(),
       apiDevMiddleware(),
