@@ -1,13 +1,22 @@
 /* Sign-in screen: a brand-coloured hero carries the logo and the promise, and
-   the form sits on the plain background beneath it. */
+   the form sits in a card lifted over the hero's bottom edge — so the eye
+   travels from the brand into the form with nothing in between. The form used
+   to float on the plain background with a gap above it. */
 
 .auth-shell {
-  min-height: 100vh;
+  /* dvh, not vh: on iOS Safari 100vh is the *large* viewport, measured with
+     the toolbars collapsed. With the address bar showing — which is how the
+     page first opens — that is taller than what can actually be seen, so the
+     screen opened already scrolled, with the logo cut off at the top. */
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   text-align: center;
+  /* .app reserves room for the fixed bottom nav, which this screen has not
+     got. Left in, it was most of the dead space under the form. */
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
 }
 
 .auth-logo {
@@ -28,21 +37,18 @@
 }
 
 .auth-price {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--muted);
   max-width: 320px;
+  margin-top: 14px;
 }
 
-/* `margin-top: auto` drops the switcher to the bottom of the column no matter
-   how tall the form above it is. `text-align` is used rather than a flex
-   alignment because it's physical — the switcher stays on the right in Arabic
-   and in German alike, instead of flipping sides with the page direction. */
 .auth-lang-row {
   width: 100%;
-  margin-top: auto;
-  padding-top: 28px;
-  text-align: right;
+  padding-top: 18px;
+  display: flex;
+  justify-content: center;
 }
 
 .auth-hero {
@@ -51,14 +57,15 @@
   /* the shell's own top padding already clears the status bar, so pull the
      panel back up over it and re-add the inset here instead */
   margin-top: calc(-20px - env(safe-area-inset-top));
-  padding: calc(30px + env(safe-area-inset-top)) 24px 34px;
+  /* The extra bottom padding is the strip the card overlaps. */
+  padding: calc(26px + env(safe-area-inset-top)) 24px 46px;
   background: linear-gradient(150deg, var(--blue), var(--purple));
   border-end-start-radius: 34px;
   border-end-end-radius: 34px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   box-shadow: 0 16px 38px rgba(109, 92, 231, 0.3);
 }
 
@@ -69,7 +76,30 @@
 
 .auth-panel {
   width: 100%;
-  padding-top: 26px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* Lifts the card over the hero's edge. position/z-index because the hero
+     casts its shadow downwards, which would otherwise fall across the card. */
+  margin-top: -26px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  width: 100%;
+  /* --card is translucent in the dark theme, which is fine everywhere else —
+     it sits on the page background and reads as a card. This one overlaps the
+     hero, so the gradient showed straight through its top edge and across the
+     first line of text. Painting --bg underneath and --card over it gives the
+     same appearance a card has anywhere else, but opaque. */
+  background: linear-gradient(var(--card), var(--card)), var(--bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 20px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;

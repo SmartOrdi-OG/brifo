@@ -245,7 +245,7 @@ export function AuthGate() {
       </div>
 
       <div className="auth-panel">
-        {configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null}
+        <div className="auth-card">
 
       {!configured ? (
         <p style={{ color: 'var(--muted)', fontSize: 14, maxWidth: 320 }}>{t('auth_not_configured')}</p>
@@ -378,14 +378,22 @@ export function AuthGate() {
           </button>
         </form>
       )}
-      </div>
+        </div>
 
-      {/* Bottom of the screen rather than over the hero: the form is what the
-          page is for, and the switcher only matters to the minority who can't
-          read the default language — but it has to stay visible for them, so
-          it sits in the empty space below rather than hidden behind a menu. */}
-      <div className="auth-lang-row">
-        <LanguagePicker />
+        {/* Under the form, not above it: what it costs used to be the first
+            thing on the page after the hero, before anything explained what
+            the app is or asked for an email. */}
+        {configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null}
+
+        {/* In the flow beneath the card rather than pinned to the bottom of
+            the screen. Pinned, it left ~90px of empty background between the
+            form and a control floating alone in a corner, which reads as a
+            mistake rather than a layout — but it has to stay visible for the
+            people who cannot read the default language, so it is here and not
+            behind a menu. */}
+        <div className="auth-lang-row">
+          <LanguagePicker />
+        </div>
       </div>
     </div>
   );
