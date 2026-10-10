@@ -134,6 +134,69 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
   return { active: isActiveStatus(stored.status), currentPeriodEnd: stored.currentPeriodEnd };
 }
 
+/** How long to remember "Stripe says they are not subscribed either", so a
+ * non-subscriber with a customer record does not cause a Stripe call on every
+ * status poll. Short enough that a fresh subscription is picked up quickly. */
+const NO_SUBSCRIPTION_TTL_SECONDS = 5 * 60;
+const recheckedKey = (userId: string) => `stripe:${stripeMode()}:nosub:${userId}`;
+
+/** Resolves entitlement from KV, and asks Stripe itself when KV says no.
+ *
+ * KV is written by the webhook and by nothing else, which made the webhook a
+ * single point of failure with the worst possible failure mode: the customer
+ * pays, Stripe is happy, and the app keeps showing them the paywall with no
+ * way back. A wrong STRIPE_WEBHOOK_SECRET is answered with a 400, which
+ * Stripe does not retry — so that state is permanent, and the only repair is
+ * someone editing the database by hand.
+ *
+ * Stripe is the authority on whether someone is paying, so when our copy says
+ * no, ask the authority before turning a paying customer away. The result is
+ * written back under the same key the webhook uses, so this costs one Stripe
+ * call and everything downstream — including the entitlement check on every
+ * scan, which never loads this file — sees it immediately.
+ *
+ * Nothing here fires for an account that has never been to checkout: no
+ * customer id in KV, no call. */
+export async function resolveSubscriptionStatus(
+  userId: string,
+): Promise<SubscriptionStatus & { recoveredFromStripe: boolean }> {
+  const stored = await getSubscriptionStatus(userId);
+  if (stored.active) return { ...stored, recoveredFromStripe: false };
+
+  const customerId = await kvGet<string>(customerKey(userId));
+  if (!customerId) return { ...stored, recoveredFromStripe: false };
+
+  if (await kvGet<boolean>(recheckedKey(userId))) return { ...stored, recoveredFromStripe: false };
+
+  let subscriptions: Stripe.Subscription[];
+  try {
+    const stripe = getStripe();
+    const list = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 10 });
+    subscriptions = list.data;
+  } catch (err) {
+    // Stripe unreachable or misconfigured. Fall back to what we have rather
+    // than failing the whole status request — this path exists to be more
+    // generous than KV alone, never less.
+    console.error('[stripe] could not re-check subscriptions:', err);
+    return { ...stored, recoveredFromStripe: false };
+  }
+
+  const live = subscriptions.find((s) => isActiveStatus(s.status));
+  if (!live) {
+    await kvSet(recheckedKey(userId), true, NO_SUBSCRIPTION_TTL_SECONDS);
+    return { ...stored, recoveredFromStripe: false };
+  }
+
+  const currentPeriodEnd = live.items.data[0]?.current_period_end;
+  const record = {
+    status: live.status,
+    currentPeriodEnd: currentPeriodEnd ? new Date(currentPeriodEnd * 1000).toISOString() : null,
+  };
+  await kvSet(subscriptionKey(userId), record);
+
+  return { active: true, currentPeriodEnd: record.currentPeriodEnd, recoveredFromStripe: true };
+}
+
 /** The delivery did not come from Stripe, or STRIPE_WEBHOOK_SECRET is wrong.
  *
  * Worth its own type because it is the one webhook failure that retrying can

@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { createCheckoutSession, createBillingPortalSession, getSubscriptionStatus, type Plan } from '../src/server/stripe.js';
+import { createCheckoutSession, createBillingPortalSession, resolveSubscriptionStatus, type Plan } from '../src/server/stripe.js';
+import { recordAppError } from '../src/server/appErrors.js';
 import { getUserFromRequest } from '../src/server/auth.js';
 import { isComplimentaryEmail } from '../src/server/freeAccounts.js';
 import { getBonusTrialDays, redeemReferral } from '../src/server/referral.js';
@@ -82,7 +83,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     try {
-      const status = await getSubscriptionStatus(user.id);
+      const { recoveredFromStripe, ...status } = await resolveSubscriptionStatus(user.id);
+      if (recoveredFromStripe) {
+        // The customer is paying and our copy did not know. That means a
+        // webhook delivery was lost, and a lost delivery is invisible unless
+        // something says so — so it goes in the error log, where /admin shows
+        // it. No account id: the log is deliberately not linkable to a person.
+        void recordAppError({
+          message: 'Stripe webhook did not deliver — subscription recovered by asking Stripe directly',
+          route: '/api/subscription-status',
+          platform: 'server',
+        });
+      }
       res.status(200).json({ ...status, bonusTrialDays });
     } catch (err) {
       console.error('[api/subscription:status] failed:', err);

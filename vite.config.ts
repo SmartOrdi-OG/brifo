@@ -180,84 +180,18 @@ function apiDevMiddleware(): Plugin {
         }),
       )
 
-      server.middlewares.use(
-        '/api/create-checkout-session',
-        jsonPostRoute(async (body, req) => {
-          const { createCheckoutSession } = await import('./src/server/stripe.ts')
-          const { getUserFromRequest } = await import('./src/server/auth.ts')
-          const { ConfigError } = await import('./src/server/errors.ts')
-          const user = await getUserFromRequest(req)
-          if (!user) return { status: 401, body: { error: 'unauthorized' } }
-          const { origin, plan } = (body ?? {}) as { origin?: unknown; plan?: unknown }
-          const base = typeof origin === 'string' ? origin : ''
-          const selectedPlan = plan === 'annual' ? 'annual' : 'monthly'
-          try {
-            const url = await createCheckoutSession(
-              user.id,
-              user.email ?? '',
-              `${base}/paywall?checkout=success`,
-              `${base}/paywall?checkout=cancelled`,
-              selectedPlan,
-            )
-            return { status: 200, body: { url } }
-          } catch (err) {
-            if (err instanceof ConfigError) return { status: 500, body: { error: `server misconfigured: ${err.message}` } }
-            console.error('create-checkout-session failed', err)
-            return { status: 500, body: { error: 'failed to create checkout session' } }
-          }
-        }),
-      )
-
-      server.middlewares.use(
-        '/api/create-portal-session',
-        jsonPostRoute(async (body, req) => {
-          const { createBillingPortalSession } = await import('./src/server/stripe.ts')
-          const { getUserFromRequest } = await import('./src/server/auth.ts')
-          const { ConfigError } = await import('./src/server/errors.ts')
-          const user = await getUserFromRequest(req)
-          if (!user) return { status: 401, body: { error: 'unauthorized' } }
-          const { origin } = (body ?? {}) as { origin?: unknown }
-          const base = typeof origin === 'string' ? origin : ''
-          try {
-            const url = await createBillingPortalSession(user.id, user.email ?? '', `${base}/settings`)
-            return { status: 200, body: { url } }
-          } catch (err) {
-            if (err instanceof ConfigError) return { status: 500, body: { error: `server misconfigured: ${err.message}` } }
-            console.error('create-portal-session failed', err)
-            return { status: 500, body: { error: 'failed to create billing portal session' } }
-          }
-        }),
-      )
-
-      server.middlewares.use(
-        '/api/subscription-status',
-        jsonPostRoute(async (_body, req) => {
-          const { getSubscriptionStatus } = await import('./src/server/stripe.ts')
-          const { getUserFromRequest } = await import('./src/server/auth.ts')
-          const { isComplimentaryEmail } = await import('./src/server/freeAccounts.ts')
-          const { getBonusTrialDays } = await import('./src/server/referral.ts')
-          const user = await getUserFromRequest(req)
-          if (!user) return { status: 401, body: { error: 'unauthorized' } }
-          const bonusTrialDays = await getBonusTrialDays(user.id)
-          if (isComplimentaryEmail(user.email)) return { status: 200, body: { active: true, currentPeriodEnd: null, bonusTrialDays } }
-          const status = await getSubscriptionStatus(user.id)
-          return { status: 200, body: { ...status, bonusTrialDays } }
-        }),
-      )
-
-      server.middlewares.use(
-        '/api/redeem-referral',
-        jsonPostRoute(async (body, req) => {
-          const { getUserFromRequest } = await import('./src/server/auth.ts')
-          const { redeemReferral } = await import('./src/server/referral.ts')
-          const user = await getUserFromRequest(req)
-          if (!user) return { status: 401, body: { error: 'unauthorized' } }
-          const { referrerId } = (body ?? {}) as { referrerId?: unknown }
-          if (typeof referrerId !== 'string' || !referrerId) return { status: 400, body: { error: 'missing referrerId' } }
-          const result = await redeemReferral(user.id, referrerId)
-          return { status: 200, body: result }
-        }),
-      )
+      // One handler, four paths — the ?action= values match vercel.json.
+      // Written this way so the dev server runs the deployed code: the old
+      // copy here had already fallen behind (it read subscription status
+      // straight from KV, without the fall back to asking Stripe).
+      for (const [path, action] of [
+        ['/api/create-checkout-session', 'checkout'],
+        ['/api/create-portal-session', 'portal'],
+        ['/api/subscription-status', 'status'],
+        ['/api/redeem-referral', 'redeem-referral'],
+      ] as const) {
+        server.middlewares.use(path, vercelDevRoute(() => import('./api/subscription.ts'), { action }))
+      }
 
       // Reachable locally through a tunnel (e.g. `ngrok http 5173`) pointed at
       // by setWebhook, so the bot can be driven from a real Telegram client
