@@ -10,17 +10,32 @@ interface ConsentRecord {
   acceptedAt: string;
 }
 
+/** Why this is three answers and not a yes/no.
+ *
+ * Both "never seen this app before" and "agreed to an older version" land on
+ * the same gate, but they are not the same person and must not be told the
+ * same thing. The gate used to greet everyone with "we updated our privacy
+ * policy" — which, for someone opening Brifo for the first time, is a
+ * sentence about an update to something they have never read, as the very
+ * first thing the app ever says to them. */
+export type ConsentState = 'none' | 'outdated' | 'current';
+
+export function privacyConsentState(): ConsentState {
+  try {
+    const raw = localStorage.getItem(CONSENT_KEY);
+    if (!raw) return 'none';
+    const parsed = JSON.parse(raw) as ConsentRecord;
+    if (parsed.accepted !== true) return 'none';
+    return parsed.version === PRIVACY_POLICY_VERSION ? 'current' : 'outdated';
+  } catch {
+    return 'none';
+  }
+}
+
 /** Bumping PRIVACY_POLICY_VERSION invalidates every prior acceptance, so
  * existing users are re-prompted the next time the policy materially changes. */
 export function hasAcceptedPrivacyPolicy(): boolean {
-  try {
-    const raw = localStorage.getItem(CONSENT_KEY);
-    if (!raw) return false;
-    const parsed = JSON.parse(raw) as ConsentRecord;
-    return parsed.accepted === true && parsed.version === PRIVACY_POLICY_VERSION;
-  } catch {
-    return false;
-  }
+  return privacyConsentState() === 'current';
 }
 
 export function acceptPrivacyPolicy(): void {
