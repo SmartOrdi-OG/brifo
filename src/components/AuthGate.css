@@ -1,7 +1,6 @@
 /* Sign-in screen: a brand-coloured hero carries the logo and the promise, and
-   the form sits in a card lifted over the hero's bottom edge — so the eye
-   travels from the brand into the form with nothing in between. The form used
-   to float on the plain background with a gap above it. */
+   the form sits in a card below it. The form used to float directly on the
+   plain background, in an app whose every other surface is a card. */
 
 .auth-shell {
   /* dvh, not vh: on iOS Safari 100vh is the *large* viewport, measured with
@@ -20,7 +19,9 @@
 }
 
 .auth-logo {
-  border-radius: 22px;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
 }
 
@@ -57,8 +58,7 @@
   /* the shell's own top padding already clears the status bar, so pull the
      panel back up over it and re-add the inset here instead */
   margin-top: calc(-20px - env(safe-area-inset-top));
-  /* The extra bottom padding is the strip the card overlaps. */
-  padding: calc(26px + env(safe-area-inset-top)) 24px 46px;
+  padding: calc(26px + env(safe-area-inset-top)) 24px 30px;
   background: linear-gradient(150deg, var(--blue), var(--purple));
   border-end-start-radius: 34px;
   border-end-end-radius: 34px;
@@ -81,21 +81,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  /* Lifts the card over the hero's edge. position/z-index because the hero
-     casts its shadow downwards, which would otherwise fall across the card. */
-  margin-top: -26px;
-  position: relative;
-  z-index: 1;
+  padding-top: 22px;
 }
 
 .auth-card {
   width: 100%;
-  /* --card is translucent in the dark theme, which is fine everywhere else —
-     it sits on the page background and reads as a card. This one overlaps the
-     hero, so the gradient showed straight through its top edge and across the
-     first line of text. Painting --bg underneath and --card over it gives the
-     same appearance a card has anywhere else, but opaque. */
-  background: linear-gradient(var(--card), var(--card)), var(--bg);
+  background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
