@@ -52,3 +52,27 @@ export const isAndroidTwa = detectAndPersist();
  * rules. One flag so the paywall states the rule once rather than growing a
  * condition per store. */
 export const hidesInAppPurchase = isAndroidTwa || isTelegramMiniApp;
+
+/** Sends the user to `url` in a real Chrome tab instead of this TWA.
+ *
+ * A plain link or `window.open` does not escape the TWA: `mybrifo.com` is now
+ * a *verified* Android App Link (that is what makes the TWA open without a
+ * Chrome address bar in the first place), so Android resolves any ordinary
+ * navigation to that domain straight back into this same installed app —
+ * exactly the loop the "open in your browser to subscribe" message exists to
+ * avoid. Addressing the intent to Chrome by package name skips that
+ * resolution step entirely: Android docs are explicit that an intent with an
+ * explicit package is delivered only to that package, bypassing the App
+ * Links verified-handler logic. Falls back to a no-op (returns false) off
+ * Android, where the caller should use a plain link instead. */
+export function openOutsideAndroidTwa(url: string): boolean {
+  if (!isAndroidTwa) return false;
+  try {
+    const { host, pathname, search } = new URL(url);
+    const intentUrl = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
+    window.location.href = intentUrl;
+    return true;
+  } catch {
+    return false;
+  }
+}
