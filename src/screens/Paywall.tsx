@@ -7,7 +7,7 @@ import { isRtlLang, type TranslationKey } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
-import { hidesInAppPurchase } from '../lib/platform';
+import { hidesInAppPurchase, isAndroidTwa, openOutsideAndroidTwa } from '../lib/platform';
 import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
@@ -122,19 +122,27 @@ export function Paywall() {
               // website. See platform.ts.
               <>
                 <p className="paywall-note">{tx('paywall_store_web_only')}</p>
-                {isTelegramMiniApp && (
-                  // A note alone is a dead end inside Telegram: there is no
-                  // address bar to type the URL into. openLink leaves for the
-                  // real browser, which is the context checkout has to run in
-                  // anyway — Telegram's own in-app browser is not outside the
-                  // app for the purposes of the rule above.
+                {(isTelegramMiniApp || isAndroidTwa) && (
+                  // A note alone is a dead end here: on Android, mybrifo.com
+                  // is now a *verified* App Link, so an ordinary link just
+                  // reopens this same TWA instead of a real browser tab; in
+                  // Telegram there is no address bar to type the URL into
+                  // either way. Each platform gets its own escape hatch to a
+                  // genuine external browser, which is the context checkout
+                  // has to run in regardless of store.
                   <button
                     // Same full-width primary treatment as the subscribe
-                    // button it stands in for — inside Telegram it is the
+                    // button it stands in for — on these platforms it is the
                     // only thing to do on this screen.
                     className="scan-btn primary paywall-subscribe"
                     onClick={() => {
-                      if (!openOutsideTelegram('https://mybrifo.com/paywall')) {
+                      if (isTelegramMiniApp) {
+                        if (!openOutsideTelegram('https://mybrifo.com/paywall')) {
+                          window.open('https://mybrifo.com/paywall', '_blank', 'noopener');
+                        }
+                        return;
+                      }
+                      if (!openOutsideAndroidTwa('https://mybrifo.com/paywall')) {
                         window.open('https://mybrifo.com/paywall', '_blank', 'noopener');
                       }
                     }}
