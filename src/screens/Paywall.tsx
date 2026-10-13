@@ -7,7 +7,7 @@ import { isRtlLang, type TranslationKey } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
-import { hidesInAppPurchase, isAndroidTwa, openOutsideAndroidTwa } from '../lib/platform';
+import { isAndroidTwa, openOutsideAndroidTwa } from '../lib/platform';
 import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
@@ -50,6 +50,24 @@ export function Paywall() {
     const url = await startCheckout(plan);
     if (!url) {
       setError(true);
+      setLoading(false);
+      return;
+    }
+    // Neither store lets a digital subscription be sold in-app — Google Play
+    // wants Play Billing, and a Telegram Mini App on iOS falls under Apple's
+    // rules — so checkout has to happen in a real external browser. A plain
+    // `window.location.href` would not get there: on Android, mybrifo.com is
+    // now a *verified* App Link, so it would just reopen this same TWA
+    // instead of a real Chrome tab; Telegram has no address bar to escape to
+    // one either. Each platform gets its own escape hatch straight to the
+    // Stripe URL, skipping the extra hop through the paywall page.
+    if (isTelegramMiniApp) {
+      if (!openOutsideTelegram(url)) window.open(url, '_blank', 'noopener');
+      setLoading(false);
+      return;
+    }
+    if (isAndroidTwa) {
+      if (!openOutsideAndroidTwa(url)) window.open(url, '_blank', 'noopener');
       setLoading(false);
       return;
     }
@@ -115,71 +133,31 @@ export function Paywall() {
 
             <p className="paywall-free-note">{tx('paywall_free_note')}</p>
 
-            {hidesInAppPurchase ? (
-              // Neither store lets a digital subscription be sold in-app —
-              // Google Play wants Play Billing, and a Telegram Mini App on iOS
-              // falls under Apple's rules — so these builds only point at the
-              // website. See platform.ts.
-              <>
-                <p className="paywall-note">{tx('paywall_store_web_only')}</p>
-                {(isTelegramMiniApp || isAndroidTwa) && (
-                  // A note alone is a dead end here: on Android, mybrifo.com
-                  // is now a *verified* App Link, so an ordinary link just
-                  // reopens this same TWA instead of a real browser tab; in
-                  // Telegram there is no address bar to type the URL into
-                  // either way. Each platform gets its own escape hatch to a
-                  // genuine external browser, which is the context checkout
-                  // has to run in regardless of store.
-                  <button
-                    // Same full-width primary treatment as the subscribe
-                    // button it stands in for — on these platforms it is the
-                    // only thing to do on this screen.
-                    className="scan-btn primary paywall-subscribe"
-                    onClick={() => {
-                      if (isTelegramMiniApp) {
-                        if (!openOutsideTelegram('https://mybrifo.com/paywall')) {
-                          window.open('https://mybrifo.com/paywall', '_blank', 'noopener');
-                        }
-                        return;
-                      }
-                      if (!openOutsideAndroidTwa('https://mybrifo.com/paywall')) {
-                        window.open('https://mybrifo.com/paywall', '_blank', 'noopener');
-                      }
-                    }}
-                  >
-                    {tx('paywall_open_website')}
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                <label className="paywall-consent">
-                  <input type="checkbox" checked={consented} onChange={(e) => setConsented(e.target.checked)} />
-                  <span>
-                    {t('paywall_consent_label')}{' '}
-                    <span
-                      className="paywall-consent-link"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate('/agb');
-                      }}
-                    >
-                      {t('paywall_consent_link')}
-                    </span>
-                  </span>
-                </label>
-
-                <button
-                  className="scan-btn primary paywall-subscribe"
-                  disabled={!consented || loading}
-                  onClick={handleSubscribe}
+            <label className="paywall-consent">
+              <input type="checkbox" checked={consented} onChange={(e) => setConsented(e.target.checked)} />
+              <span>
+                {t('paywall_consent_label')}{' '}
+                <span
+                  className="paywall-consent-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/agb');
+                  }}
                 >
-                  {loading ? t('paywall_redirecting') : t('paywall_subscribe_button')}
-                </button>
-                {error && <p className="paywall-note error">{t('paywall_checkout_error')}</p>}
-                {checkoutResult === 'cancelled' && <p className="paywall-note muted">{t('paywall_checkout_cancelled')}</p>}
-              </>
-            )}
+                  {t('paywall_consent_link')}
+                </span>
+              </span>
+            </label>
+
+            <button
+              className="scan-btn primary paywall-subscribe"
+              disabled={!consented || loading}
+              onClick={handleSubscribe}
+            >
+              {loading ? t('paywall_redirecting') : t('paywall_subscribe_button')}
+            </button>
+            {error && <p className="paywall-note error">{t('paywall_checkout_error')}</p>}
+            {checkoutResult === 'cancelled' && <p className="paywall-note muted">{t('paywall_checkout_cancelled')}</p>}
           </>
         )}
       </div>
