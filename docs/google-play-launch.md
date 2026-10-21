@@ -2,7 +2,7 @@
 
 هذا الملف بيوثّق خطوات نشر تطبيق Brifo (PWA) على Google Play، عشان أي حد يكمل من بعد ما وقفنا (حتى لو من جلسة Claude Code تانية) يعرف احنا واقفين فين بالظبط.
 
-**آخر تحديث**: 2026-10-13 (بعد إرسال أول Production release لمراجعة Google)
+**آخر تحديث**: 2026-10-21 (التطبيق اتنشر رسميًا على Google Play ✅)
 
 ## الطريقة المستخدمة: PWA → TWA عبر PWABuilder
 
@@ -80,12 +80,12 @@ Google Play بيفرض إن أي اشتراك رقمي بيتفعّل جوه ا�
 - ✅ الحالة الحالية في Play Console (تأكدنا منها فعليًا): Release `1 (1.0.0.0)` — **Active** · "Available to internal testers" · 1 version code · "Not reviewed" (يعني لسه Google ما راجعتش التطبيق رسميًا، ده طبيعي وبياخد وقت — Internal testing عادةً بيبقى متاح للتسترز فورًا من غير ما ننتظر المراجعة)
 - ⚠️ لاحظنا كمان تنبيه من Play Console: **"Your temporary app name is 'com.mybrifo.twa (unreviewed)'"** — يعني لحد ما الـ "Set up your app" يتراجع بالكامل من جوجل، التسترز هيشوفوا اسم مؤقت (الـ package name) بدل "Brifo" وقت التنزيل. ده هيتصلح تلقائيًا بعد المراجعة، مش حاجة نعملها إحنا.
 
-### Production release — 🔄 جوّا مراجعة Google (submitted، مش منشور للعامة لسه)
+### Production release — ✅ منشور (Published)
 - ✅ نفس الـ App bundle (`1 (1.0.0.0)`) اتعمله **Promote** من Internal testing لـ Production، من غير رفع AAB جديد
 - ✅ Countries/regions: 19 دولة (Austria, Belgium, +17) — مش كل العالم، والنمسا من ضمنهم
 - ✅ اتحل تحذير "Incomplete advertising ID declaration" بـ "No"
-- ✅ اتبعت "Submit 12 changes for review" — الحالة دلوقتي **"Changes in review"** (شايفينها في Publishing overview)
-- 🔄 في انتظار رد Google (من ساعات لحد كذا يوم) — هيوصل إشعار بالإيميل
+- ✅ اتبعت "Submit 12 changes for review" — راحت لحالة "Changes in review"
+- ✅ **Google وافقت ونشرت التطبيق**: Submission 1 → Status **"Published"** بتاريخ **18 أكتوبر 2026، 4:48 مساءً** (Changes submitted: 13 أكتوبر 2026، 10:55 مساءً). التطبيق دلوقتي متاح رسميًا على Google Play Store ويقدر أي حد يدوّر عليه ويحمّله عادي، من غير الحاجة للينك التيستنج.
 
 ## الخطوات المتبقية
 
@@ -94,15 +94,23 @@ Google Play بيفرض إن أي اشتراك رقمي بيتفعّل جوه ا�
 3. ✅ **اختبار الجهاز الحقيقي خلص بنجاح** — شريك المشروع أكّد: التطبيق بيفتح full-screen من غير شريط Chrome، وزرار "اشترك الآن" بيوصل صح لصفحة الدفع الحقيقية (Stripe checkout) في متصفح خارجي
 4. ✅ **اتعمل Promote من Internal testing لـ Production** (نفس الـ App bundle، من غير رفع جديد) — خطوات: Internal testing → Promote release → Production → Next → (مفيش خيار Rollout percentage ظهر في النسخة دي من Console، فالنشر هيبقى 100% على طول)
 5. ✅ **اتحل تحذير "Incomplete advertising ID declaration"** اللي ظهر في Publishing overview قبل الإرسال — الإجابة: **"No"** (التطبيق مبيستخدمش Advertising ID، مفيش أي SDK إعلانات/تحليلات في الكود)
-6. ✅ **اتبعت 12 تغيير لمراجعة Google** ("Submit 12 changes for review") — الحالة دلوقتي: **"Changes in review"**
-7. 🔄 **جاري الآن**: في انتظار رد Google على مراجعة الـ Production (من ساعات لحد كذا يوم). هيوصل إشعار بالإيميل المرتبط بحساب Play Console.
-8. (اختياري، بعد النشر) استبدال صور الـ Store listing بسكرين شوت حقيقي من جهاز فعلي
+6. ✅ **اتبعت 12 تغيير لمراجعة Google** ("Submit 12 changes for review") — الحالة وصلت **"Changes in review"**
+7. ✅ **Google وافقت ونشرت** — الحالة بقت **"Published"** (18 أكتوبر 2026). التطبيق لايف على Google Play Store رسميًا. 🎉
+8. (اختياري) استبدال صور الـ Store listing بسكرين شوت حقيقي من جهاز فعلي بدل الـ mockups
+9. (اختياري) بعد ما Google تراجع التطبيق بالكامل، اسم التطبيق وقت التحميل هيتحوّل تلقائيًا من `com.mybrifo.twa (unreviewed)` لـ "Brifo" — متابعة دي مش إجراء مطلوب، بتحصل لوحدها
+
+## الحالة النهائية: التطبيق منشور ✅
+
+مفيش خطوة إجبارية متبقية لنشر التطبيق — دورة PWABuilder → TWA → Play Console اكتملت بالكامل من البداية للنهاية. أي شغل بعد كده هو صيانة/تحسين اختياري:
+- استبدال صور الـ Store listing بسكرين شوت حقيقي (مذكور فوق)
+- متابعة الـ reviews والتقييمات على Play Store بعد ما المستخدمين يبدأوا ينزلوه
+- لو حبيت تحدّث التطبيق مستقبلًا: أي تغيير في كود الـ PWA بينشر أوتوماتيك عن طريق Vercel (مفيش حاجة تتعمل في Play Console)، إلا لو التغيير في حاجة جوهرية بتخص التغليف نفسه (زي الأيقونة أو اسم الـ package) فهتحتاج AAB جديد من PWABuilder وترفعه كـ release جديد.
 
 ### ✅ Checklist الاختبار على جهاز حقيقي — خلص بنجاح
 لما التطبيق اتحمّل وفُتح، اتأكد من النقط دي:
 
 - [x] التطبيق بيفتح **من غير شريط عنوان Chrome** فوق الشاشة ✅ (بعد إصلاح PR #125)
-- [x] اسم التطبيق وقت التحميل ظهر مؤقتًا كـ `com.mybrifo.twa (unreviewed)` بدل "Brifo" — متوقّع وطبيعي، هيتصلح بعد مراجعة الـ Production
+- [x] اسم التطبيق وقت التحميل ظهر مؤقتًا كـ `com.mybrifo.twa (unreviewed)` بدل "Brifo" — متوقّع وطبيعي، هيتصلح أوتوماتيك بعد المراجعة الكاملة (التطبيق بقى Published دلوقتي، فالاسم المؤقت ده في طريقه للزوال لو لسه ظاهر)
 - [x] صفحة الاشتراك (Paywall) بتوصّل المستخدم لصفحة الدفع الحقيقية في متصفح خارجي ✅ (بعد إصلاح PR #127 و#128)
 - [x] باقي المميزات الأساسية شغالة عادي
 
