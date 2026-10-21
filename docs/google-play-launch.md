@@ -82,7 +82,7 @@ Google Play بيفرض إن أي اشتراك رقمي بيتفعّل جوه ا�
 
 ### Production release — ✅ منشور (Published)
 - ✅ نفس الـ App bundle (`1 (1.0.0.0)`) اتعمله **Promote** من Internal testing لـ Production، من غير رفع AAB جديد
-- ✅ Countries/regions: 19 دولة (Austria, Belgium, +17) — مش كل العالم، والنمسا من ضمنهم
+- ✅ Countries/regions: 20 دولة (Austria, Belgium, +18، وبعد كده اتضافت **مصر** بتاريخ 2026-10-21 عن طريق Play Console → Countries/regions → Add countries — إعداد Console بحت، مش محتاج AAB جديد ولا مراجعة Google)
 - ✅ اتحل تحذير "Incomplete advertising ID declaration" بـ "No"
 - ✅ اتبعت "Submit 12 changes for review" — راحت لحالة "Changes in review"
 - ✅ **Google وافقت ونشرت التطبيق**: Submission 1 → Status **"Published"** بتاريخ **18 أكتوبر 2026، 4:48 مساءً** (Changes submitted: 13 أكتوبر 2026، 10:55 مساءً). التطبيق دلوقتي متاح رسميًا على Google Play Store ويقدر أي حد يدوّر عليه ويحمّله عادي، من غير الحاجة للينك التيستنج.
