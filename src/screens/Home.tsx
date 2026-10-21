@@ -6,14 +6,16 @@ import { RowMenu } from '../components/RowMenu';
 import { downloadIcsEvent } from '../lib/ics';
 import { prefillFromEvent, prefillFromLetter } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
+import { appointmentCount } from '../context/translations';
 import { useData } from '../context/DataContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import { colorsForChildId, dotBackground } from '../lib/childColors';
 import './Home.css';
 
 export function Home() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const bidi = useBidiText();
   const { children, letters, payments, events, eventsForChild, deleteLetter, deleteEvent } = useData();
 
   const today = new Date().toISOString().slice(0, 10);
@@ -51,9 +53,7 @@ export function Home() {
       ? t('greeting_subtitle_new')
       : eventsThisWeek === 0
         ? t('greeting_subtitle_clear')
-        : eventsThisWeek === 1
-          ? t('greeting_subtitle_one')
-          : t('greeting_subtitle_many').replace('{count}', String(eventsThisWeek));
+        : t('greeting_subtitle_count').replace('{phrase}', appointmentCount(lang, eventsThisWeek));
 
   function childFor(childId: string) {
     return children.find((c) => c.id === childId);
@@ -73,7 +73,7 @@ export function Home() {
 
       <div className="greeting">
         <h1>{greeting}</h1>
-        <p>{isolateBidiRuns(subtitle)}</p>
+        <p>{bidi(subtitle)}</p>
       </div>
 
       <div className="sec">
@@ -88,13 +88,9 @@ export function Home() {
                 <div className="child-card-avatar" style={{ background: avatarGradient(c.color) }}>
                   {c.name.slice(0, 1)}
                 </div>
-                {count > 0 && (
-                  <span className="child-card-badge">
-                    <span className="nums">{count}</span> {t('home_deadlines_count')}
-                  </span>
-                )}
+                {count > 0 && <span className="child-card-badge">{appointmentCount(lang, count)}</span>}
               </div>
-              <h4>{isolateBidiRuns(c.name)}</h4>
+              <h4>{bidi(c.name)}</h4>
             </div>
           );
         })}
@@ -168,10 +164,10 @@ export function Home() {
                       label={t('event_actions')}
                     />
                   </div>
-                  <h4>{isolateBidiRuns(e.title)}</h4>
+                  <h4>{bidi(e.title)}</h4>
                   <p>
                     <span className="child-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
-                    {isolateBidiRuns(
+                    {bidi(
                       child ? (child.schoolClass ? `${child.name} · ${child.schoolClass}` : child.name) : t('assign_all_children'),
                     )}
                   </p>
@@ -193,8 +189,8 @@ export function Home() {
                 {l.analysis.action_required ? <PenLine size={19} strokeWidth={2.25} /> : <CheckCircle2 size={19} strokeWidth={2.25} />}
               </div>
               <div className="tx">
-                <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
-                <p>{isolateBidiRuns(childFor(l.childId)?.name ?? t('assign_all_children'))}</p>
+                <h4>{bidi(l.analysis.summary)}</h4>
+                <p>{bidi(childFor(l.childId)?.name ?? t('assign_all_children'))}</p>
               </div>
               <span className={`tag ${l.analysis.action_required ? 'a' : 'g'}`}>
                 {l.analysis.action_required ? t('tag_reply_needed') : t('tag_done')}

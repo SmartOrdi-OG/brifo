@@ -1,7 +1,7 @@
 import { X, CalendarClock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import './RemindersPanel.css';
 
 interface RemindersPanelProps {
@@ -10,6 +10,7 @@ interface RemindersPanelProps {
 
 export function RemindersPanel({ onClose }: RemindersPanelProps) {
   const { t } = useLanguage();
+  const bidi = useBidiText();
   const { children, events } = useData();
 
   const today = new Date().toISOString().slice(0, 10);
@@ -47,8 +48,8 @@ export function RemindersPanel({ onClose }: RemindersPanelProps) {
                 <div className="reminders-item" key={e.id}>
                   <span className="reminders-date nums">{e.date === today ? t('reminders_today') : e.date}</span>
                   <div className="reminders-item-info">
-                    <h4>{isolateBidiRuns(e.title)}</h4>
-                    <p>{isolateBidiRuns(child ? child.name : t('assign_all_children'))}</p>
+                    <h4>{bidi(e.title)}</h4>
+                    <p>{bidi(child ? child.name : t('assign_all_children'))}</p>
                   </div>
                 </div>
               );

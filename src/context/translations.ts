@@ -15,9 +15,8 @@ const ar = {
   greeting_title_named: "أهلاً بأهل {name}",
   greeting_title_generic: 'أهلاً',
   greeting_subtitle_new: "ابدأ بإضافة أول فرد من العائلة، وبعدين صوّر أول رسالة.",
-  greeting_subtitle_clear: "ما في مواعيد قريبة — كل شي تحت السيطرة.",
-  greeting_subtitle_one: "عندك موعد واحد هالأسبوع.",
-  greeting_subtitle_many: "عندك {count} مواعيد هالأسبوع.",
+  greeting_subtitle_clear: "ما في مواعيد هالأسبوع — كل شي تحت السيطرة.",
+  greeting_subtitle_count: "عندك {phrase} هالأسبوع.",
 
   scan_title: 'صوّر أي رسالة',
   scan_subtitle: 'رسالة مدرسة، موعد دكتور، فاتورة — صوّرها والشرح بلغتك بثواني',
@@ -198,7 +197,6 @@ const ar = {
   home_no_children_title: 'أضِف أول فرد من العائلة',
   home_monthly_total: 'المطلوب دفعه هالشهر',
   home_view_profile: 'الملف',
-  home_deadlines_count: 'مواعيد',
 
   assign_confirm_prefix: 'هاي ورقة لـ',
   assign_confirm_yes: 'ايه، صح',
@@ -379,9 +377,8 @@ const de: Record<keyof typeof ar, string> = {
   greeting_title_named: "Hallo, Familie {name}",
   greeting_title_generic: 'Hallo',
   greeting_subtitle_new: "Füge zuerst ein Familienmitglied hinzu und fotografiere dann den ersten Brief.",
-  greeting_subtitle_clear: "Keine Termine in nächster Zeit — alles im Griff.",
-  greeting_subtitle_one: "Du hast diese Woche einen Termin.",
-  greeting_subtitle_many: "Du hast diese Woche {count} Termine.",
+  greeting_subtitle_clear: "Diese Woche keine Termine — alles im Griff.",
+  greeting_subtitle_count: "Du hast diese Woche {phrase}.",
 
   scan_title: 'Brief fotografieren',
   scan_subtitle: 'Schulbrief, Arzttermin, Rechnung — fotografieren und in Sekunden in deiner Sprache erklärt',
@@ -562,7 +559,6 @@ const de: Record<keyof typeof ar, string> = {
   home_no_children_title: 'Erstes Familienmitglied hinzufügen',
   home_monthly_total: 'Diesen Monat fällig',
   home_view_profile: 'Profil',
-  home_deadlines_count: 'Termine',
 
   assign_confirm_prefix: 'Ist das ein Brief für',
   assign_confirm_yes: 'Ja, richtig',
@@ -743,9 +739,8 @@ const tr: Record<keyof typeof ar, string> = {
   greeting_title_named: "Merhaba, {name} ailesi",
   greeting_title_generic: 'Merhaba',
   greeting_subtitle_new: "Önce bir aile üyesi ekle, sonra ilk mektubu fotoğrafla.",
-  greeting_subtitle_clear: "Yaklaşan randevu yok — her şey yolunda.",
-  greeting_subtitle_one: "Bu hafta bir randevun var.",
-  greeting_subtitle_many: "Bu hafta {count} randevun var.",
+  greeting_subtitle_clear: "Bu hafta randevu yok — her şey yolunda.",
+  greeting_subtitle_count: "Bu hafta {phrase} var.",
 
   scan_title: 'Herhangi bir mektubu fotoğrafla',
   scan_subtitle: 'Okul mektubu, doktor randevusu, fatura — fotoğrafla, saniyeler içinde kendi dilinde açıklansın',
@@ -926,7 +921,6 @@ const tr: Record<keyof typeof ar, string> = {
   home_no_children_title: 'İlk aile bireyini ekle',
   home_monthly_total: 'Bu ay ödenmesi gereken',
   home_view_profile: 'Profil',
-  home_deadlines_count: 'randevu',
 
   assign_confirm_prefix: 'Bu mektup şunun için mi:',
   assign_confirm_yes: 'Evet, doğru',
@@ -1107,9 +1101,8 @@ const fa: Record<keyof typeof ar, string> = {
   greeting_title_named: "سلام، خانواده {name}",
   greeting_title_generic: 'سلام',
   greeting_subtitle_new: "اول یک عضو خانواده اضافه کن، بعد اولین نامه را عکس بگیر.",
-  greeting_subtitle_clear: "قرار نزدیکی نداری — همه‌چیز مرتب است.",
-  greeting_subtitle_one: "این هفته یک قرار داری.",
-  greeting_subtitle_many: "این هفته {count} قرار داری.",
+  greeting_subtitle_clear: "این هفته قراری نداری — همه چیز مرتبه.",
+  greeting_subtitle_count: "این هفته {phrase} داری.",
 
   scan_title: 'از هر نامه‌ای عکس بگیر',
   scan_subtitle: 'نامه مدرسه، وقت دکتر، صورت‌حساب — عکس بگیر و در چند ثانیه به زبان خودت توضیح بگیر',
@@ -1290,7 +1283,6 @@ const fa: Record<keyof typeof ar, string> = {
   home_no_children_title: 'اولین عضو خانواده رو اضافه کن',
   home_monthly_total: 'مبلغ قابل پرداخت این ماه',
   home_view_profile: 'پروفایل',
-  home_deadlines_count: 'قرار',
 
   assign_confirm_prefix: 'این نامه برای',
   assign_confirm_yes: 'بله، درسته',
@@ -1471,9 +1463,8 @@ const en: Record<keyof typeof ar, string> = {
   greeting_title_named: "Hi, {name}'s family",
   greeting_title_generic: 'Hi there',
   greeting_subtitle_new: "Start by adding a family member, then photograph your first letter.",
-  greeting_subtitle_clear: "Nothing coming up — you are all caught up.",
-  greeting_subtitle_one: "You have one appointment this week.",
-  greeting_subtitle_many: "You have {count} appointments this week.",
+  greeting_subtitle_clear: "No appointments this week — nothing to catch up on.",
+  greeting_subtitle_count: "You have {phrase} this week.",
 
   scan_title: 'Photograph any letter',
   scan_subtitle: 'School letter, doctor appointment, bill — snap it and get it explained in your language in seconds',
@@ -1654,7 +1645,6 @@ const en: Record<keyof typeof ar, string> = {
   home_no_children_title: 'Add your first family member',
   home_monthly_total: 'Amount due this month',
   home_view_profile: 'Profile',
-  home_deadlines_count: 'appointments',
 
   assign_confirm_prefix: 'This letter is for',
   assign_confirm_yes: "Yes, that's right",
@@ -1835,9 +1825,8 @@ const uk: Record<keyof typeof ar, string> = {
   greeting_title_named: "Привіт, родино {name}",
   greeting_title_generic: 'Привіт',
   greeting_subtitle_new: "Почніть з додавання члена сім’ї, потім сфотографуйте перший лист.",
-  greeting_subtitle_clear: "Найближчим часом нічого немає — все під контролем.",
-  greeting_subtitle_one: "Цього тижня у вас одна зустріч.",
-  greeting_subtitle_many: "Цього тижня у вас {count} зустрічей.",
+  greeting_subtitle_clear: "Цього тижня зустрічей немає — усе під контролем.",
+  greeting_subtitle_count: "Цього тижня у вас {phrase}.",
 
   scan_title: 'Сфотографуйте будь-який лист',
   scan_subtitle: 'Шкільний лист, візит до лікаря, рахунок — сфотографуйте й отримайте пояснення вашою мовою за секунди',
@@ -2018,7 +2007,6 @@ const uk: Record<keyof typeof ar, string> = {
   home_no_children_title: 'Додайте першого члена родини',
   home_monthly_total: 'Сума до сплати цього місяця',
   home_view_profile: 'Профіль',
-  home_deadlines_count: 'зустрічі',
 
   assign_confirm_prefix: 'Цей лист для',
   assign_confirm_yes: 'Так, правильно',
@@ -2188,6 +2176,48 @@ const uk: Record<keyof typeof ar, string> = {
   paywall_store_web_only: 'Щоб підписатися на Brifo, відкрийте застосунок у браузері телефону на mybrifo.com.',
   paywall_open_website: 'Відкрити сайт Brifo',
 };
+
+/** "3 appointments", in the plural form each language actually needs.
+ *
+ * A fixed word next to a number is wrong in most of the six. Arabic alone has
+ * six plural categories and does not take the numeral at all in the dual —
+ * "موعدين", never "2 موعدين" — which is why these are whole phrases rather
+ * than a bare noun with {count} glued on by the caller. Ukrainian needs three
+ * forms; Turkish and Persian keep the singular after any number; German and
+ * English need two.
+ *
+ * The category comes from Intl.PluralRules, which is the browser's own copy
+ * of the CLDR rules, so the boundaries are right without anyone here having
+ * to encode them. */
+type PluralForms = { other: string } & Partial<Record<Intl.LDMLPluralRule, string>>;
+
+const APPOINTMENT_COUNT: Record<Lang, PluralForms> = {
+  ar: {
+    zero: 'ما في مواعيد',
+    one: 'موعد واحد',
+    two: 'موعدين',
+    few: '{count} مواعيد',
+    many: '{count} موعداً',
+    other: '{count} موعد',
+  },
+  de: { one: 'einen Termin', other: '{count} Termine' },
+  tr: { one: 'bir randevu', other: '{count} randevu' },
+  fa: { one: 'یک قرار', other: '{count} قرار' },
+  en: { one: 'one appointment', other: '{count} appointments' },
+  uk: {
+    one: '{count} зустріч',
+    few: '{count} зустрічі',
+    many: '{count} зустрічей',
+    other: '{count} зустрічі',
+  },
+};
+
+/** The phrase for a number of appointments, e.g. "موعدين" or "3 appointments". */
+export function appointmentCount(lang: Lang, count: number): string {
+  const forms = APPOINTMENT_COUNT[lang];
+  const form = forms[new Intl.PluralRules(lang).select(count)] ?? forms.other;
+  return form.replace('{count}', String(count));
+}
 
 export const translations = { ar, de, tr, fa, en, uk };
 export type TranslationKey = keyof typeof ar;

@@ -6,7 +6,7 @@ import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { GuideTip } from '../components/GuideTip';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
 import type { LetterPhoto } from '../types/data';
 import './Result.css';
@@ -14,6 +14,7 @@ import './Result.css';
 export function Result() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const bidi = useBidiText();
   const { children } = useData();
   const location = useLocation();
   const [showPhoto, setShowPhoto] = useState(false);
@@ -39,7 +40,7 @@ export function Result() {
         <div className="result-view">
           <div className={`card summary-card urgency-${result.urgency}`}>
             <span className="urgency-badge">{t(`urgency_${result.urgency}`)}</span>
-            <p className="summary-text">{isolateBidiRuns(result.summary)}</p>
+            <p className="summary-text">{bidi(result.summary)}</p>
             <p className="action-flag">
               <span className="btn-icon-label">
                 {result.action_required ? (
@@ -73,7 +74,7 @@ export function Result() {
                 {result.actions.map((action, i) => (
                   <label className="action-item" key={i}>
                     <input type="checkbox" />
-                    <span>{isolateBidiRuns(action)}</span>
+                    <span>{bidi(action)}</span>
                   </label>
                 ))}
               </div>
@@ -89,7 +90,7 @@ export function Result() {
                 {result.deadlines.map((d, i) => (
                   <div className="dl soon" key={i}>
                     <span className="when nums">{d.date}</span>
-                    <h4>{isolateBidiRuns(d.what)}</h4>
+                    <h4>{bidi(d.what)}</h4>
                     <AddToCalendarButton title={d.what} date={d.date} />
                   </div>
                 ))}
@@ -106,7 +107,7 @@ export function Result() {
                 {result.payments.map((p, i) => (
                   <div className="dl soon" key={i}>
                     <span className="when nums">{p.due_date}</span>
-                    <h4>{isolateBidiRuns(p.reason)}</h4>
+                    <h4>{bidi(p.reason)}</h4>
                     <p className="nums">
                       {p.amount} {p.currency}
                     </p>
@@ -124,7 +125,7 @@ export function Result() {
           {savedTo && (
             <p className="result-saved">
               <CheckCircle2 size={15} strokeWidth={2.5} />
-              {isolateBidiRuns(t('result_saved_to').replace('{name}', savedTo.name))}
+              {bidi(t('result_saved_to').replace('{name}', savedTo.name))}
             </p>
           )}
 

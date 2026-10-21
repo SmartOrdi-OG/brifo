@@ -16,7 +16,7 @@ import {
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
 import { authHeader } from '../lib/authHeader';
 import type { TranslationKey } from '../context/translations';
@@ -47,6 +47,7 @@ const INTENT_ICON: Record<ReplyIntent, LucideIcon> = {
 
 export function Reply() {
   const { t, lang } = useLanguage();
+  const bidi = useBidiText();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -164,7 +165,7 @@ export function Reply() {
 
           {prefill?.context && (
             <p className="reply-context">
-              {t('reply_context_prefix')} {isolateBidiRuns(prefill.context)}
+              {t('reply_context_prefix')} {bidi(prefill.context)}
             </p>
           )}
 
@@ -227,7 +228,7 @@ export function Reply() {
             <h3>{t('reply_german_label')}</h3>
           </div>
           <div className="card letter-card" dir="ltr">
-            {/* Always German, never mixed with Arabic — isolateBidiRuns is for short
+            {/* Always German, never mixed with Arabic — useBidiText is for short
                 Latin fragments embedded in Arabic prose, and its regex doesn't even
                 cover umlauts, so it would split German words mid-word here. */}
             <p className="letter-text">{letter.german}</p>
@@ -252,9 +253,9 @@ export function Reply() {
             <h3>{t('reply_translation_label')}</h3>
           </div>
           <div className="card letter-card" dir={isRtlLang(lang) ? 'rtl' : 'ltr'}>
-            {/* isolateBidiRuns protects short Latin fragments inside RTL prose;
+            {/* useBidiText protects short Latin fragments inside RTL prose;
                 on LTR translations it would split words mid-word instead. */}
-            <p className="letter-text">{isRtlLang(lang) ? isolateBidiRuns(letter.translation) : letter.translation}</p>
+            <p className="letter-text">{bidi(letter.translation)}</p>
             <div className="letter-actions">
               <button className="scan-btn" onClick={() => copy(letter.translation, 'arabic')}>
                 {copied === 'arabic' ? t('reply_copied') : t('reply_copy')}
