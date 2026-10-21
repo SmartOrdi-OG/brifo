@@ -10,7 +10,7 @@ import { prefillFromEvent } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { ALL_CHILDREN, type CalendarEvent } from '../types/data';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import { colorsForChildId, dotBackground } from '../lib/childColors';
 import type { TranslationKey } from '../context/translations';
 import './Calendar.css';
@@ -66,6 +66,7 @@ function compareByTime(a: CalendarEvent, b: CalendarEvent): number {
 export function Calendar() {
   const navigate = useNavigate();
   const { t, dir } = useLanguage();
+  const bidi = useBidiText();
   const { children, events, addManualEvent, updateEvent, deleteEvent } = useData();
 
   const [viewMode, setViewMode] = useState<'list' | 'week' | 'day'>('list');
@@ -116,7 +117,7 @@ export function Calendar() {
         <div className="calendar-row-main">
           <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
           <div className="calendar-info">
-            <h4>{isolateBidiRuns(e.title)}</h4>
+            <h4>{bidi(e.title)}</h4>
             <p>
               {showMeta && (
                 <>
@@ -128,23 +129,23 @@ export function Calendar() {
                   ·{' '}
                 </>
               )}
-              {isolateBidiRuns(
+              {bidi(
                 child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
               )}
             </p>
             {e.provider && (
               <p className="calendar-detail">
-                {t('calendar_event_provider_label')}: {isolateBidiRuns(e.provider)}
+                {t('calendar_event_provider_label')}: {bidi(e.provider)}
               </p>
             )}
             {e.location && (
               <p className="calendar-detail">
-                {t('calendar_event_location_label')}: {isolateBidiRuns(e.location)}
+                {t('calendar_event_location_label')}: {bidi(e.location)}
               </p>
             )}
             {e.reason && (
               <p className="calendar-detail">
-                {t('calendar_event_reason_label')}: {isolateBidiRuns(e.reason)}
+                {t('calendar_event_reason_label')}: {bidi(e.reason)}
               </p>
             )}
           </div>

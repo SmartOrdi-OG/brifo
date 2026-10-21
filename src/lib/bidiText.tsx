@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { isRtlLang } from '../context/translations';
 
 /**
  * Matches a run of Latin letters/digits/currency symbols, allowing internal
@@ -60,4 +62,22 @@ export function isolateBidiRuns(text: string | null | undefined): ReactNode {
   }
 
   return parts;
+}
+
+/** isolateBidiRuns, but only where it is the right thing to do.
+ *
+ * Isolating a run wraps it in an inline-block, and an inline-block cannot be
+ * broken across lines. Inside Arabic or Persian prose that is the whole point:
+ * a handful of short Latin fragments, each held together and pinned in place.
+ * Applied to a language that is *entirely* Latin it does the opposite — every
+ * word becomes its own unbreakable box, so the line breaks at box edges rather
+ * than where the text wants to break, and punctuation that follows a run gets
+ * orphaned onto the next line. German read "bis 21 / . Oktober"; English
+ * stranded a full stop on a line of its own.
+ *
+ * Most callers were applying it unconditionally. This makes the condition part
+ * of getting hold of the function, so a new call site is right by default. */
+export function useBidiText(): (text: string | null | undefined) => ReactNode {
+  const { lang } = useLanguage();
+  return isRtlLang(lang) ? isolateBidiRuns : (text) => text ?? '';
 }

@@ -7,12 +7,13 @@ import { RowMenu } from '../components/RowMenu';
 import { prefillFromLetter } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import './ChildProfile.css';
 
 export function ChildProfile() {
   const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
+  const bidi = useBidiText();
   const navigate = useNavigate();
   const { children, lettersForChild, paymentsForChild, eventsForChild, deleteChild, deleteLetter, markPaymentPaid } = useData();
   const [deleted, setDeleted] = useState(false);
@@ -64,8 +65,8 @@ export function ChildProfile() {
           {child.name.slice(0, 1)}
         </div>
         <div>
-          <h2>{isolateBidiRuns(child.name)}</h2>
-          <p>{isolateBidiRuns([child.schoolClass, child.school].filter(Boolean).join(' · '))}</p>
+          <h2>{bidi(child.name)}</h2>
+          <p>{bidi([child.schoolClass, child.school].filter(Boolean).join(' · '))}</p>
         </div>
       </div>
 
@@ -84,7 +85,7 @@ export function ChildProfile() {
           {unpaidPayments.map((p) => (
             <div className="card payment-row" key={p.id}>
               <div className="payment-info">
-                <h4>{isolateBidiRuns(p.reason)}</h4>
+                <h4>{bidi(p.reason)}</h4>
                 <p>
                   {t('payment_due_label')}: <span className="nums">{p.dueDate}</span>
                 </p>
@@ -108,7 +109,7 @@ export function ChildProfile() {
         <div className="paid-list">
           {paidPayments.map((p) => (
             <div className="paid-row" key={p.id}>
-              <span>{isolateBidiRuns(p.reason)}</span>
+              <span>{bidi(p.reason)}</span>
               <span className="paid-tag">{t('payment_paid_label')} ✓</span>
             </div>
           ))}
@@ -133,7 +134,7 @@ export function ChildProfile() {
                 {d.date}
                 {d.time ? ` ${d.time}` : ''}
               </span>
-              <h4>{isolateBidiRuns(d.title)}</h4>
+              <h4>{bidi(d.title)}</h4>
               <AddToCalendarButton title={d.title} date={d.date} time={d.time} />
             </div>
           ))}
@@ -157,7 +158,7 @@ export function ChildProfile() {
               {l.analysis.action_required ? <PenLine size={19} strokeWidth={2.25} /> : <CheckCircle2 size={19} strokeWidth={2.25} />}
             </div>
             <div className="tx">
-              <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
+              <h4>{bidi(l.analysis.summary)}</h4>
               <p className="nums">{l.createdAt.slice(0, 10)}</p>
             </div>
             <RowMenu

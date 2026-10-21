@@ -9,7 +9,7 @@ import { eraseEverything, type EraseOutcome } from '../lib/eraseData';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import { downloadBackup, parseBackupFile, BackupParseError, type RestorableState } from '../lib/backup';
 import type { TranslationKey } from '../context/translations';
 import {
@@ -42,6 +42,7 @@ function toggleBtnStyle(active: boolean): CSSProperties {
 export function Settings() {
   const navigate = useNavigate();
   const { t, lang, gender, setGender } = useLanguage();
+  const bidi = useBidiText();
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
   const { session, signOut } = useAuth();
@@ -414,7 +415,7 @@ export function Settings() {
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 15, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {isolateBidiRuns(c.name)}
+                {bidi(c.name)}
               </p>
               <p style={{ fontSize: 12.5, color: 'var(--muted)' }}>
                 {c.type === 'adult' ? t('member_type_adult') : t('member_type_child')}

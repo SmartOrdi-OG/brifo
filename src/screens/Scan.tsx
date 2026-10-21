@@ -7,7 +7,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useData, findMatchingChild } from '../context/DataContext';
 import { ALL_CHILDREN, type Child } from '../types/data';
 import { compressImage, compressImageForStorage, type CompressedImage } from '../lib/compressImage';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
 import { isTelegramMiniApp } from '../lib/telegramWebApp';
 import { authHeader } from '../lib/authHeader';
@@ -20,6 +20,7 @@ type AssignMode = 'confirm' | 'pick' | 'create' | null;
 export function Scan() {
   const navigate = useNavigate();
   const { t, lang } = useLanguage();
+  const bidi = useBidiText();
   const { children, addChild, addLetter } = useData();
 
   const [state, setState] = useState<ScanState>('idle');
@@ -301,7 +302,7 @@ export function Scan() {
         <div className="card assign-confirm-card">
           <p>
             {t('assign_confirm_prefix')}{' '}
-            {isolateBidiRuns(matchedChild.schoolClass ? `${matchedChild.name} (${matchedChild.schoolClass})` : matchedChild.name)}
+            {bidi(matchedChild.schoolClass ? `${matchedChild.name} (${matchedChild.schoolClass})` : matchedChild.name)}
             {lang === 'ar' ? '؟' : '?'}
           </p>
           <div className="assign-confirm-actions">
@@ -326,7 +327,7 @@ export function Scan() {
             {children.map((c) => (
               <button key={c.id} className="assign-child-btn" onClick={() => finalizeAssignment(c.id)}>
                 <span className="assign-dot" style={{ background: c.color }} />
-                {isolateBidiRuns(c.schoolClass ? `${c.name} (${c.schoolClass})` : c.name)}
+                {bidi(c.schoolClass ? `${c.name} (${c.schoolClass})` : c.name)}
               </button>
             ))}
             <button className="assign-child-btn" onClick={() => finalizeAssignment(ALL_CHILDREN)}>

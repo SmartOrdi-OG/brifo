@@ -5,12 +5,13 @@ import { Header } from '../components/Header';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { ALL_CHILDREN } from '../types/data';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import { colorsForChildId, dotBackground } from '../lib/childColors';
 import './Todo.css';
 
 export function Todo() {
   const { t } = useLanguage();
+  const bidi = useBidiText();
   const { children, todos, addTodo, toggleTodo, deleteTodo } = useData();
 
   const [showForm, setShowForm] = useState(false);
@@ -107,10 +108,10 @@ export function Todo() {
                 <div className="card todo-row" key={item.id}>
                   <button className="todo-check" onClick={() => toggleTodo(item.id)} aria-label={t('todo_mark_done')} />
                   <div className="todo-info">
-                    <h4>{isolateBidiRuns(item.title)}</h4>
+                    <h4>{bidi(item.title)}</h4>
                     <p>
                       <span className="todo-dot" style={{ background: dotBackground(colorsForChildId(item.childId, children)) }} />
-                      {isolateBidiRuns(childFor(item.childId)?.name ?? t('assign_all_children'))}
+                      {bidi(childFor(item.childId)?.name ?? t('assign_all_children'))}
                       {item.dueDate && (
                         <span className={`todo-due nums${item.dueDate < today ? ' overdue' : ''}`}> · {item.dueDate}</span>
                       )}
@@ -134,7 +135,7 @@ export function Todo() {
               {done.map((item) => (
                 <div className="todo-row-done" key={item.id}>
                   <button className="todo-check on" onClick={() => toggleTodo(item.id)} aria-label={t('todo_mark_undone')} />
-                  <span className="todo-done-title">{isolateBidiRuns(item.title)}</span>
+                  <span className="todo-done-title">{bidi(item.title)}</span>
                   <button className="todo-delete" onClick={() => deleteTodo(item.id)} aria-label={t('todo_delete')}>
                     <Trash2 size={16} strokeWidth={2} />
                   </button>

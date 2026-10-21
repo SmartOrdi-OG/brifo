@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 
 interface StoredRating {
   id: string;
@@ -29,6 +29,7 @@ type Tab = 'ratings' | 'errors';
 
 export function Admin() {
   const { t } = useLanguage();
+  const bidi = useBidiText();
   const [password, setPassword] = useState('');
   const [tab, setTab] = useState<Tab>('ratings');
   const [ratings, setRatings] = useState<StoredRating[] | null>(null);
@@ -149,7 +150,7 @@ export function Admin() {
                 </span>
                 <span style={{ fontSize: 11.5, color: 'var(--muted)' }}>{new Date(r.createdAt).toLocaleDateString()}</span>
               </div>
-              {r.comment && <p style={{ fontSize: 13.5 }}>{isolateBidiRuns(r.comment)}</p>}
+              {r.comment && <p style={{ fontSize: 13.5 }}>{bidi(r.comment)}</p>}
             </div>
           ))}
         </>

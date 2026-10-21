@@ -4,7 +4,7 @@ import { SearchX } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { isolateBidiRuns } from '../lib/bidiText';
+import { useBidiText } from '../lib/bidiText';
 import './Search.css';
 
 function matches(query: string, ...fields: (string | null | undefined)[]): boolean {
@@ -14,6 +14,7 @@ function matches(query: string, ...fields: (string | null | undefined)[]): boole
 
 export function Search() {
   const { t } = useLanguage();
+  const bidi = useBidiText();
   const navigate = useNavigate();
   const { children, letters, payments } = useData();
   const [query, setQuery] = useState('');
@@ -69,9 +70,9 @@ export function Search() {
                     key={l.id}
                     onClick={() => navigate('/result', { state: { result: l.analysis, photo: l.photo } })}
                   >
-                    <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
+                    <h4>{bidi(l.analysis.summary)}</h4>
                     <p>
-                      {isolateBidiRuns(childName(l.childId) ?? t('assign_all_children'))}
+                      {bidi(childName(l.childId) ?? t('assign_all_children'))}
                       {' · '}
                       <span className="nums">{l.createdAt.slice(0, 10)}</span>
                     </p>
@@ -89,9 +90,9 @@ export function Search() {
               <div className="search-list">
                 {matchedPayments.map((p) => (
                   <div className="card search-row" key={p.id} onClick={() => navigate('/calendar')}>
-                    <h4>{isolateBidiRuns(p.reason)}</h4>
+                    <h4>{bidi(p.reason)}</h4>
                     <p>
-                      {isolateBidiRuns(childName(p.childId) ?? t('assign_all_children'))}
+                      {bidi(childName(p.childId) ?? t('assign_all_children'))}
                       {' · '}
                       <span className="nums">
                         {p.amount} {p.currency}
