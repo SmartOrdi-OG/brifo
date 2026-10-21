@@ -73,8 +73,14 @@ body {
      Sideways it read as "the screen shifts left/right"; vertically it dragged
      the whole app down off the top of the screen and left a band of bare
      background above the header. Neither axis has a legitimate reason to
-     overscroll — the app is one column that ends where its content ends. */
-  overflow-x: hidden;
+     overscroll — the app is one column that ends where its content ends.
+     This covers both axes on its own, which is why there is no overflow-x
+     here: setting overflow-x: hidden on html AND body forces the computed
+     overflow-y of both to `auto`, so the document gets two nested scroll
+     containers instead of one. Android stops scrolling by touch when that
+     happens; iOS tolerates it, which is why this only showed up on one of
+     them. Nothing in the app overflows sideways anyway — every screen was
+     measured with the rule removed and none exceeded the viewport width. */
   overscroll-behavior: none;
   /* Kills double-tap-to-zoom, which the viewport meta alone doesn't cover.
      Single taps and scrolling are unaffected. */
