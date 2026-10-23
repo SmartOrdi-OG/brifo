@@ -25,7 +25,22 @@ interface StoredAppError {
   lastSeen: string;
 }
 
-type Tab = 'ratings' | 'errors';
+/** Mirrors ConfigCheck in src/server/configCheck.ts. */
+interface ConfigCheck {
+  id: string;
+  status: 'ok' | 'warn' | 'fail';
+  detail: string;
+}
+
+type Tab = 'ratings' | 'errors' | 'config';
+
+const STATUS_COLOR: Record<ConfigCheck['status'], string> = {
+  ok: 'var(--green)',
+  warn: 'var(--amber)',
+  fail: 'var(--red)',
+};
+
+const STATUS_MARK: Record<ConfigCheck['status'], string> = { ok: '✓', warn: '!', fail: '✕' };
 
 export function Admin() {
   const { t } = useLanguage();
@@ -34,15 +49,17 @@ export function Admin() {
   const [tab, setTab] = useState<Tab>('ratings');
   const [ratings, setRatings] = useState<StoredRating[] | null>(null);
   const [errors, setErrors] = useState<StoredAppError[] | null>(null);
+  const [config, setConfig] = useState<ConfigCheck[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  /** One password, both lists. Fetching whichever tab is open means switching
+  /** One password, every list. Fetching whichever tab is open means switching
    * tabs after unlocking does not ask for it again. */
   async function load(which: Tab) {
     setLoading(true);
     setFailed(false);
-    const url = which === 'ratings' ? '/api/admin/ratings' : '/api/admin/errors';
+    const url =
+      which === 'ratings' ? '/api/admin/ratings' : which === 'errors' ? '/api/admin/errors' : '/api/admin/config';
     try {
       const res = await fetch(url, {
         method: 'POST',
@@ -52,12 +69,18 @@ export function Admin() {
       if (!res.ok) {
         setFailed(true);
         if (which === 'ratings') setRatings(null);
-        else setErrors(null);
+        else if (which === 'errors') setErrors(null);
+        else setConfig(null);
         return;
       }
-      const payload = (await res.json()) as { ratings?: StoredRating[]; errors?: StoredAppError[] };
+      const payload = (await res.json()) as {
+        ratings?: StoredRating[];
+        errors?: StoredAppError[];
+        checks?: ConfigCheck[];
+      };
       if (which === 'ratings') setRatings(payload.ratings ?? []);
-      else setErrors(payload.errors ?? []);
+      else if (which === 'errors') setErrors(payload.errors ?? []);
+      else setConfig(payload.checks ?? []);
     } catch {
       setFailed(true);
     } finally {
@@ -67,7 +90,7 @@ export function Admin() {
 
   function openTab(which: Tab) {
     setTab(which);
-    const alreadyLoaded = which === 'ratings' ? ratings : errors;
+    const alreadyLoaded = which === 'ratings' ? ratings : which === 'errors' ? errors : config;
     if (password && !alreadyLoaded) void load(which);
   }
 
@@ -89,6 +112,10 @@ export function Admin() {
   }
 
   const average = ratings && ratings.length > 0 ? ratings.reduce((sum, r) => sum + r.stars, 0) / ratings.length : null;
+
+  // warn counts: a Stripe key stuck in test mode is not an error anywhere in
+  // the app, and is still the thing that stops the money arriving.
+  const brokenCount = config?.filter((c) => c.status !== 'ok').length ?? 0;
 
   const tabButton = (which: Tab, label: string) => (
     <button
@@ -131,7 +158,55 @@ export function Admin() {
       <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
         {tabButton('ratings', t('admin_tab_ratings'))}
         {tabButton('errors', t('admin_tab_errors'))}
+        {tabButton('config', t('admin_tab_config'))}
       </div>
+
+      {tab === 'config' && config && (
+        <>
+          {/* The headline first, because the point of the screen is the one
+            * question "is anything wrong?" — not the nine rows below it. */}
+          <p style={{ fontSize: 14, fontWeight: 800, margin: '16px 2px', color: brokenCount > 0 ? 'var(--red)' : 'var(--green)' }}>
+            {brokenCount > 0
+              ? t('admin_config_problems').replace('{count}', String(brokenCount))
+              : t('admin_config_all_ok')}
+          </p>
+          <button className="scan-btn" onClick={() => load('config')} disabled={loading} style={{ width: '100%' }}>
+            {t('admin_fetch_button')}
+          </button>
+          {config.map((c) => (
+            <div key={c.id} className="card" style={{ padding: 14, marginTop: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span
+                  aria-hidden
+                  style={{
+                    flexShrink: 0,
+                    width: 22,
+                    height: 22,
+                    borderRadius: 11,
+                    background: STATUS_COLOR[c.status],
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 800,
+                    display: 'grid',
+                    placeItems: 'center',
+                  }}
+                >
+                  {STATUS_MARK[c.status]}
+                </span>
+                <span style={{ fontSize: 13.5, fontWeight: 700 }}>
+                  {bidi(t(`admin_config_${c.id}` as Parameters<typeof t>[0]))}
+                </span>
+              </div>
+              {/* The detail is machine-written English — a Stripe mode, a key
+                * length, an error from the service. Left-to-right whatever the
+                * app's language is, for the same reason a stack trace is. */}
+              <p dir="ltr" style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 6, wordBreak: 'break-word' }}>
+                {c.detail}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
 
       {tab === 'ratings' && ratings && (
         <>

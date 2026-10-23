@@ -33,6 +33,17 @@ function hasKv(): boolean {
   return !!KV_URL && !!KV_TOKEN;
 }
 
+/** Whether writes reach the real store or the in-process Map above.
+ *
+ * The fallback is deliberate for `npm run dev`, and silent — which in
+ * production means reminders, subscriptions and ratings are accepted and then
+ * dropped between invocations, with nothing on screen to show it. The config
+ * check reports this so a deployment missing its KV vars is visible before a
+ * user finds it. */
+export function kvIsLive(): boolean {
+  return hasKv();
+}
+
 export async function kvGet<T>(key: string): Promise<T | null> {
   const raw = hasKv() ? await restCommand<string | null>(['get', key]) : memGet(key);
   return raw ? (JSON.parse(raw) as T) : null;

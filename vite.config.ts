@@ -110,6 +110,7 @@ function apiDevMiddleware(): Plugin {
 
       server.middlewares.use('/api/error-report', vercelDevRoute(() => import('./api/errors.ts'), { action: 'report' }))
       server.middlewares.use('/api/admin/errors-clear', vercelDevRoute(() => import('./api/errors.ts'), { action: 'clear' }))
+      server.middlewares.use('/api/admin/config', vercelDevRoute(() => import('./api/errors.ts'), { action: 'config' }))
       server.middlewares.use('/api/admin/errors', vercelDevRoute(() => import('./api/errors.ts'), { action: 'list' }))
 
       server.middlewares.use(
