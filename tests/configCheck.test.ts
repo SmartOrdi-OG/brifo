@@ -230,6 +230,57 @@ describe('the rest of the required set', () => {
     expect(check.detail).toContain('VITE_SUPABASE_URL');
   });
 
+  describe('asking Supabase whether it is healthy', () => {
+    const configureSupabase = () => {
+      process.env.VITE_SUPABASE_URL = 'https://example.supabase.co';
+      process.env.VITE_SUPABASE_ANON_KEY = 'anon-key';
+    };
+
+    it('sends the anon key, because the gateway rejects a bare request', async () => {
+      // The bug this covers: hosted Supabase puts /auth/v1/* behind a gateway
+      // that 401s any request without an apikey header, so the first version
+      // of this check reported a working sign-in as broken on a live project.
+      configureSupabase();
+      const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
+      vi.stubGlobal('fetch', fetchMock);
+
+      const check = find(await checkConfig(), 'supabase');
+      expect(check.status).toBe('ok');
+
+      const [requestUrl, init] = fetchMock.mock.calls[0];
+      expect(requestUrl).toBe('https://example.supabase.co/auth/v1/health');
+      expect((init as { headers: Record<string, string> }).headers.apikey).toBe('anon-key');
+    });
+
+    it('does not double the slash when the URL has a trailing one', async () => {
+      process.env.VITE_SUPABASE_URL = 'https://example.supabase.co/';
+      process.env.VITE_SUPABASE_ANON_KEY = 'anon-key';
+      const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
+      vi.stubGlobal('fetch', fetchMock);
+
+      await checkConfig();
+      expect(fetchMock.mock.calls[0][0]).toBe('https://example.supabase.co/auth/v1/health');
+    });
+
+    it('now reads a 401 as a rejected key, which is a real fault', async () => {
+      configureSupabase();
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 401 }));
+      const check = find(await checkConfig(), 'supabase');
+      expect(check.status).toBe('fail');
+      expect(check.detail).toMatch(/rejected/i);
+    });
+
+    it('separates a wrong URL from a wrong key', async () => {
+      // No response at all: a typo, or a paused or deleted project. The
+      // wording has to send the reader somewhere different than a 401 does.
+      configureSupabase();
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('getaddrinfo ENOTFOUND')));
+      const check = find(await checkConfig(), 'supabase');
+      expect(check.status).toBe('fail');
+      expect(check.detail).toMatch(/unreachable/i);
+    });
+  });
+
   it('reports the deployed commit, so a stale deployment is visible', async () => {
     process.env.VERCEL_GIT_COMMIT_SHA = 'abcdef1234567890';
     expect(find(await checkConfig(), 'version').detail).toBe('abcdef1');
