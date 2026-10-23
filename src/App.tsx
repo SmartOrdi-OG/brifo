@@ -28,6 +28,7 @@ import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy, syncConsentToServer } from './lib/consent';
 import { captureReferralCodeFromUrl } from './lib/referral';
+import { GATE_FREE_PATHS } from './lib/gateFreePaths';
 
 function App() {
   const { t, lang } = useLanguage();
@@ -75,8 +76,15 @@ function App() {
   // barrier — the first two because there's otherwise no way to read them
   // before agreeing (Impressum unconditionally, per Austrian law), and AGB
   // because the paywall itself links there for the withdrawal-rights terms.
-  const bypassesGate =
-    location.pathname === '/datenschutz' || location.pathname === '/impressum' || location.pathname === '/agb';
+  //
+  // /admin bypasses them for a different reason: it is the screen that says
+  // whether this deployment is wired up, including whether Supabase sign-in
+  // works. Behind the auth gate it was unreachable in exactly the case it
+  // exists to diagnose — a broken sign-in locked the operator out of the page
+  // reporting that sign-in is broken. It carries its own ADMIN_SECRET prompt
+  // and every endpoint behind it checks that secret server-side, so the gate
+  // was adding no protection here, only a dependency on the thing under test.
+  const bypassesGate = GATE_FREE_PATHS.includes(location.pathname);
 
   if (authLoading) return null;
   if (!consented && !bypassesGate) {
