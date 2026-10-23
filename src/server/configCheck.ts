@@ -73,16 +73,29 @@ async function checkSupabase(): Promise<ConfigCheck> {
     return { id: 'supabase', status: 'fail', detail: `not set: ${missing.join(', ')}` };
   }
   try {
-    // The auth health endpoint needs no key and returns the running version,
-    // which confirms the URL points at a live project rather than a typo.
+    // The apikey header is required: hosted Supabase puts every /auth/v1/*
+    // route behind a gateway that rejects a request without one, so calling
+    // this bare returns 401 on a perfectly healthy project — which it did,
+    // and reported a working sign-in as broken.
+    //
+    // Sending the anon key makes each outcome mean something distinct: 200 is
+    // healthy, 401 now really is a rejected key, and a connection error is a
+    // wrong URL. The key is public by design — it ships in the client bundle
+    // — so this reveals nothing the app does not already hand every visitor.
     const res = await fetch(`${url.replace(/\/$/, '')}/auth/v1/health`, {
+      headers: { apikey: anonKey },
       signal: AbortSignal.timeout(5000),
     });
+    if (res.status === 401) {
+      return { id: 'supabase', status: 'fail', detail: 'project is up but rejected VITE_SUPABASE_ANON_KEY' };
+    }
     if (!res.ok) {
       return { id: 'supabase', status: 'fail', detail: `auth health returned ${res.status}` };
     }
-    return { id: 'supabase', status: 'ok', detail: 'auth service reachable' };
+    return { id: 'supabase', status: 'ok', detail: 'auth service reachable, anon key accepted' };
   } catch (err) {
+    // Never reached the project at all: a typo in the URL, or a paused or
+    // deleted project.
     return { id: 'supabase', status: 'fail', detail: `unreachable: ${errText(err)}` };
   }
 }
