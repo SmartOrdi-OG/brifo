@@ -13,6 +13,7 @@
     { "source": "/api/error-report", "destination": "/api/errors?action=report" },
     { "source": "/api/admin/errors", "destination": "/api/errors?action=list" },
     { "source": "/api/admin/errors-clear", "destination": "/api/errors?action=clear" },
+    { "source": "/api/admin/config", "destination": "/api/errors?action=config" },
     { "source": "/api/create-checkout-session", "destination": "/api/subscription?action=checkout" },
     { "source": "/api/create-portal-session", "destination": "/api/subscription?action=portal" },
     { "source": "/api/subscription-status", "destination": "/api/subscription?action=status" },

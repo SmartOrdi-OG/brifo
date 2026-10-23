@@ -1,9 +1,13 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { recordAppError, listAppErrors, clearAppErrors } from '../src/server/appErrors.js';
+import { checkConfig } from '../src/server/configCheck.js';
 
-// report/list/clear in one function — see push.ts for why (Vercel's Hobby
-// plan caps a deployment at 12 serverless functions, and each file under api/
-// counts as one). vercel.json rewrites the three paths here with ?action=...
+// report/list/clear/config in one function — see push.ts for why (Vercel's
+// Hobby plan caps a deployment at 12 serverless functions, and each file under
+// api/ counts as one). vercel.json rewrites the four paths here with
+// ?action=... The config check shares this function rather than taking a slot
+// of its own: it is admin-gated diagnostics, same as the error log, and at 10
+// of 12 functions a whole file for one read is not worth the headroom.
 interface VercelRequest extends IncomingMessage {
   body?: unknown;
   query?: Record<string, string | string[]>;
@@ -77,6 +81,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (err) {
       console.error('[api/errors:list] failed:', err);
       res.status(500).json({ error: 'failed to load errors' });
+    }
+    return;
+  }
+
+  if (action === 'config') {
+    if (!isAuthorized(secret)) {
+      res.status(401).json({ error: 'unauthorized' });
+      return;
+    }
+    try {
+      res.status(200).json({ checks: await checkConfig() });
+    } catch (err) {
+      console.error('[api/errors:config] failed:', err);
+      res.status(500).json({ error: 'failed to check config' });
     }
     return;
   }
