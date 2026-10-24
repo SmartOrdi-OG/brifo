@@ -18,6 +18,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
 import { useBidiText } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
+import { forgetSensitiveConsent } from '../lib/consent';
 import { authHeader } from '../lib/authHeader';
 import type { TranslationKey } from '../context/translations';
 import type { ReplyIntent, ReplyLetter } from '../types/reply';
@@ -94,6 +95,13 @@ export function Reply() {
       });
       if (!response.ok) {
         status = response.status;
+        // No Art. 9 consent on the server (withdrawn on another device, or
+        // given before it was recorded there): drop the local copy, and the
+        // gate around this screen asks again.
+        if (status === 403) {
+          forgetSensitiveConsent();
+          return;
+        }
         // See the same branch in Scan.tsx: a 402 here means the server and
         // PremiumGate disagreed about this account, and the paywall is the
         // only answer with a way forward.

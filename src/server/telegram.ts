@@ -18,7 +18,7 @@
  * makes no model calls at all, so there is no budget to run up. */
 
 import { ConfigError } from './errors.js';
-import { kvGet, kvSet, kvSadd, kvMarkSentOnce } from './kv.js';
+import { kvGet, kvSet, kvDel, kvMarkSentOnce } from './kv.js';
 import { BOT_LANGS, LANG_NAMES, isBotLang, langFromTelegramCode, t, type BotLang } from './telegramText.js';
 
 // ---------------------------------------------------------------------------
@@ -101,8 +101,13 @@ async function send(chatId: number, text: string, keyboard?: InlineKeyboard): Pr
 // Per-chat state — just the chosen language
 // ---------------------------------------------------------------------------
 
-const CHATS_SET = 'tg:chats';
 const chatKey = (chatId: number) => `tg:chat:${chatId}`;
+
+/** A chat's stored language expires 12 months after the person last wrote to
+ * the bot (privacy policy §8), and is deleted at once when they block or stop
+ * it (my_chat_member → kicked). There used to be a `tg:chats` set of every
+ * chat id ever seen as well; nothing read it, so it is no longer written. */
+export const CHAT_TTL_SECONDS = 365 * 24 * 60 * 60;
 
 interface ChatState {
   lang: BotLang;
@@ -113,8 +118,11 @@ async function loadChat(chatId: number): Promise<ChatState | null> {
 }
 
 async function saveChat(chatId: number, state: ChatState): Promise<void> {
-  await kvSet(chatKey(chatId), state);
-  await kvSadd(CHATS_SET, String(chatId));
+  await kvSet(chatKey(chatId), state, CHAT_TTL_SECONDS);
+}
+
+async function forgetChat(chatId: number): Promise<void> {
+  await kvDel(chatKey(chatId));
 }
 
 // ---------------------------------------------------------------------------
@@ -167,6 +175,12 @@ interface TelegramMessage {
 export interface TelegramUpdate {
   update_id?: number;
   message?: TelegramMessage;
+  /** The bot's own membership in a chat changed — in a private chat,
+   * `kicked` means the person blocked or stopped the bot. */
+  my_chat_member?: {
+    chat?: { id?: number; type?: string };
+    new_chat_member?: { status?: string };
+  };
   callback_query?: {
     id?: string;
     data?: string;
@@ -217,7 +231,10 @@ async function handleMessage(message: TelegramMessage): Promise<void> {
   // Private chats only. In a group the bot would answer every stray message.
   if (message.chat?.type !== 'private') return;
 
-  const state = (await loadChat(chatId)) ?? newChatState(message.from?.language_code);
+  const stored = await loadChat(chatId);
+  const state = stored ?? newChatState(message.from?.language_code);
+  // Any message restarts the 12-month clock on a chat we already know.
+  if (stored) await saveChat(chatId, stored);
   const text = message.text?.trim();
 
   if (text?.startsWith('/')) {
@@ -248,6 +265,13 @@ async function handleCallback(query: NonNullable<TelegramUpdate['callback_query'
 }
 
 export async function handleUpdate(update: TelegramUpdate): Promise<void> {
+  if (update.my_chat_member) {
+    const chatId = update.my_chat_member.chat?.id;
+    if (typeof chatId === 'number' && update.my_chat_member.new_chat_member?.status === 'kicked') {
+      await forgetChat(chatId);
+    }
+    return;
+  }
   if (update.callback_query) {
     await handleCallback(update.callback_query);
     return;

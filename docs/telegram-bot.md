@@ -74,11 +74,13 @@ help - المساعدة
 | الاسم | القيمة |
 |---|---|
 | `TELEGRAM_BOT_TOKEN` | الـ token من خطوة ١ |
-| `TELEGRAM_WEBHOOK_SECRET` | `1gpH3w1ENAvMeC2Gn_OYboLgDToJ9ON9` |
+| `TELEGRAM_WEBHOOK_SECRET` | `<WEBHOOK_SECRET>` (كلمة سر جديدة — شوف الملاحظة تحت) |
 | `PUBLIC_BASE_URL` | `https://mybrifo.com` |
 
-> الـ `TELEGRAM_WEBHOOK_SECRET` كلمة سر عشوائية عملتها إلك. ممكن تغيّريها لأي نص طويل،
-> بس لازم تكون **نفسها بالضبط** بخطوة ٤.
+> الـ `TELEGRAM_WEBHOOK_SECRET` كلمة سر عشوائية **ما بتنكتب أبداً بهاد الملف ولا بأي ملف بالـ repo**.
+> بتتولّد مرة وحدة، مثلاً بالأمر `openssl rand -hex 32` (تيليجرام بيقبل بس أحرف وأرقام و `_` و `-`)،
+> وبتنحط بـ Vercel بس — ولازم تكون **نفسها بالضبط** بخطوة ٤.
+> (القيمة القديمة يلي كانت مكتوبة هون صارت مكشوفة بتاريخ الـ git، فلازم تتبدّل بوحدة جديدة.)
 
 البوت بيستعمل كمان `KV_REST_API_URL` و `KV_REST_API_TOKEN` — هدول موجودين أصلاً
 (نفسهم يلي بيستعملهم التذكير بالتطبيق). إذا مش موجودين، البوت بينسى كل شي بعد كل رسالة.
@@ -92,7 +94,7 @@ help - المساعدة
 2. افتحي هاد الرابط بالمتصفح (بدّلي `<TOKEN>` بالـ token تبعك):
 
    ```
-   https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://mybrifo.com/api/telegram&secret_token=1gpH3w1ENAvMeC2Gn_OYboLgDToJ9ON9
+   https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://mybrifo.com/api/telegram&secret_token=<WEBHOOK_SECRET>
    ```
 
    لازم يطلعلك:
