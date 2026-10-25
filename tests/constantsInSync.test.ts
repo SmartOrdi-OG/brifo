@@ -11,59 +11,39 @@
  * single equality that a copy-paste drift breaks. */
 import { describe, it, expect } from 'vitest';
 
-import { BOT_LANGS, BOT_TEXT, LANG_NAMES, langFromTelegramCode, isBotLang } from '../src/server/telegramText.js';
 import { REFERRAL_BONUS_DAYS as SERVER_BONUS_DAYS } from '../src/server/referral.js';
 import { OUTPUT_LANGUAGE as REPLY_LANGUAGES } from '../src/server/reply.js';
 import { OUTPUT_LANGUAGE as ANALYZE_LANGUAGES } from '../api/analyze.js';
+import { SENSITIVE_CONSENT_VERSION as SERVER_SENSITIVE_VERSION } from '../src/server/consent.js';
 
-import { translations } from '../src/context/translations';
+import { LANGS, translations } from '../src/context/translations';
 import { REFERRAL_BONUS_DAYS as CLIENT_BONUS_DAYS } from '../src/lib/referral';
 import { isTrialExpired } from '../src/lib/trial';
+import { SENSITIVE_CONSENT_VERSION as CLIENT_SENSITIVE_VERSION } from '../src/data/privacyPolicy';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 describe('the list of languages', () => {
-  // BOT_LANGS is the only runtime array of the six; everywhere else they are
+  // LANGS is the only runtime array of the six; everywhere else they are
   // object keys or a type union. Treating it as the canonical list means one
   // place to add a seventh, and these tests then name everywhere that must
   // follow.
   it('is the same on the server as in the app', () => {
-    expect([...BOT_LANGS].sort()).toEqual(Object.keys(translations).sort());
+    expect([...LANGS].sort()).toEqual(Object.keys(translations).sort());
   });
 
   it('is covered by the scan prompt', () => {
-    expect(Object.keys(ANALYZE_LANGUAGES).sort()).toEqual([...BOT_LANGS].sort());
+    expect(Object.keys(ANALYZE_LANGUAGES).sort()).toEqual([...LANGS].sort());
   });
 
   it('is covered by the reply prompt', () => {
-    expect(Object.keys(REPLY_LANGUAGES).sort()).toEqual([...BOT_LANGS].sort());
-  });
-
-  it('is covered by the bot text and the language names it offers', () => {
-    expect(Object.keys(BOT_TEXT).sort()).toEqual([...BOT_LANGS].sort());
-    expect(Object.keys(LANG_NAMES).sort()).toEqual([...BOT_LANGS].sort());
+    expect(Object.keys(REPLY_LANGUAGES).sort()).toEqual([...LANGS].sort());
   });
 
   it('names a real language for every entry, not a placeholder', () => {
-    for (const lang of BOT_LANGS) {
+    for (const lang of LANGS) {
       expect(ANALYZE_LANGUAGES[lang]?.length, `analyze: ${lang}`).toBeGreaterThan(2);
       expect(REPLY_LANGUAGES[lang]?.length, `reply: ${lang}`).toBeGreaterThan(2);
-      expect(LANG_NAMES[lang]?.length, `name: ${lang}`).toBeGreaterThan(1);
-    }
-  });
-});
-
-describe("Telegram's language code", () => {
-  it('maps the codes Telegram actually sends', () => {
-    expect(langFromTelegramCode('de')).toBe('de');
-    expect(langFromTelegramCode('de-AT')).toBe('de');
-    expect(langFromTelegramCode('ar')).toBe('ar');
-    expect(langFromTelegramCode('uk')).toBe('uk');
-  });
-
-  it('falls back rather than throwing on anything else', () => {
-    for (const code of [undefined, null, '', 'zz', 42, {}]) {
-      expect(isBotLang(langFromTelegramCode(code)), `code ${JSON.stringify(code)}`).toBe(true);
     }
   });
 });
@@ -92,5 +72,15 @@ describe('the trial length', () => {
   it('is extended by the bonus days on the client side too', () => {
     expect(isTrialExpired(daysAgo(10), 7)).toBe(false);
     expect(isTrialExpired(daysAgo(15), 7)).toBe(true);
+  });
+});
+
+describe('the Art. 9 consent version', () => {
+  // The client stores the version it showed; the server only lets a scan
+  // through for a grant of at least its own version. If the two drift, either
+  // every scan is refused right after consenting, or an old consent text keeps
+  // counting after the wording changed.
+  it('is the same on the server as in the app', () => {
+    expect(SERVER_SENSITIVE_VERSION).toBe(CLIENT_SENSITIVE_VERSION);
   });
 });
