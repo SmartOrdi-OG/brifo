@@ -27,8 +27,6 @@ const WATCHED = [
   'VAPID_SUBJECT',
   'STRIPE_SECRET_KEY',
   'STRIPE_WEBHOOK_SECRET',
-  'TELEGRAM_BOT_TOKEN',
-  'TELEGRAM_WEBHOOK_SECRET',
   'ANTHROPIC_API_KEY',
   'CRON_SECRET',
   'VERCEL_GIT_COMMIT_SHA',
@@ -183,28 +181,6 @@ describe('the VAPID keys, which only fail hours later on a phone', () => {
   });
 });
 
-describe('Telegram, which is optional but not half-optional', () => {
-  it('warns when the bot is simply off', async () => {
-    const check = find(await checkConfig(), 'telegram');
-    expect(check.status).toBe('warn');
-  });
-
-  it('fails when only one of the two is set', async () => {
-    // Half-configured is worse than off: the bot answers and every update
-    // fails its secret check, silently.
-    process.env.TELEGRAM_BOT_TOKEN = '123456:fake-token-for-tests';
-    const check = find(await checkConfig(), 'telegram');
-    expect(check.status).toBe('fail');
-    expect(check.detail).toContain('TELEGRAM_WEBHOOK_SECRET');
-  });
-
-  it('passes when both are set', async () => {
-    process.env.TELEGRAM_BOT_TOKEN = '123456:fake-token-for-tests';
-    process.env.TELEGRAM_WEBHOOK_SECRET = 'webhook-secret';
-    expect(find(await checkConfig(), 'telegram').status).toBe('ok');
-  });
-});
-
 describe('the rest of the required set', () => {
   it('fails on a missing Anthropic key, and does not spend credit checking', async () => {
     const missing = find(await checkConfig(), 'anthropic');
@@ -298,7 +274,6 @@ describe('never leaking what it is checking', () => {
       VAPID_PUBLIC_KEY: 'B'.repeat(87),
       STRIPE_SECRET_KEY: 'sk_test_SENTINEL_3',
       STRIPE_WEBHOOK_SECRET: 'not_a_whsec_SENTINEL_4',
-      TELEGRAM_BOT_TOKEN: '999:SENTINEL-5',
       ANTHROPIC_API_KEY: 'sk-ant-SENTINEL-6',
       CRON_SECRET: 'cron-SENTINEL-7',
     };

@@ -9,7 +9,7 @@ import { ALL_CHILDREN, type Child } from '../types/data';
 import { compressImage, compressImageForStorage, type CompressedImage } from '../lib/compressImage';
 import { useBidiText } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
-import { isTelegramMiniApp } from '../lib/telegramWebApp';
+import { forgetSensitiveConsent } from '../lib/consent';
 import { authHeader } from '../lib/authHeader';
 import type { LetterAnalysis } from '../types/analysis';
 import './Scan.css';
@@ -73,16 +73,6 @@ export function Scan() {
   }
 
   async function openCamera() {
-    // Telegram's webview does not reliably grant getUserMedia — on iOS it is
-    // refused outright, and some Android builds show a permission prompt that
-    // never resolves. Going straight to the file input hands the job to the
-    // system camera, which works on both. This is the same fallback the catch
-    // below uses; the only difference is not making the user watch it fail
-    // first.
-    if (isTelegramMiniApp) {
-      fallbackCaptureInputRef.current?.click();
-      return;
-    }
     try {
       console.log('[Scan] requesting getUserMedia...');
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -164,6 +154,13 @@ export function Scan() {
       });
       if (!response.ok) {
         status = response.status;
+        // No Art. 9 consent on the server (withdrawn on another device, or
+        // given before it was recorded there): drop the local copy, and the
+        // gate around this screen asks again.
+        if (status === 403) {
+          forgetSensitiveConsent();
+          return;
+        }
         // The server says this account is out of trial and not subscribed.
         // PremiumGate should already have caught that, so reaching here means
         // the two disagreed — a stale cached status, a clock skew. Showing the
