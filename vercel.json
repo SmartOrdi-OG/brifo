@@ -20,9 +20,7 @@
     { "source": "/api/redeem-referral", "destination": "/api/subscription?action=redeem-referral" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
-  "functions": {
-    "api/telegram.ts": { "maxDuration": 60 }
-  },
+  "regions": ["fra1"],
   "headers": [
     {
       "source": "/(sw.js|registerSW.js|manifest.webmanifest)",

@@ -12,7 +12,6 @@ What is covered, and why these and not others:
 | `reminders.test.ts` | Reminder delivery: anchoring an appointment to a real instant in Vienna across both daylight-saving switches, and the once-a-day cron deciding what is due, what it already sent, and when to drop a dead device. |
 | `guideData.test.ts` | The 22 guide articles in six languages plus the feminine Arabic variant: complete, ordered, non-empty, every bold marker closed, an icon per article, and the same official source cited in every language. |
 | `translations.test.ts` | The six translation tables: no empty strings, and every `{placeholder}` surviving translation — the type system checks the keys, not the insides of the strings. |
-| `botText.test.ts` | What the Telegram bot says in six languages: nothing missing, nothing left in Arabic, nothing past Telegram's message limit or too wide for a phone button. |
 | `constantsInSync.test.ts` | The values that exist twice because CommonJS (`api/`, `src/server/`) cannot import the browser-side ESM tree. A test is the only thing here that can see both sides at once. |
 | `bidiText.test.tsx` | Latin and numeric runs inside Arabic text — amounts, times, dates, German words. Getting the boundaries wrong renders `Meldebestätigung` as `tigungäMeldebest`. |
 
