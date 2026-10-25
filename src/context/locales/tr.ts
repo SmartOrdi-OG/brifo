@@ -130,7 +130,7 @@ export const tr: TranslationTable = {
   urgency_low: 'Sonra',
 
   reply_intent_title: 'Ne yazmak istiyorsun?',
-  reply_intent_entschuldigung: 'Devamsızlık özürü',
+  reply_intent_entschuldigung: 'Devamsızlık özrü',
   reply_intent_termin: 'Randevu talebi',
   reply_intent_zustimmung: 'Onay',
   reply_intent_frage: 'Soru',
