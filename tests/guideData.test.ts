@@ -12,10 +12,7 @@
 import { describe, it, expect } from 'vitest';
 import { GUIDE_ARTICLE_IDS, getGuideArticles, type GuideArticle } from '../src/data/guideArticles';
 import { GUIDE_ARTICLE_ICONS } from '../src/data/guideIcons';
-import { BOT_LANGS } from '../src/server/telegramText.js';
-import type { Lang } from '../src/context/translations';
-
-const LANGS = BOT_LANGS as readonly Lang[];
+import { LANGS } from '../src/context/translations';
 
 /** Every rendered variant: the six languages, plus Arabic as a woman reads it
  * (getGuideArticles applies arFeminineOverrides only for gender 'f'). */

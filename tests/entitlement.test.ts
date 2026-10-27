@@ -2,7 +2,7 @@
  *
  * Worth testing above everything else here: it is the only thing standing
  * between /api/analyze and anyone with the URL, every pass through it spends
- * money at Anthropic, and all three of its answers (401 / 402 / 429) are ones
+ * money at Anthropic, and all four of its answers (401 / 402 / 403 / 429) are ones
  * a user can hit on a normal day. The arithmetic is also the kind that goes
  * wrong silently — an off-by-one in the trial window locks out a paying
  * customer, or hands a week to someone whose week is over, and neither shows
@@ -44,17 +44,28 @@ vi.mock('../src/server/kv.js', () => ({
 
 const { checkEntitlement } = await import('../src/server/entitlement.js');
 const { subscriptionKey } = await import('../src/server/stripeKeys.js');
+const { sensitiveConsentKey, SENSITIVE_CONSENT_VERSION } = await import('../src/server/consent.js');
 
 /** checkEntitlement only ever reads the authorization header, and the stub
  * above decides who that resolves to, so the request can be this thin. */
 const req = { headers: { authorization: 'Bearer whatever' } };
 
-function signedIn(opts: { email?: string | null; ageDays?: number } = {}) {
+/** Signed in with the Art. 9 consent on record unless a test says otherwise —
+ * most tests here are about the paywall, not the consent. */
+function signedIn(opts: { email?: string | null; ageDays?: number; consent?: boolean } = {}) {
   currentUser = {
     id: 'u1',
     email: opts.email ?? 'parent@example.com',
     createdAt: new Date(Date.now() - (opts.ageDays ?? 0) * DAY_MS).toISOString(),
   };
+  if (opts.consent !== false) recordSensitiveConsent(true);
+}
+
+function recordSensitiveConsent(granted: boolean, version = SENSITIVE_CONSENT_VERSION) {
+  store.set(
+    sensitiveConsentKey('u1'),
+    JSON.stringify({ email: null, version, granted, decidedAt: '2026-10-23T00:00:00Z', recordedAt: '2026-10-23T00:00:00Z' }),
+  );
 }
 
 beforeEach(() => {
@@ -104,11 +115,13 @@ describe('the trial window', () => {
 
   it('treats a missing created_at as still in trial rather than locking the account out', async () => {
     currentUser = { id: 'u1', email: 'parent@example.com', createdAt: null };
+    recordSensitiveConsent(true);
     expect((await checkEntitlement(req, 'analyze')).ok).toBe(true);
   });
 
   it('treats an unparseable created_at the same way', async () => {
     currentUser = { id: 'u1', email: 'parent@example.com', createdAt: 'not a date' };
+    recordSensitiveConsent(true);
     expect((await checkEntitlement(req, 'analyze')).ok).toBe(true);
   });
 });
@@ -235,5 +248,50 @@ describe('the daily ceiling', () => {
     signedIn({ ageDays: 1 });
     incrThrows = true;
     expect((await checkEntitlement(req, 'analyze')).ok).toBe(true);
+  });
+});
+
+describe('the Art. 9 consent for sensitive data', () => {
+  it('is required before a letter goes to the model', async () => {
+    signedIn({ consent: false });
+    expect(await checkEntitlement(req, 'analyze')).toEqual({
+      ok: false,
+      failure: { status: 403, error: 'sensitive consent required' },
+    });
+  });
+
+  it('is required for reply drafts too', async () => {
+    signedIn({ consent: false });
+    expect((await checkEntitlement(req, 'reply')).ok).toBe(false);
+  });
+
+  it('is required even for complimentary accounts', async () => {
+    process.env.FREE_ACCOUNT_EMAILS = 'owner@example.com';
+    signedIn({ email: 'owner@example.com', consent: false });
+    expect((await checkEntitlement(req, 'analyze')).ok).toBe(false);
+  });
+
+  it('stops counting once withdrawn', async () => {
+    signedIn();
+    expect((await checkEntitlement(req, 'analyze')).ok).toBe(true);
+    recordSensitiveConsent(false);
+    expect((await checkEntitlement(req, 'analyze')).ok).toBe(false);
+  });
+
+  it('given to an older consent text does not count', async () => {
+    signedIn({ consent: false });
+    recordSensitiveConsent(true, SENSITIVE_CONSENT_VERSION - 1);
+    expect((await checkEntitlement(req, 'analyze')).ok).toBe(false);
+  });
+
+  it('does not use up the daily quota when missing', async () => {
+    signedIn({ consent: false });
+    await checkEntitlement(req, 'analyze');
+    expect(counters.size).toBe(0);
+  });
+
+  it('is asked after the paywall, so an expired trial still says "subscribe"', async () => {
+    signedIn({ ageDays: 30, consent: false });
+    expect(await checkEntitlement(req, 'analyze')).toMatchObject({ ok: false, failure: { status: 402 } });
   });
 });

@@ -10,6 +10,7 @@ import { compressImage, compressImageForStorage, type CompressedImage } from '..
 import { useBidiText } from '../lib/bidiText';
 import { classifyRequestError, isDefinitelyOffline, requestErrorKey } from '../lib/requestError';
 import { isTelegramMiniApp } from '../lib/telegramWebApp';
+import { forgetSensitiveConsent } from '../lib/consent';
 import { authHeader } from '../lib/authHeader';
 import type { LetterAnalysis } from '../types/analysis';
 import './Scan.css';
@@ -164,6 +165,13 @@ export function Scan() {
       });
       if (!response.ok) {
         status = response.status;
+        // No Art. 9 consent on the server (withdrawn on another device, or
+        // given before it was recorded there): drop the local copy, and the
+        // gate around this screen asks again.
+        if (status === 403) {
+          forgetSensitiveConsent();
+          return;
+        }
         // The server says this account is out of trial and not subscribed.
         // PremiumGate should already have caught that, so reaching here means
         // the two disagreed — a stale cached status, a clock skew. Showing the

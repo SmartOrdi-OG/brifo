@@ -187,20 +187,6 @@ async function checkStripe(): Promise<ConfigCheck[]> {
   return checks;
 }
 
-function checkTelegram(): ConfigCheck {
-  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
-  const secret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim();
-  if (!token && !secret) {
-    // Optional surface: Brifo works without the bot.
-    return { id: 'telegram', status: 'warn', detail: 'not configured — the Telegram bot is off' };
-  }
-  const missing = [!token && 'TELEGRAM_BOT_TOKEN', !secret && 'TELEGRAM_WEBHOOK_SECRET'].filter(Boolean);
-  if (missing.length > 0) {
-    return { id: 'telegram', status: 'fail', detail: `half configured, not set: ${missing.join(', ')}` };
-  }
-  return { id: 'telegram', status: 'ok', detail: 'bot token and webhook secret both set' };
-}
-
 function errText(err: unknown): string {
   const message = err instanceof Error ? err.message : String(err);
   // Stripe and fetch both put the key or URL in some error messages.
@@ -234,7 +220,6 @@ export async function checkConfig(): Promise<ConfigCheck[]> {
     anthropic,
     checkVapid(),
     cron,
-    checkTelegram(),
     {
       id: 'version',
       status: 'ok',
