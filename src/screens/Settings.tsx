@@ -466,6 +466,11 @@ export function Settings() {
             {t('settings_erase_error')}
           </p>
         )}
+        {eraseOutcome === 'data-only' && (
+          <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--amber)', marginTop: 12, lineHeight: 1.6 }}>
+            {t('settings_erase_partial')}
+          </p>
+        )}
 
         {/* Two taps, not a dialog: the second tap is the confirmation, and the
             label changes to say so. Irreversible and one tap away is the

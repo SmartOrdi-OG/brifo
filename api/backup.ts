@@ -96,8 +96,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         res.status(409).json({ error: result.reason });
         return;
       }
-      console.log(`[api/backup:erase] removed ${result.deleted.length} keys for a user on request`);
-      res.status(200).json({ ok: true });
+      console.log(
+        `[api/backup:erase] removed ${result.deleted.length} keys for a user on request` +
+          `${result.accountDeleted ? ' and deleted the login' : ' — THE LOGIN SURVIVED, check SUPABASE_SERVICE_ROLE_KEY'}`,
+      );
+      res.status(200).json({ ok: true, accountDeleted: result.accountDeleted });
     } catch (err) {
       console.error('[api/backup:erase] failed:', err);
       res.status(500).json({ error: 'failed to erase data' });

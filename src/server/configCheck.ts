@@ -219,6 +219,18 @@ export async function checkConfig(): Promise<ConfigCheck[]> {
       { id: 'anthropic', status: 'ok', detail: 'set (not called — a test call costs credit)' }
     : { id: 'anthropic', status: 'fail', detail: 'ANTHROPIC_API_KEY not set — scanning a letter will fail' };
 
+  // Without it the delete-account button deletes the data and leaves the
+  // login behind — a half-deletion the person is told about but did not ask
+  // for, and short of what Google Play requires from an app that creates
+  // accounts. It fails silently in the sense that matters: the button works.
+  const accountDeletion: ConfigCheck = has('SUPABASE_SERVICE_ROLE_KEY')
+    ? { id: 'account_deletion', status: 'ok', detail: 'set — deleting an account removes the login too' }
+    : {
+        id: 'account_deletion',
+        status: 'fail',
+        detail: 'SUPABASE_SERVICE_ROLE_KEY not set — "delete account" erases the data but leaves the login',
+      };
+
   const cron: ConfigCheck = has('CRON_SECRET')
     ? { id: 'cron', status: 'ok', detail: 'set' }
     : {
@@ -233,6 +245,7 @@ export async function checkConfig(): Promise<ConfigCheck[]> {
     supabase,
     anthropic,
     checkVapid(),
+    accountDeletion,
     cron,
     checkTelegram(),
     {

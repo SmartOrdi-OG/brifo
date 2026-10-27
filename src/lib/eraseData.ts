@@ -10,7 +10,11 @@ import { authHeader } from './authHeader';
  * keeps getting reminders for data that no longer exists. Then the server
  * copy, then the device, then the session. */
 
-export type EraseOutcome = 'done' | 'active-subscription' | 'failed';
+/** 'data-only': the data is gone but the login outlived it, which means the
+ * deployment is missing SUPABASE_SERVICE_ROLE_KEY. Reported separately rather
+ * than folded into 'done' so the screen does not tell someone their account
+ * was deleted while they are still signed in to it. */
+export type EraseOutcome = 'done' | 'data-only' | 'active-subscription' | 'failed';
 
 /** Everything the app writes locally. Listed rather than wiping all of
  * localStorage because the origin is shared with nothing else today but may
@@ -63,6 +67,15 @@ export async function eraseEverything(): Promise<EraseOutcome> {
     return 'failed';
   }
 
+  // An older deployment answers without this field; treat that as the login
+  // having survived, which is what those versions did.
+  let accountDeleted = false;
+  try {
+    accountDeleted = ((await response.json()) as { accountDeleted?: boolean }).accountDeleted === true;
+  } catch (err) {
+    console.error('[erase] could not read the response:', err);
+  }
+
   // Only now the device, so a failed server call leaves the user with their
   // data and a retry rather than a half-erased app.
   try {
@@ -70,6 +83,12 @@ export async function eraseEverything(): Promise<EraseOutcome> {
   } catch (err) {
     console.error('[erase] could not clear local storage:', err);
   }
+
+  // Signing out only once the login is really gone. On the partial path the
+  // session is what keeps the settings screen mounted long enough to read the
+  // message explaining what did and did not happen — sign out here and the
+  // auth gate replaces it mid-sentence.
+  if (!accountDeleted) return 'data-only';
 
   try {
     await supabase?.auth.signOut();
