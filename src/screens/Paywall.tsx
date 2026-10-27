@@ -8,6 +8,7 @@ import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
 import { isAndroidTwa, openOutsideAndroidTwa } from '../lib/platform';
+import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
 const FEATURES: TranslationKey[] = ['paywall_feature_scan', 'paywall_feature_organize', 'paywall_feature_reply'];
@@ -52,12 +53,19 @@ export function Paywall() {
       setLoading(false);
       return;
     }
-    // Google Play does not let a digital subscription be sold in-app — it
-    // wants Play Billing — so checkout has to happen in a real external
-    // browser. A plain `window.location.href` would not get there: on Android,
-    // mybrifo.com is a *verified* App Link, so it would just reopen this same
-    // TWA instead of a real Chrome tab. The escape hatch goes straight to the
+    // Neither store lets a digital subscription be sold in-app — Google Play
+    // wants Play Billing, and a Telegram Mini App on iOS falls under Apple's
+    // rules — so checkout has to happen in a real external browser. A plain
+    // `window.location.href` would not get there: on Android, mybrifo.com is
+    // now a *verified* App Link, so it would just reopen this same TWA
+    // instead of a real Chrome tab; Telegram has no address bar to escape to
+    // one either. Each platform gets its own escape hatch straight to the
     // Stripe URL, skipping the extra hop through the paywall page.
+    if (isTelegramMiniApp) {
+      if (!openOutsideTelegram(url)) window.open(url, '_blank', 'noopener');
+      setLoading(false);
+      return;
+    }
     if (isAndroidTwa) {
       if (!openOutsideAndroidTwa(url)) window.open(url, '_blank', 'noopener');
       setLoading(false);

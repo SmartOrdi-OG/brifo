@@ -42,6 +42,8 @@ from a clean slate rather than replaying ids Stripe will reject.
 
 | Variable | Notes |
 |---|---|
+| `TELEGRAM_BOT_TOKEN` | The Telegram bot. Off is fine; **half-configured is not** — the bot answers and every update fails its secret check, silently. |
+| `TELEGRAM_WEBHOOK_SECRET` | Set it whenever the token is set. |
 | `FREE_ACCOUNT_EMAILS` | Comma-separated addresses that skip the paywall. |
 | `ANALYZE_DAILY_LIMIT`, `REPLY_DAILY_LIMIT` | Per-user daily ceilings; defaults live in `src/server/entitlement.ts`. |
 | `PUBLIC_BASE_URL` | Only needed if `VERCEL_URL` is not the public address. |
@@ -78,6 +80,6 @@ the domain, then the DKIM/SPF records it prints into DNS). Until it is
 verified, Resend rejects the send and the code still does not arrive.
 
 Hobby note: Vercel's Hobby plan caps a deployment at **12 serverless
-functions** and **one cron run per day**. `api/` currently holds 9 files;
+functions** and **one cron run per day**. `api/` currently holds 10 files;
 several of them serve multiple routes through `?action=` rewrites in
 `vercel.json` for exactly this reason.

@@ -11,6 +11,7 @@
  * single equality that a copy-paste drift breaks. */
 import { describe, it, expect } from 'vitest';
 
+import { BOT_LANGS, BOT_TEXT, LANG_NAMES, langFromTelegramCode, isBotLang } from '../src/server/telegramText.js';
 import { REFERRAL_BONUS_DAYS as SERVER_BONUS_DAYS } from '../src/server/referral.js';
 import { OUTPUT_LANGUAGE as REPLY_LANGUAGES } from '../src/server/reply.js';
 import { OUTPUT_LANGUAGE as ANALYZE_LANGUAGES } from '../api/analyze.js';
@@ -38,6 +39,12 @@ describe('the list of languages', () => {
 
   it('is covered by the reply prompt', () => {
     expect(Object.keys(REPLY_LANGUAGES).sort()).toEqual([...LANGS].sort());
+  });
+
+  it('is covered by the bot text and the language names it offers', () => {
+    expect([...BOT_LANGS].sort()).toEqual([...LANGS].sort());
+    expect(Object.keys(BOT_TEXT).sort()).toEqual([...LANGS].sort());
+    expect(Object.keys(LANG_NAMES).sort()).toEqual([...LANGS].sort());
   });
 
   it('names a real language for every entry, not a placeholder', () => {
@@ -82,5 +89,20 @@ describe('the Art. 9 consent version', () => {
   // counting after the wording changed.
   it('is the same on the server as in the app', () => {
     expect(SERVER_SENSITIVE_VERSION).toBe(CLIENT_SENSITIVE_VERSION);
+  });
+});
+
+describe("Telegram's language code", () => {
+  it('maps the codes Telegram actually sends', () => {
+    expect(langFromTelegramCode('de')).toBe('de');
+    expect(langFromTelegramCode('de-AT')).toBe('de');
+    expect(langFromTelegramCode('ar')).toBe('ar');
+    expect(langFromTelegramCode('uk')).toBe('uk');
+  });
+
+  it('falls back rather than throwing on anything else', () => {
+    for (const code of [undefined, null, '', 'zz', 42, {}]) {
+      expect(isBotLang(langFromTelegramCode(code)), `code ${JSON.stringify(code)}`).toBe(true);
+    }
   });
 });
