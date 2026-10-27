@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { recordAppError, listAppErrors, clearAppErrors } from '../src/server/appErrors.js';
 import { checkConfig } from '../src/server/configCheck.js';
+import { authorizeAdmin, adminAuthStatus, type AdminAuthResult } from '../src/server/adminAuth.js';
 
 // report/list/clear/config in one function — see push.ts for why (Vercel's
 // Hobby plan caps a deployment at 12 serverless functions, and each file under
@@ -18,16 +19,13 @@ interface VercelResponse extends ServerResponse {
   json(body: unknown): void;
 }
 
-function isAuthorized(secret: unknown): boolean {
-  const expected = process.env.ADMIN_SECRET;
-  // Fail closed, as api/ratings.ts does: this file only runs deployed, so a
-  // missing secret means a misconfigured deployment, and treating that as
-  // "allow" would publish every stack trace to anyone who opened /admin.
-  if (!expected) {
-    console.error('[api/errors] ADMIN_SECRET is not set — refusing');
-    return false;
-  }
-  return secret === expected;
+// The password check, the attempt ceiling and the constant-time comparison
+// all live in src/server/adminAuth.ts, shared with api/ratings.ts — two
+// copies of a security check is one copy that gets updated.
+async function refuse(res: VercelResponse, result: Exclude<AdminAuthResult, 'ok'>): Promise<void> {
+  res.status(adminAuthStatus(result)).json({
+    error: result === 'rate-limited' ? 'too many attempts' : 'unauthorized',
+  });
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -72,8 +70,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { secret } = (req.body ?? {}) as { secret?: unknown };
 
   if (action === 'list') {
-    if (!isAuthorized(secret)) {
-      res.status(401).json({ error: 'unauthorized' });
+    const auth = await authorizeAdmin(secret, req.headers);
+    if (auth !== 'ok') {
+      await refuse(res, auth);
       return;
     }
     try {
@@ -86,8 +85,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (action === 'config') {
-    if (!isAuthorized(secret)) {
-      res.status(401).json({ error: 'unauthorized' });
+    const auth = await authorizeAdmin(secret, req.headers);
+    if (auth !== 'ok') {
+      await refuse(res, auth);
       return;
     }
     try {
@@ -100,8 +100,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (action === 'clear') {
-    if (!isAuthorized(secret)) {
-      res.status(401).json({ error: 'unauthorized' });
+    const auth = await authorizeAdmin(secret, req.headers);
+    if (auth !== 'ok') {
+      await refuse(res, auth);
       return;
     }
     try {
