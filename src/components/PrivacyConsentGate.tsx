@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ImageOff, Trash2, EyeOff, type LucideIcon } from 'lucide-react';
+import { Smartphone, Trash2, EyeOff, type LucideIcon } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import type { TranslationKey } from '../context/translations';
 import { acceptPrivacyPolicy, privacyConsentState } from '../lib/consent';
@@ -12,13 +12,14 @@ interface PrivacyConsentGateProps {
 /** The three promises, each in its own card.
  *
  * Every one of them is a sentence from the privacy policy, not a slogan: the
- * photo really is read once and never stored (point 3c), anything really can
- * be deleted from Settings (point 4), and the data really is never sold
- * (point 5). The policy does name processors — Anthropic, Supabase, Stripe,
- * Vercel — so the third card says "never sold", which is true, rather than
- * "never shared", which would not be. */
+ * photo is not kept on our server, but a smaller copy is kept on the device
+ * with the letter (policy 3.3 — the card used to say "never stored", which
+ * was not true), anything can be deleted from Settings (policy 10), and the
+ * data is never sold (policy 6). The policy does name processors, so the third
+ * card says "never sold", which is true, rather than "never shared", which
+ * would not be. */
 const PROMISES: { Icon: LucideIcon; title: TranslationKey; body: TranslationKey }[] = [
-  { Icon: ImageOff, title: 'privacy_gate_point1_title', body: 'privacy_gate_point1_body' },
+  { Icon: Smartphone, title: 'privacy_gate_point1_title', body: 'privacy_gate_point1_body' },
   { Icon: Trash2, title: 'privacy_gate_point2_title', body: 'privacy_gate_point2_body' },
   { Icon: EyeOff, title: 'privacy_gate_point3_title', body: 'privacy_gate_point3_body' },
 ];
