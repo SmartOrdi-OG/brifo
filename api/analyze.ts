@@ -6,6 +6,7 @@
 // same thing every other route here already does safely.
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { checkEntitlement } from '../src/server/entitlement.js';
+import { describeError } from '../src/server/errors.js';
 
 const MODEL = 'claude-opus-4-8';
 
@@ -118,10 +119,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const data = (await anthropicRes.json()) as {
       content?: { text?: string }[];
+      error?: { type?: unknown };
     };
 
     if (!anthropicRes.ok) {
-      console.error('[api/analyze] Anthropic API error:', anthropicRes.status, data);
+      // Status and Anthropic's error type only — never the body, which is
+      // free text and can quote the request.
+      const errorType = typeof data.error?.type === 'string' ? data.error.type : 'unknown';
+      console.error('[api/analyze] Anthropic API error:', anthropicRes.status, errorType);
       res.status(502).json({ error: 'anthropic api error' });
       return;
     }
@@ -131,6 +136,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
       parsed = JSON.parse(text) as Record<string, unknown>;
     } catch {
+      // Length only: the text is the letter's analysis.
+      console.error('[api/analyze] model did not return valid JSON, length:', text.length);
       res.status(502).json({ error: 'model did not return valid JSON' });
       return;
     }
@@ -152,7 +159,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       payments: Array.isArray(parsed.payments) ? parsed.payments : [],
     });
   } catch (err) {
-    console.error('[api/analyze] request failed:', err);
+    console.error('[api/analyze] request failed:', describeError(err));
     res.status(500).json({ error: 'analysis failed' });
   }
 }

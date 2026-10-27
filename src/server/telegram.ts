@@ -18,7 +18,7 @@
  * makes no model calls at all, so there is no budget to run up. */
 
 import { ConfigError } from './errors.js';
-import { kvGet, kvSet, kvSadd, kvMarkSentOnce } from './kv.js';
+import { kvGet, kvSet, kvDel, kvSrem, kvMarkSentOnce } from './kv.js';
 import { BOT_LANGS, LANG_NAMES, isBotLang, langFromTelegramCode, t, type BotLang } from './telegramText.js';
 
 // ---------------------------------------------------------------------------
@@ -101,8 +101,15 @@ async function send(chatId: number, text: string, keyboard?: InlineKeyboard): Pr
 // Per-chat state — just the chosen language
 // ---------------------------------------------------------------------------
 
+// Legacy: an earlier version also kept every chat id in this set. Nothing reads
+// it; it is only cleaned up now (forgetChat).
 const CHATS_SET = 'tg:chats';
 const chatKey = (chatId: number) => `tg:chat:${chatId}`;
+
+/** How long a chat's language is kept after its last message (privacy policy
+ * § 8: twelve months). Every message renews it; blocking or stopping the bot
+ * deletes it at once (forgetChat). */
+export const CHAT_TTL_SECONDS = 60 * 60 * 24 * 365;
 
 interface ChatState {
   lang: BotLang;
@@ -113,8 +120,14 @@ async function loadChat(chatId: number): Promise<ChatState | null> {
 }
 
 async function saveChat(chatId: number, state: ChatState): Promise<void> {
-  await kvSet(chatKey(chatId), state);
-  await kvSadd(CHATS_SET, String(chatId));
+  await kvSet(chatKey(chatId), state, CHAT_TTL_SECONDS);
+}
+
+/** Drops everything the bot keeps about a chat: its language and the legacy
+ * set entry. Called when the user blocks or stops the bot. */
+export async function forgetChat(chatId: number): Promise<void> {
+  await kvDel(chatKey(chatId));
+  await kvSrem(CHATS_SET, String(chatId));
 }
 
 // ---------------------------------------------------------------------------
@@ -167,6 +180,11 @@ interface TelegramMessage {
 export interface TelegramUpdate {
   update_id?: number;
   message?: TelegramMessage;
+  /** Sent when the user blocks/stops the bot ('kicked') or starts it again. */
+  my_chat_member?: {
+    chat?: { id?: number; type?: string };
+    new_chat_member?: { status?: string };
+  };
   callback_query?: {
     id?: string;
     data?: string;
@@ -217,7 +235,10 @@ async function handleMessage(message: TelegramMessage): Promise<void> {
   // Private chats only. In a group the bot would answer every stray message.
   if (message.chat?.type !== 'private') return;
 
-  const state = (await loadChat(chatId)) ?? newChatState(message.from?.language_code);
+  const saved = await loadChat(chatId);
+  const state = saved ?? newChatState(message.from?.language_code);
+  // Renew the retention window of a chat that is still in use.
+  if (saved) await saveChat(chatId, saved);
   const text = message.text?.trim();
 
   if (text?.startsWith('/')) {
@@ -248,6 +269,13 @@ async function handleCallback(query: NonNullable<TelegramUpdate['callback_query'
 }
 
 export async function handleUpdate(update: TelegramUpdate): Promise<void> {
+  const member = update.my_chat_member;
+  if (member) {
+    const chatId = member.chat?.id;
+    const status = member.new_chat_member?.status;
+    if (typeof chatId === 'number' && (status === 'kicked' || status === 'left')) await forgetChat(chatId);
+    return;
+  }
   if (update.callback_query) {
     await handleCallback(update.callback_query);
     return;

@@ -6,6 +6,7 @@ import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
 import { LanguagePicker } from '../components/LanguagePicker';
 import { eraseEverything, type EraseOutcome } from '../lib/eraseData';
+import { hasSensitiveConsent, withdrawSensitiveConsent } from '../lib/consent';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
@@ -52,6 +53,7 @@ export function Settings() {
   const [eraseArmed, setEraseArmed] = useState(false);
   const [erasing, setErasing] = useState(false);
   const [eraseOutcome, setEraseOutcome] = useState<EraseOutcome | null>(null);
+  const [sensitiveConsent, setSensitiveConsent] = useState(hasSensitiveConsent());
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -444,6 +446,30 @@ export function Settings() {
         </div>
       </div>
 
+
+      {/* Art. 9 consent: withdrawing must be as easy as giving it (Art. 7(3)
+          GDPR). Giving it happens on the scan screen, where its text is shown
+          in full; here it is only ever taken back. */}
+      <div className="sec">
+        <h3>{t('settings_sensitive_section')}</h3>
+      </div>
+      <div className="card" style={{ padding: 16 }}>
+        <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--muted)', lineHeight: 1.6 }}>
+          {t(sensitiveConsent ? 'settings_sensitive_granted' : 'settings_sensitive_not_granted')}
+        </p>
+        {sensitiveConsent && (
+          <button
+            className="scan-btn"
+            onClick={async () => {
+              setSensitiveConsent(false);
+              await withdrawSensitiveConsent();
+            }}
+            style={{ marginTop: 14, width: '100%' }}
+          >
+            {t('settings_sensitive_withdraw')}
+          </button>
+        )}
+      </div>
 
       <div className="sec">
         <h3>{t('settings_erase_section')}</h3>

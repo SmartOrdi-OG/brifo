@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
-import { ConfigError } from './errors.js';
+import { ConfigError, describeError } from './errors.js';
 import { toStructuredOutputFormat } from './structuredOutput.js';
 
 let client: Anthropic | null = null;
@@ -145,12 +145,14 @@ export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> 
       output_config: { format: toStructuredOutputFormat(ReplyResultSchema) },
     });
   } catch (err) {
-    console.error('[reply] Anthropic API call failed:', err);
+    console.error('[reply] Anthropic API call failed:', describeError(err));
     throw err;
   }
 
   if (!response.parsed_output) {
-    console.error('[reply] model returned no parsed_output', response);
+    // Not the response itself: it is the drafted letter, built from the
+    // user's letter summary and notes. Only what says why it went wrong.
+    console.error('[reply] model returned no parsed_output, stop_reason:', response.stop_reason);
     throw new ReplyError('model did not return structured output');
   }
   return response.parsed_output;
