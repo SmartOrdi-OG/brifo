@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { submitRating, listRatings } from '../src/server/ratings.js';
+import { authorizeAdmin, adminAuthStatus } from '../src/server/adminAuth.js';
 
 // Consolidates rating-submit/admin-ratings into one function — see push.ts
 // for why (Vercel's Hobby plan caps a deployment at 12 serverless functions).
@@ -15,18 +16,8 @@ interface VercelResponse extends ServerResponse {
 
 const MAX_COMMENT_LENGTH = 2000;
 
-function isAuthorized(secret: unknown): boolean {
-  const expected = process.env.ADMIN_SECRET;
-  // Fail closed. This file only ever runs deployed — local `npm run dev` is
-  // served by the middleware in vite.config.ts — so a missing secret here
-  // means the deployment is misconfigured, and treating that as "allow"
-  // published every rating and comment to anyone who opened /admin.
-  if (!expected) {
-    console.error('[api/ratings] ADMIN_SECRET is not set — refusing to list ratings');
-    return false;
-  }
-  return secret === expected;
-}
+// The password check, the attempt ceiling and the constant-time comparison
+// live in src/server/adminAuth.ts, shared with api/errors.ts.
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const action = Array.isArray(req.query?.action) ? req.query.action[0] : req.query?.action;
@@ -57,8 +48,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // The password travels in the body, not a query string, so it doesn't
     // end up in server logs or browser history.
     const { secret } = (req.body ?? {}) as { secret?: unknown };
-    if (!isAuthorized(secret)) {
-      res.status(401).json({ error: 'unauthorized' });
+    const auth = await authorizeAdmin(secret, req.headers);
+    if (auth !== 'ok') {
+      res.status(adminAuthStatus(auth)).json({
+        error: auth === 'rate-limited' ? 'too many attempts' : 'unauthorized',
+      });
       return;
     }
     try {

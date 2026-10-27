@@ -50,14 +50,16 @@ export function Admin() {
   const [ratings, setRatings] = useState<StoredRating[] | null>(null);
   const [errors, setErrors] = useState<StoredAppError[] | null>(null);
   const [config, setConfig] = useState<ConfigCheck[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  // 'wrong' and 'rate-limited' read very differently to someone standing in
+  // front of the screen: one says try again, the other says stop trying.
+  const [failed, setFailed] = useState<'wrong' | 'rate-limited' | null>(null);
   const [loading, setLoading] = useState(false);
 
   /** One password, every list. Fetching whichever tab is open means switching
    * tabs after unlocking does not ask for it again. */
   async function load(which: Tab) {
     setLoading(true);
-    setFailed(false);
+    setFailed(null);
     const url =
       which === 'ratings' ? '/api/admin/ratings' : which === 'errors' ? '/api/admin/errors' : '/api/admin/config';
     try {
@@ -67,7 +69,10 @@ export function Admin() {
         body: JSON.stringify({ secret: password }),
       });
       if (!res.ok) {
-        setFailed(true);
+        // 429 is the attempt ceiling in src/server/adminAuth.ts, not a wrong
+        // password — telling them apart is the difference between "try
+        // again" and "waiting is the only thing that helps".
+        setFailed(res.status === 429 ? 'rate-limited' : 'wrong');
         if (which === 'ratings') setRatings(null);
         else if (which === 'errors') setErrors(null);
         else setConfig(null);
@@ -82,7 +87,7 @@ export function Admin() {
       else if (which === 'errors') setErrors(payload.errors ?? []);
       else setConfig(payload.checks ?? []);
     } catch {
-      setFailed(true);
+      setFailed('wrong');
     } finally {
       setLoading(false);
     }
@@ -103,9 +108,9 @@ export function Admin() {
         body: JSON.stringify({ secret: password }),
       });
       if (res.ok) setErrors([]);
-      else setFailed(true);
+      else setFailed(res.status === 429 ? 'rate-limited' : 'wrong');
     } catch {
-      setFailed(true);
+      setFailed('wrong');
     } finally {
       setLoading(false);
     }
@@ -152,7 +157,11 @@ export function Admin() {
             {t('admin_fetch_button')}
           </button>
         </div>
-        {failed && <p style={{ fontSize: 12.5, color: 'var(--red)', marginTop: 8 }}>{t('admin_unauthorized')}</p>}
+        {failed && (
+          <p style={{ fontSize: 12.5, color: 'var(--red)', marginTop: 8, lineHeight: 1.5 }}>
+            {t(failed === 'rate-limited' ? 'admin_rate_limited' : 'admin_unauthorized')}
+          </p>
+        )}
       </div>
 
       <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>

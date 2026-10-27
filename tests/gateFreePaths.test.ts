@@ -24,6 +24,13 @@ describe('the pages that must stay reachable', () => {
     expect(GATE_FREE_PATHS).toContain('/agb');
   });
 
+  it('keeps /account-deletion open, since the reader may have uninstalled the app', () => {
+    // The URL Google Play's listing points at. Requiring a sign-in to reach
+    // the page about deleting your account defeats the one case it exists
+    // for: someone who removed the app and still wants their data gone.
+    expect(GATE_FREE_PATHS).toContain('/account-deletion');
+  });
+
   it('keeps /admin open, so a broken sign-in is still diagnosable', () => {
     // The whole point of the config check. It carries its own ADMIN_SECRET
     // prompt and every endpoint behind it verifies that secret server-side,
@@ -59,7 +66,7 @@ describe('the pages that must stay closed', () => {
     // Not a style rule: every entry is a page any visitor can read. If this
     // number has to go up, the entry needs a reason written next to it in
     // App.tsx first.
-    expect(GATE_FREE_PATHS.length).toBe(4);
+    expect(GATE_FREE_PATHS.length).toBe(5);
   });
 
   it('holds exact paths, since the check is an equality match', () => {
