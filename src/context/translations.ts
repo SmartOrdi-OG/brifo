@@ -352,6 +352,7 @@ const ar = {
   agb_title: 'شروط الاستخدام',
   settings_agb_link: 'شروط الاستخدام',
   impressum_title: 'بيان الهوية القانونية',
+  account_deletion_title: 'حذف الحساب',
   settings_impressum_link: 'بيان الهوية القانونية (Impressum)',
 
   paywall_plan_name: 'Brifo Premium',
@@ -729,6 +730,7 @@ const de: Record<keyof typeof ar, string> = {
   agb_title: 'AGB',
   settings_agb_link: 'Allgemeine Geschäftsbedingungen (AGB)',
   impressum_title: 'Impressum',
+  account_deletion_title: 'Konto löschen',
   settings_impressum_link: 'Impressum',
 
   paywall_plan_name: 'Brifo Premium',
@@ -1106,6 +1108,7 @@ const tr: Record<keyof typeof ar, string> = {
   agb_title: 'Kullanım koşulları',
   settings_agb_link: 'Kullanım koşulları',
   impressum_title: 'Yasal bildirim (Impressum)',
+  account_deletion_title: 'Hesabı silme',
   settings_impressum_link: 'Yasal bildirim (Impressum)',
 
   paywall_plan_name: 'Brifo Premium',
@@ -1483,6 +1486,7 @@ const fa: Record<keyof typeof ar, string> = {
   agb_title: 'شرایط استفاده',
   settings_agb_link: 'شرایط استفاده',
   impressum_title: 'اطلاعات هویت حقوقی',
+  account_deletion_title: 'حذف حساب',
   settings_impressum_link: 'اطلاعات هویت حقوقی (Impressum)',
 
   paywall_plan_name: 'Brifo Premium',
@@ -1860,6 +1864,7 @@ const en: Record<keyof typeof ar, string> = {
   agb_title: 'Terms of use',
   settings_agb_link: 'Terms of use',
   impressum_title: 'Legal notice',
+  account_deletion_title: 'Account deletion',
   settings_impressum_link: 'Legal notice (Impressum)',
 
   paywall_plan_name: 'Brifo Premium',
@@ -2237,6 +2242,7 @@ const uk: Record<keyof typeof ar, string> = {
   agb_title: 'Умови використання',
   settings_agb_link: 'Умови використання',
   impressum_title: 'Юридичні реквізити',
+  account_deletion_title: 'Видалення акаунта',
   settings_impressum_link: 'Юридичні реквізити (Impressum)',
 
   paywall_plan_name: 'Brifo Premium',

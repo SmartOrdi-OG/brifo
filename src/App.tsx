@@ -17,6 +17,7 @@ import { Search } from './screens/Search';
 import { Datenschutz } from './screens/Datenschutz';
 import { Impressum } from './screens/Impressum';
 import { AGB } from './screens/AGB';
+import { AccountDeletion } from './screens/AccountDeletion';
 import { Admin } from './screens/Admin';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
 import { AuthGate } from './components/AuthGate';
@@ -127,6 +128,7 @@ function App() {
       <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="/impressum" element={<Impressum />} />
       <Route path="/agb" element={<AGB />} />
+      <Route path="/account-deletion" element={<AccountDeletion />} />
       <Route path="/admin" element={<Admin />} />
       {/* A stray/mistyped/stale URL otherwise renders nothing at all — React
           Router doesn't fall back to anything without an explicit wildcard. */}

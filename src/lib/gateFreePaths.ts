@@ -9,6 +9,9 @@
  *   reachable unconditionally.
  * - /agb: the paywall links there for the withdrawal-rights terms, which a
  *   user has to be able to read before paying.
+ * - /account-deletion: the URL Google Play's listing points at for deleting
+ *   an account. Whoever opens it may have uninstalled the app already — that
+ *   is the case it exists for — so requiring a sign-in would defeat it.
  * - /admin: it is the screen that reports whether this deployment is wired
  *   up, Supabase sign-in included. Behind the auth gate it was unreachable in
  *   exactly the case it exists to diagnose — a broken sign-in locked the
@@ -21,4 +24,4 @@
  * component, and so tests/gateFreePaths.test.ts can pin the list — it is a
  * bare array of strings, and nothing else would keep it honest.
  */
-export const GATE_FREE_PATHS = ['/datenschutz', '/impressum', '/agb', '/admin'];
+export const GATE_FREE_PATHS = ['/datenschutz', '/impressum', '/agb', '/admin', '/account-deletion'];
