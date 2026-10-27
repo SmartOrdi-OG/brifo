@@ -1,3 +1,5 @@
+import { isTelegramMiniApp } from './telegramWebApp';
+
 const TWA_REFERRER_PREFIX = 'android-app://';
 const STORAGE_KEY = 'brifo:is-android-twa';
 
@@ -45,10 +47,11 @@ function detectAndPersist(): boolean {
 export const isAndroidTwa = detectAndPersist();
 
 /** The surfaces that may not sell a subscription in-app, and must point at
- * the website instead: Google Play because of its Billing policy (above). One
- * flag so the paywall states the rule once rather than growing a condition
- * per store. */
-export const hidesInAppPurchase = isAndroidTwa;
+ * the website instead: Google Play because of its Billing policy (above), and
+ * the Telegram Mini App because on iOS it falls under Apple's in-app-purchase
+ * rules. One flag so the paywall states the rule once rather than growing a
+ * condition per store. */
+export const hidesInAppPurchase = isAndroidTwa || isTelegramMiniApp;
 
 /** Sends the user to `url` in a real Chrome tab instead of this TWA.
  *

@@ -21,6 +21,9 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "regions": ["fra1"],
+  "functions": {
+    "api/telegram.ts": { "maxDuration": 60 }
+  },
   "headers": [
     {
       "source": "/(sw.js|registerSW.js|manifest.webmanifest)",

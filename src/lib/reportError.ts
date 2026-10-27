@@ -13,6 +13,7 @@
  * session, and a failed report is swallowed rather than thrown. */
 
 import { isAndroidTwa } from './platform';
+import { isTelegramMiniApp } from './telegramWebApp';
 
 const REPORT_URL = '/api/error-report';
 
@@ -51,6 +52,7 @@ export function scrubErrorText(text: string): string {
 }
 
 function platformName(): string {
+  if (isTelegramMiniApp) return 'telegram';
   if (isAndroidTwa) return 'twa';
   return 'browser';
 }
