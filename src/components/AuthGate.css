@@ -18,11 +18,14 @@
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
 }
 
+/* The lockup is wide, not a square tile: it sets its own size from the
+   `height` prop and keeps the artwork's ratio, so no width/height here. The
+   reversed tone draws itself in currentColor against the gradient. */
 .auth-logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  /* Enough to lift it off the gradient without reading as a drop shadow on
+     the letterforms. */
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18));
 }
 
 .auth-title {
