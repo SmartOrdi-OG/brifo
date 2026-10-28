@@ -19,7 +19,7 @@ export function Header() {
   return (
     <header className="brifo-header">
       <div className="brand">
-        <img className="logo" src="/icons/logo-header.png" alt="" width={40} height={40} />
+        <img className="logo" src="/icons/logo-header-v3.png" alt="" width={40} height={40} />
         <div className="brand-name" dir="ltr">
           Bri<span>fo</span>
         </div>
