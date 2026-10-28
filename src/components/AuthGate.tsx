@@ -237,7 +237,7 @@ export function AuthGate() {
       <div className="auth-hero">
         {/* The real logo rather than a generic envelope — this is the first
             screen anyone sees, so it may as well build the brand. */}
-        <img src="/icons/apple-touch-icon-v2.png" alt="" width={76} height={76} className="auth-logo" />
+        <img src="/icons/apple-touch-icon-v3.png" alt="" width={76} height={76} className="auth-logo" />
         <h1 className="auth-title">Brifo</h1>
         {/* What the app does comes before what it costs: pricing used to be the
             loudest thing on the page, above any explanation of the product. */}

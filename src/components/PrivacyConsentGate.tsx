@@ -67,7 +67,7 @@ export function PrivacyConsentGate({ onAccept }: PrivacyConsentGateProps) {
       >
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
           <img
-            src="/icons/icon-192-v2.png"
+            src="/icons/icon-192-v3.png"
             alt=""
             width={64}
             height={64}
