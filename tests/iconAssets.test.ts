@@ -65,6 +65,24 @@ describe('every referenced icon exists', () => {
   });
 });
 
+describe('every PNG icon is cache-busted', () => {
+  it('carries a version suffix', () => {
+    // Renaming is the only way to replace one of these at all: iOS caches
+    // the home-screen icon by URL and the service worker precaches the rest,
+    // so a file replaced in place keeps serving its old contents for as long
+    // as those caches live.
+    //
+    // logo-header.png is why this test exists. It was replaced with the new
+    // artwork and kept its name, so the app kept showing the old mark in the
+    // header while every other icon had changed — the one icon on screen on
+    // every single screen.
+    const unversioned = [...new Set(SOURCES.flatMap(iconPathsIn))]
+      .filter((p) => p.endsWith('.png'))
+      .filter((p) => !/-v\d+\.png$/.test(p));
+    expect(unversioned, `these would be served from cache after a change: ${unversioned.join(', ')}`).toEqual([]);
+  });
+});
+
 describe('the manifest and the gates agree on the version', () => {
   it('references exactly one version suffix across the whole app', () => {
     // A half-finished rename is the failure this file exists for: some
