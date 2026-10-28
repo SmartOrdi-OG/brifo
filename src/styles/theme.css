@@ -333,3 +333,19 @@ blockquote {
     transform: rotate(360deg);
   }
 }
+
+/* Visible to a screen reader, not on screen. Used where an image already
+   carries the words — the sign-in lockup has its own aria-label, so the <h1>
+   beside it would otherwise be announced twice, and dropping the <h1>
+   entirely would leave the page with no top-level heading. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

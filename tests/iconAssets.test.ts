@@ -28,6 +28,7 @@ function iconPathsIn(relativePath: string): string[] {
   return [...source.matchAll(/["'`](\/icons\/[^"'`\s)]+)["'`]/g)].map((m) => m[1]);
 }
 
+/** Everything scanned. A path found in any of these must exist. */
 const SOURCES = [
   'index.html',
   'vite.config.ts',
@@ -36,11 +37,21 @@ const SOURCES = [
   'src/components/PrivacyConsentGate.tsx',
 ];
 
+/** The subset that must still reference at least one icon.
+ *
+ * Zero references usually means the file moved and this test quietly stopped
+ * checking anything — except in AuthGate, which deliberately has none: its
+ * logo is drawn inline by BrifoWordmark so the name can follow the theme's
+ * text colour, which an <img> cannot do. */
+const MUST_REFERENCE = SOURCES.filter((s) => !s.endsWith('AuthGate.tsx'));
+
 describe('every referenced icon exists', () => {
   for (const source of SOURCES) {
     it(`${source}`, () => {
       const paths = iconPathsIn(source);
-      expect(paths.length, `${source} references no icons — has it moved?`).toBeGreaterThan(0);
+      if (MUST_REFERENCE.includes(source)) {
+        expect(paths.length, `${source} references no icons — has it moved?`).toBeGreaterThan(0);
+      }
       for (const path of paths) {
         expect(existsSync(join(PUBLIC, path)), `${source} wants ${path}, which is not in public/`).toBe(true);
       }

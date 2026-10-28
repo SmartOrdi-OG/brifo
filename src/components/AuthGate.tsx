@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { LanguagePicker } from './LanguagePicker';
+import { BrifoWordmark } from './BrifoWordmark';
 import type { TranslationKey } from '../context/translations';
 import './AuthGate.css';
 
@@ -235,10 +236,14 @@ export function AuthGate() {
   return (
     <div className="app auth-shell">
       <div className="auth-hero">
-        {/* The real logo rather than a generic envelope — this is the first
-            screen anyone sees, so it may as well build the brand. */}
-        <img src="/icons/apple-touch-icon-v3.png" alt="" width={76} height={76} className="auth-logo" />
-        <h1 className="auth-title">Brifo</h1>
+        {/* The full lockup rather than the icon above a heading: this is the
+            first screen anyone sees, and the mark and the name belong
+            together here. It carries its own aria-label, so the <h1> is the
+            same words twice to a screen reader — hence sr-only on the
+            heading, which keeps the page's one top-level heading without
+            saying "Brifo" out loud twice. */}
+        <BrifoWordmark tone="reversed" height={54} className="auth-logo" />
+        <h1 className="auth-title sr-only">Brifo</h1>
         {/* What the app does comes before what it costs: pricing used to be the
             loudest thing on the page, above any explanation of the product. */}
         <p className="auth-tagline">{tx('auth_tagline')}</p>
