@@ -27,8 +27,8 @@ self.addEventListener('push', (event: PushEvent) => {
     self.registration.showNotification(payload.title, {
       body: payload.body,
       tag: payload.tag,
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      icon: '/icons/icon-192-v3.png',
+      badge: '/icons/icon-192-v3.png',
       dir: 'rtl',
       data: { url: payload.url ?? '/' },
     }),
