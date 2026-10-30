@@ -35,6 +35,12 @@ const SOURCES = [
   'src/components/AuthGate.tsx',
   'src/components/Header.tsx',
   'src/components/PrivacyConsentGate.tsx',
+  // The service worker is the one that is easy to forget: its icons are not on
+  // any screen, they are on the notification, so a stale path shows Android's
+  // generic bell to someone who is being reminded of a deadline — and nothing
+  // in the app looks wrong. It was missing from this list for exactly one
+  // rename, which is how `icon-192.png` survived the move to -v3.
+  'src/sw.ts',
 ];
 
 /** The subset that must still reference at least one icon.
