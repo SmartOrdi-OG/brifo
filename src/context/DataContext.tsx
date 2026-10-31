@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import {
-  ALL_CHILDREN,
   CHILD_COLORS,
   type Child,
   type FamilyMemberType,
@@ -16,6 +15,7 @@ import type { LetterAnalysis } from '../types/analysis';
 import { normalizeState, type RestorableState } from '../lib/backup';
 import { syncToCloud, fetchCloudBackup } from '../lib/cloudBackup';
 import { mergeStoredState } from '../lib/mergeState';
+import { recordsForMember } from '../lib/memberRecords';
 import { useAuth } from './AuthContext';
 
 const STORAGE_KEY = 'brifo_data';
@@ -361,20 +361,11 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     setState(data);
   }
 
-  // A parent ("adult" member) manages the whole family, not just their own
-  // items, so their profile aggregates everyone's letters/payments/events
-  // instead of only what's directly assigned to them.
-  const isAdultMember = (childId: string) => state.children.find((c) => c.id === childId)?.type === 'adult';
-
-  // An "الكل" (all-children) item is stored once with childId === ALL_CHILDREN
-  // rather than duplicated per child, so every per-child lookup must also
-  // pull in those shared records instead of matching only the exact id.
-  const lettersForChild = (childId: string) =>
-    isAdultMember(childId) ? state.letters : state.letters.filter((l) => l.childId === childId || l.childId === ALL_CHILDREN);
-  const paymentsForChild = (childId: string) =>
-    isAdultMember(childId) ? state.payments : state.payments.filter((p) => p.childId === childId || p.childId === ALL_CHILDREN);
-  const eventsForChild = (childId: string) =>
-    isAdultMember(childId) ? state.events : state.events.filter((e) => e.childId === childId || e.childId === ALL_CHILDREN);
+  // Which records belong to a member — including the family-wide ones — is in
+  // recordsForMember, where it can be tested without a React tree.
+  const lettersForChild = (childId: string) => recordsForMember(state.letters, childId);
+  const paymentsForChild = (childId: string) => recordsForMember(state.payments, childId);
+  const eventsForChild = (childId: string) => recordsForMember(state.events, childId);
 
   return (
     <DataContext.Provider
