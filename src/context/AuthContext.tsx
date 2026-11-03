@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from './LanguageContext';
 import { getStashedReferralCode, clearStashedReferralCode } from '../lib/referral';
 import { redeemReferral } from '../lib/subscription';
+import { claimDeviceData, clearAccountData } from '../lib/accountSwitch';
+import { unsubscribeThisDevice } from '../lib/eraseData';
 
 const NEWLY_CREATED_WINDOW_MS = 5 * 60 * 1000;
 
@@ -37,13 +39,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+    // Every session passes through here before the rest of the app sees it,
+    // so a different account than the one whose data this device holds never
+    // reaches DataContext (which would show and sync that data) — see
+    // lib/accountSwitch.
+    let reloading = false;
+    async function applySession(next: Session | null) {
+      if (reloading) return;
+      if (next?.user && claimDeviceData(next.user.id) === 'switched') {
+        reloading = true;
+        // The push subscription is the device's, but the reminders on it are
+        // the previous account's.
+        await unsubscribeThisDevice();
+        try {
+          localStorage.removeItem('brifo_push_enabled');
+        } catch {
+          // ignore
+        }
+        window.location.reload();
+        return;
+      }
+      setSession(next);
+    }
+    supabase.auth.getSession().then(async ({ data }) => {
+      await applySession(data.session);
       setLoading(false);
     });
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
+    } = supabase.auth.onAuthStateChange((_event, next) => {
+      void applySession(next);
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -116,8 +142,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPasswordPromptPending(false);
   }
 
+  /** Signing out also takes this account's data off the device (its cloud
+   * copy stays and returns on the next sign-in), so the next person to sign
+   * in here starts clean. Letter photos live only on the device and go with
+   * it. The reload drops what is still held in memory. */
   async function signOut(): Promise<void> {
+    await unsubscribeThisDevice();
+    try {
+      localStorage.removeItem('brifo_push_enabled');
+    } catch {
+      // ignore
+    }
+    clearAccountData();
     await supabase?.auth.signOut();
+    window.location.reload();
   }
 
   return (

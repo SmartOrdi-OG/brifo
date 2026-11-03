@@ -22,6 +22,7 @@ export type EraseOutcome = 'done' | 'data-only' | 'active-subscription' | 'faile
  * something else later. */
 const LOCAL_KEYS = [
   'brifo_data',
+  'brifo_data_owner',
   'brifo_device_id',
   'brifo_gender',
   'brifo_lang',
@@ -35,7 +36,7 @@ const LOCAL_KEYS = [
   'brifo_theme',
 ];
 
-async function unsubscribeThisDevice(): Promise<void> {
+export async function unsubscribeThisDevice(): Promise<void> {
   try {
     const deviceId = localStorage.getItem('brifo_device_id');
     if (!deviceId) return;
