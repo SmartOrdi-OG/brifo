@@ -65,10 +65,40 @@ describe('the policy text', () => {
     for (const policy of all) for (const pattern of banned) expect(policy).not.toMatch(pattern);
   });
 
-  it('opens every not-yet-updated translation with a pointer to the German version', () => {
+  it('translates every section of the German text, with the same facts', () => {
     for (const [lang, sections] of Object.entries(TRANSLATED)) {
-      expect(sections[0].body, lang).toMatch(/6|٦|۶/);
-      expect(sections[0].body, lang).not.toContain('Brifo helps Arabic-speaking');
+      expect(sections, lang).toHaveLength(privacyPolicyDe.length);
+      const policy = text(sections);
+      for (const fact of [
+        'Steingasse 6a, 4020 Linz',
+        'team@smartordi.eu',
+        'FN 675586 i',
+        'Anthropic Ireland, Limited',
+        'Supabase Pte. Ltd.',
+        'Upstash',
+        'Resend',
+        'Stripe Payments Europe Ltd.',
+        'fra1',
+        'eu-central-1',
+        'Zero Data Retention',
+        'Barichgasse 40–42',
+        'AES-256',
+        '30',
+        '24',
+        '36',
+      ]) {
+        expect(policy, `${lang}: ${fact}`).toContain(fact);
+      }
+    }
+  });
+
+  it('names the buttons the way the app labels them', () => {
+    for (const [lang, sections] of Object.entries({ de: privacyPolicyDe, ...TRANSLATED })) {
+      const table = translations[lang as keyof typeof translations];
+      const policy = text(sections);
+      expect(policy, lang).toContain(table.settings_erase_section);
+      expect(policy, lang).toContain(table.backup_export);
+      expect(policy, lang).toContain(table.sensitive_consent_title);
     }
   });
 });
