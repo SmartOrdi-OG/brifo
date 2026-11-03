@@ -19,10 +19,15 @@ import { scrubErrorText } from '../src/lib/reportError';
 let store: Map<string, unknown>;
 let sets: Map<string, Set<string>>;
 let counters: Map<string, number>;
+/** The expiry each key was last written with, in seconds. */
+let ttls: Map<string, number | undefined>;
 
 vi.mock('../src/server/kv.js', () => ({
   kvGet: async (key: string) => store.get(key) ?? null,
-  kvSet: async (key: string, value: unknown) => void store.set(key, value),
+  kvSet: async (key: string, value: unknown, ttlSeconds?: number) => {
+    store.set(key, value);
+    ttls.set(key, ttlSeconds);
+  },
   kvDel: async (key: string) => void store.delete(key),
   kvSadd: async (setKey: string, member: string) => {
     if (!sets.has(setKey)) sets.set(setKey, new Set());
@@ -47,6 +52,29 @@ beforeEach(() => {
   store = new Map();
   sets = new Map();
   counters = new Map();
+  ttls = new Map();
+});
+
+describe('retention', () => {
+  const THIRTY_DAYS = 30 * 24 * 60 * 60;
+
+  it('gives every report a 30-day expiry of its own, not only the pruning on the next new fault', async () => {
+    const report = { message: 'Error: once', stack: '' };
+    await recordAppError(report);
+    const key = [...store.keys()].find((k) => k.startsWith('errors:') && k !== INDEX)!;
+    expect(ttls.get(key)).toBe(THIRTY_DAYS);
+
+    await recordAppError(report);
+    expect(ttls.get(key)).toBe(THIRTY_DAYS);
+  });
+
+  it('drops index entries whose report has already expired', async () => {
+    await recordAppError({ message: 'Error: gone', stack: '' });
+    const key = [...store.keys()].find((k) => k.startsWith('errors:'))!;
+    store.delete(key);
+    expect(await listAppErrors()).toHaveLength(0);
+    expect(sets.get(INDEX)?.size ?? 0).toBe(0);
+  });
 });
 
 describe('collapsing the same fault', () => {
@@ -89,7 +117,7 @@ describe('what it keeps', () => {
       stack: 'at restore (cloudBackup.ts:30:5)',
       route: '/settings',
       lang: 'ar',
-      platform: 'telegram',
+      platform: 'twa',
       appVersion: 'ab12cd3',
     });
     const [entry] = await listAppErrors();
@@ -97,7 +125,7 @@ describe('what it keeps', () => {
       message: 'Error: restore failed',
       route: '/settings',
       lang: 'ar',
-      platform: 'telegram',
+      platform: 'twa',
       appVersion: 'ab12cd3',
       count: 1,
     });

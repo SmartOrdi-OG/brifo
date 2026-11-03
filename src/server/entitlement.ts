@@ -22,6 +22,7 @@ import { kvGet, kvIncr } from './kv.js';
 import { isComplimentaryEmail } from './freeAccounts.js';
 import { getBonusTrialDays } from './referral.js';
 import { subscriptionKey, isActiveStatus, type StoredSubscription } from './stripeKeys.js';
+import { hasSensitiveConsent } from './consent.js';
 
 /** Must match TRIAL_DAYS in src/lib/trial.ts. Repeated rather than imported
  * because that file is browser-side ESM and this tree compiles as CommonJS;
@@ -44,7 +45,7 @@ function dailyLimit(feature: Feature): number {
 export type Feature = 'analyze' | 'reply';
 
 export interface EntitlementFailure {
-  status: 401 | 402 | 429;
+  status: 401 | 402 | 403 | 429;
   error: string;
 }
 
@@ -88,27 +89,33 @@ async function withinDailyLimit(userId: string, feature: Feature): Promise<boole
   }
 }
 
-/** Checks the three things in the order that costs least: who, then whether,
- * then how often. Each failure gets its own status so the client can tell
- * "sign in again" from "subscribe" from "come back tomorrow". */
+/** Checks the four things in the order that costs least: who, then whether,
+ * then with what consent, then how often. Each failure gets its own status so
+ * the client can tell "sign in again" from "subscribe" from "give consent"
+ * from "come back tomorrow". */
 export async function checkEntitlement(req: RequestLike, feature: Feature): Promise<EntitlementResult> {
   const user = await getUserFromRequest(req);
   if (!user) return { ok: false, failure: { status: 401, error: 'not signed in' } };
 
-  if (isComplimentaryEmail(user.email)) {
-    return (await withinDailyLimit(user.id, feature))
-      ? { ok: true, user }
-      : { ok: false, failure: { status: 429, error: 'daily limit reached' } };
+  if (!isComplimentaryEmail(user.email)) {
+    const subscription = await kvGet<StoredSubscription>(subscriptionKey(user.id));
+    const subscribed = !!subscription && isActiveStatus(subscription.status);
+
+    if (!subscribed) {
+      const bonusDays = await getBonusTrialDays(user.id);
+      if (!trialRemains(user.createdAt, bonusDays)) {
+        return { ok: false, failure: { status: 402, error: 'subscription required' } };
+      }
+    }
   }
 
-  const subscription = await kvGet<StoredSubscription>(subscriptionKey(user.id));
-  const subscribed = !!subscription && isActiveStatus(subscription.status);
-
-  if (!subscribed) {
-    const bonusDays = await getBonusTrialDays(user.id);
-    if (!trialRemains(user.createdAt, bonusDays)) {
-      return { ok: false, failure: { status: 402, error: 'subscription required' } };
-    }
+  // Art. 9 GDPR: letters and reply notes can carry health data, which may
+  // only go to the model on an explicit, separately given consent. The screen
+  // asks for it (SensitiveConsentGate); this is where it binds. Checked before
+  // the usage counter so a refused call does not use up the day's quota.
+  // Unlike the counter, a KV failure here refuses: no proof, no processing.
+  if (!(await hasSensitiveConsent(user.id))) {
+    return { ok: false, failure: { status: 403, error: 'sensitive consent required' } };
   }
 
   if (!(await withinDailyLimit(user.id, feature))) {

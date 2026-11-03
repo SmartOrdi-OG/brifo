@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { generateReplyLetter, ReplyError } from '../src/server/reply.js';
 import { checkEntitlement } from '../src/server/entitlement.js';
-import { ConfigError } from '../src/server/errors.js';
+import { ConfigError, describeError } from '../src/server/errors.js';
 
 interface VercelRequest extends IncomingMessage {
   body?: unknown;
@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     // No `detail` in the response: it echoed the upstream error message to
     // the caller, which is server internals leaking through a public route.
-    console.error('[api/reply] reply generation failed:', err);
+    console.error('[api/reply] reply generation failed:', describeError(err));
     res.status(500).json({ error: 'reply generation failed' });
   }
 }

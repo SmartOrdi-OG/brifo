@@ -37,3 +37,25 @@ export async function getUserFromRequest(req: RequestLike): Promise<AuthedUser |
     return null;
   }
 }
+
+/** True when the server can delete Supabase logins (account erasure). */
+export function canDeleteAuthUsers(): boolean {
+  return !!process.env.VITE_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+}
+
+/** Deletes the Supabase login itself (email, password hash, sessions, user
+ * metadata) through the Auth admin API. Needs SUPABASE_SERVICE_ROLE_KEY,
+ * which bypasses every RLS rule — server-only, never VITE_-prefixed, never
+ * logged. A 404 counts as done: a retry after a half-finished erasure must
+ * not fail on the part that already worked. */
+export async function deleteAuthUser(userId: string): Promise<void> {
+  const url = process.env.VITE_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set');
+
+  const res = await fetch(`${url}/auth/v1/admin/users/${encodeURIComponent(userId)}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${serviceKey}`, apikey: serviceKey },
+  });
+  if (!res.ok && res.status !== 404) throw new Error(`Supabase admin delete failed: ${res.status}`);
+}

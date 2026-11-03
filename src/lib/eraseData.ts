@@ -31,6 +31,7 @@ const LOCAL_KEYS = [
   'brifo_referral_code',
   'brifo_reminders_enabled',
   'brifo_reminders_notified',
+  'brifo_sensitive_consent',
   'brifo_theme',
 ];
 

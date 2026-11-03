@@ -29,6 +29,11 @@ const MAX_TRACKED = 300;
 
 /** How long a fault nobody has hit again stays in the list. */
 const RETENTION_DAYS = 30;
+/** The same 30 days as a KV expiry on every report, counted from when it was
+ * last seen. pruneIndex below only runs when a *new* fault arrives, so on a
+ * quiet month it never ran and reports outlived the 30 days the privacy
+ * policy promises; the TTL makes the promise hold on its own. */
+const RETENTION_SECONDS = RETENTION_DAYS * 24 * 60 * 60;
 
 /** Total reports accepted per day, across everyone. The report route takes no
  * token — a fault can happen before sign-in, or while sign-in is what is
@@ -46,7 +51,7 @@ export interface AppErrorReport {
   /** The in-app route, path only — the client strips the query string. */
   route?: string | null;
   lang?: string | null;
-  /** 'telegram' | 'twa' | 'browser' — which shell the app was running in. */
+  /** 'twa' | 'browser' — which shell the app was running in. */
   platform?: string | null;
   /** The build that produced it, so a fixed fault can be told from a live one. */
   appVersion?: string | null;
@@ -153,7 +158,7 @@ export async function recordAppError(report: AppErrorReport): Promise<RecordOutc
     // Read-modify-write, not atomic: two reports landing together can lose a
     // count. That is the right trade here — the number is for triage ("a lot"
     // versus "once"), and the alternative is a second key per fault.
-    await kvSet(errorKey(id), { ...existing, count: existing.count + 1, lastSeen: now });
+    await kvSet(errorKey(id), { ...existing, count: existing.count + 1, lastSeen: now }, RETENTION_SECONDS);
     return 'counted';
   }
 
@@ -174,7 +179,7 @@ export async function recordAppError(report: AppErrorReport): Promise<RecordOutc
     firstSeen: now,
     lastSeen: now,
   };
-  await kvSet(errorKey(id), entry);
+  await kvSet(errorKey(id), entry, RETENTION_SECONDS);
   await kvSadd(INDEX, id);
   return 'recorded';
 }
@@ -184,6 +189,8 @@ export async function recordAppError(report: AppErrorReport): Promise<RecordOutc
 export async function listAppErrors(): Promise<StoredAppError[]> {
   const ids = await kvSmembers(INDEX);
   const entries = await Promise.all(ids.map((id) => kvGet<StoredAppError>(errorKey(id))));
+  // Reports that expired in KV leave their id behind in the index.
+  await Promise.all(ids.filter((_, i) => entries[i] === null).map((id) => kvSrem(INDEX, id)));
   return entries
     .filter((e): e is StoredAppError => e !== null)
     .sort((a, b) => b.lastSeen.localeCompare(a.lastSeen));

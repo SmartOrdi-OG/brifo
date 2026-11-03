@@ -22,12 +22,13 @@ import { Admin } from './screens/Admin';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
 import { AuthGate } from './components/AuthGate';
 import { PremiumGate } from './components/PremiumGate';
+import { SensitiveConsentGate } from './components/SensitiveConsentGate';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
 import { useAuth } from './context/AuthContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
 import { usePushSync } from './lib/usePushSync';
-import { hasAcceptedPrivacyPolicy, syncConsentToServer } from './lib/consent';
+import { hasAcceptedPrivacyPolicy, syncConsentToServer, syncSensitiveConsentToServer } from './lib/consent';
 import { captureReferralCodeFromUrl } from './lib/referral';
 import { GATE_FREE_PATHS } from './lib/gateFreePaths';
 
@@ -53,7 +54,10 @@ function App() {
   usePushSync(remindables, lang);
 
   useEffect(() => {
-    if (session) syncConsentToServer();
+    if (session) {
+      syncConsentToServer();
+      syncSensitiveConsentToServer();
+    }
   }, [session]);
 
   // Mirror the chosen language onto the account so Supabase's email templates
@@ -103,7 +107,9 @@ function App() {
         path="/scan"
         element={
           <PremiumGate>
-            <Scan />
+            <SensitiveConsentGate>
+              <Scan />
+            </SensitiveConsentGate>
           </PremiumGate>
         }
       />
@@ -112,7 +118,9 @@ function App() {
         path="/reply"
         element={
           <PremiumGate>
-            <Reply />
+            <SensitiveConsentGate>
+              <Reply />
+            </SensitiveConsentGate>
           </PremiumGate>
         }
       />
