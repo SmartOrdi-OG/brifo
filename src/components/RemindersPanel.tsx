@@ -2,6 +2,7 @@ import { X, CalendarClock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { useBidiText } from '../lib/bidiText';
+import { isUpcoming, localDateKey } from '../lib/eventTime';
 import './RemindersPanel.css';
 
 interface RemindersPanelProps {
@@ -13,12 +14,16 @@ export function RemindersPanel({ onClose }: RemindersPanelProps) {
   const bidi = useBidiText();
   const { children, events } = useData();
 
-  const today = new Date().toISOString().slice(0, 10);
-  const horizon = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const now = new Date();
+  const today = localDateKey(now);
+  const horizon = localDateKey(new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000));
+  // isUpcoming, not `date >= today`: this panel answers "what is coming", and
+  // a date-only comparison kept an appointment on the list all day after it
+  // had already happened.
   const upcoming = events
-    .filter((e) => e.date >= today && e.date <= horizon)
+    .filter((e) => isUpcoming(e, now) && e.date <= horizon)
     .slice()
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''));
 
   function childFor(childId: string) {
     return children.find((c) => c.id === childId);
