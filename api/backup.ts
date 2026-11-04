@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { saveCloudBackup, loadCloudBackup } from '../src/server/backup.js';
-import { saveConsentRecord } from '../src/server/consent.js';
+import { saveConsentRecord, saveSensitiveConsent } from '../src/server/consent.js';
 import { getUserFromRequest } from '../src/server/auth.js';
 import { eraseAccountData } from '../src/server/eraseAccount.js';
 
@@ -71,7 +71,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (action === 'consent') {
-    const { version, acceptedAt } = (req.body ?? {}) as { version?: unknown; acceptedAt?: unknown };
+    const body = (req.body ?? {}) as { kind?: unknown; version?: unknown; acceptedAt?: unknown; granted?: unknown; decidedAt?: unknown };
+
+    /* Two different consents arrive here. The Art. 9 one (health data in
+     * letters) carries kind: 'sensitive', granted and decidedAt; the privacy
+     * policy carries acceptedAt and nothing else.
+     *
+     * This branch was missing. Every sensitive grant fell through to the
+     * policy branch below, which requires acceptedAt, so it was answered 400
+     * and saveSensitiveConsent — written, exported and never called — left no
+     * record at all. entitlement.ts refuses to analyse without that record,
+     * so scanning and reply-drafting were refused for every account,
+     * including paying ones, and the gate reported it as a connection
+     * problem. */
+    if (body.kind === 'sensitive') {
+      const { version, granted, decidedAt } = body;
+      if (
+        typeof version !== 'number' ||
+        typeof granted !== 'boolean' ||
+        typeof decidedAt !== 'string' ||
+        Number.isNaN(Date.parse(decidedAt))
+      ) {
+        res.status(400).json({ error: 'invalid sensitive consent record' });
+        return;
+      }
+      try {
+        await saveSensitiveConsent(user.id, {
+          email: user.email,
+          version,
+          granted,
+          decidedAt,
+          recordedAt: new Date().toISOString(),
+        });
+        res.status(200).json({ ok: true });
+      } catch (err) {
+        console.error('[api/backup:consent:sensitive] failed:', err);
+        res.status(500).json({ error: 'failed to save sensitive consent record' });
+      }
+      return;
+    }
+
+    const { version, acceptedAt } = body;
     if (typeof version !== 'number' || typeof acceptedAt !== 'string' || Number.isNaN(Date.parse(acceptedAt))) {
       res.status(400).json({ error: 'invalid consent record' });
       return;
