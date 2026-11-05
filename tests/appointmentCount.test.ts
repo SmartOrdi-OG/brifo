@@ -107,7 +107,7 @@ describe('the greeting that uses it', () => {
     for (const lang of LANGS) {
       expect(translations[lang].greeting_subtitle_clear.trim(), lang).not.toBe('');
     }
-    expect(translations.ar.greeting_subtitle_clear).toContain('هالأسبوع');
+    expect(translations.ar.greeting_subtitle_clear).toContain('هذا الأسبوع');
     expect(translations.en.greeting_subtitle_clear).toContain('this week');
     expect(translations.de.greeting_subtitle_clear).toContain('Diese Woche');
   });
