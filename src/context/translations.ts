@@ -30,7 +30,7 @@ type PluralForms = { other: string } & Partial<Record<Intl.LDMLPluralRule, strin
 
 const APPOINTMENT_COUNT: Record<Lang, PluralForms> = {
   ar: {
-    zero: 'ما في مواعيد',
+    zero: 'لا مواعيد',
     one: 'موعد واحد',
     two: 'موعدين',
     few: '{count} مواعيد',
