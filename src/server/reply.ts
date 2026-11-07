@@ -25,7 +25,10 @@ function getClient(): Anthropic {
  * Exported for that test only; an app language missing from here falls back to
  * Arabic silently, which is exactly the kind of thing nobody notices. */
 export const OUTPUT_LANGUAGE: Record<string, string> = {
-  ar: 'Arabic',
+  // Named precisely, to match api/analyze.ts: left as plain "Arabic" the
+  // model picks a register, and it drifted into dialect next to a Levantine
+  // details field.
+  ar: 'Modern Standard Arabic',
   de: 'German',
   tr: 'Turkish',
   fa: 'Persian (Farsi)',

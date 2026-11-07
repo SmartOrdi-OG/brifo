@@ -26,7 +26,12 @@ interface VercelResponse extends ServerResponse {
 // map and src/server/reply.ts's to the app's own list of languages; the export
 // is for that test.
 export const OUTPUT_LANGUAGE: Record<string, string> = {
-  ar: 'simple Levantine-influenced Modern Standard Arabic',
+  // Plain MSA, not the Levantine-flavoured MSA this asked for before. The
+  // dialect read as warm to a Syrian or Lebanese parent and as foreign to an
+  // Iraqi, Egyptian or Moroccan one — and this line governs every summary,
+  // action and deadline the app writes, so it was most of the Arabic anyone
+  // actually reads. Simple MSA is the register all of them share.
+  ar: 'simple, clear Modern Standard Arabic',
   de: 'simple, clear German',
   tr: 'simple, clear Turkish',
   fa: 'simple, clear Persian (Farsi)',
