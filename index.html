@@ -63,6 +63,10 @@
       }
     </script>
 
+    <!-- Favicons. Google shows a square raster favicon in search results and
+         prefers sizes in multiples of 48px, so the 192px PNG comes first; the
+         SVG is for browsers. /favicon.ico redirects to the same PNG (vercel.json). -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192-v3.png" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <!-- Versioned filename: iOS caches the home-screen icon per URL and holds
          onto a failed fetch, so a bad first install keeps showing the grey
