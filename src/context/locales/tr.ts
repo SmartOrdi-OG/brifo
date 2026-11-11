@@ -11,7 +11,7 @@ export const tr: TranslationTable = {
   greeting_title_named: "Merhaba, {name} ailesi",
   greeting_title_generic: 'Merhaba',
   greeting_subtitle_new: "Önce bir aile üyesi ekle, sonra ilk mektubu fotoğrafla.",
-  greeting_subtitle_clear: "Bu hafta randevu yok — her şey yolunda.",
+  greeting_subtitle_clear: "Bu hafta randevu yok.",
   greeting_subtitle_count: "Bu hafta {phrase} var.",
 
   scan_title: 'Herhangi bir mektubu fotoğrafla',

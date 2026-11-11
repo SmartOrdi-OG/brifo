@@ -11,7 +11,7 @@ export const de: TranslationTable = {
   greeting_title_named: "Hallo, Familie {name}",
   greeting_title_generic: 'Hallo',
   greeting_subtitle_new: "Füge zuerst ein Familienmitglied hinzu und fotografiere dann den ersten Brief.",
-  greeting_subtitle_clear: "Diese Woche keine Termine — alles im Griff.",
+  greeting_subtitle_clear: "Diese Woche keine Termine.",
   greeting_subtitle_count: "Du hast diese Woche {phrase}.",
 
   scan_title: 'Brief fotografieren',
