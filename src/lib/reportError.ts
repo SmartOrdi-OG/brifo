@@ -14,6 +14,7 @@
 
 import { isAndroidTwa } from './platform';
 import { isTelegramMiniApp } from './telegramWebApp';
+import { isWorthReporting } from './errorRelevance';
 
 const REPORT_URL = '/api/error-report';
 
@@ -94,6 +95,11 @@ export function reportAppError(error: unknown, context?: string): void {
   try {
     const { message, stack } = describe(error);
     const full = context ? `${context}: ${message}` : message;
+
+    // Someone else's script, or a browser declining the service worker. See
+    // errorRelevance.ts: the log is only useful while a real fault in it can
+    // still be found, and these two were burying everything else.
+    if (!isWorthReporting(full, stack)) return;
 
     const key = `${full}|${(stack ?? '').slice(0, 120)}`;
     if (seen.has(key) || sent >= MAX_PER_SESSION) return;
