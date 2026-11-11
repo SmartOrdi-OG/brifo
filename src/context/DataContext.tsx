@@ -236,32 +236,41 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       amount: p.amount,
       currency: p.currency || 'EUR',
       reason: p.reason,
-      dueDate: p.due_date,
+      // The model leaves this out for a bill with no stated deadline.
+      dueDate: typeof p.due_date === 'string' && p.due_date ? p.due_date : null,
       paid: false,
       letterId: letter.id,
       createdAt: now,
       updatedAt: now,
     }));
 
-    const deadlineEvents: CalendarEvent[] = analysis.deadlines.map((d) => ({
-      id: makeId(),
-      childId,
-      title: d.what,
-      date: d.date,
-      source: 'letter',
-      createdAt: now,
-      updatedAt: now,
-    }));
+    // A deadline with no date cannot become a calendar entry; dropping it is
+    // the only honest option, and keeping it crashes whichever screen sorts.
+    const deadlineEvents: CalendarEvent[] = analysis.deadlines
+      .filter((d) => typeof d.date === 'string' && d.date)
+      .map((d) => ({
+        id: makeId(),
+        childId,
+        title: d.what,
+        date: d.date,
+        source: 'letter' as const,
+        createdAt: now,
+        updatedAt: now,
+      }));
 
-    const paymentEvents: CalendarEvent[] = newPayments.map((p) => ({
-      id: makeId(),
-      childId,
-      title: p.reason,
-      date: p.dueDate,
-      source: 'payment',
-      createdAt: now,
-      updatedAt: now,
-    }));
+    // Only the payments that have a date: the rest still show as owed, they
+    // just have no day to sit on in the calendar.
+    const paymentEvents: CalendarEvent[] = newPayments
+      .filter((p): p is typeof p & { dueDate: string } => p.dueDate !== null)
+      .map((p) => ({
+        id: makeId(),
+        childId,
+        title: p.reason,
+        date: p.dueDate,
+        source: 'payment' as const,
+        createdAt: now,
+        updatedAt: now,
+      }));
 
     setState((prev) => ({
       ...prev,

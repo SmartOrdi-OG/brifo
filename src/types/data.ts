@@ -42,7 +42,14 @@ export interface Payment {
   amount: number;
   currency: string;
   reason: string;
-  dueDate: string;
+  /** YYYY-MM-DD, or null when the letter named an amount but no deadline.
+   *
+   * It used to be typed `string` and was not: the model fills this from the
+   * letter, and a bill that says "pay at the office" with no date gives it
+   * nothing to fill it with. The type said the value was always there, every
+   * reader called a string method on it, and one such payment crashed the
+   * home screen at every launch — permanently, since the data was saved. */
+  dueDate: string | null;
   paid: boolean;
   letterId?: string;
   createdAt: string;

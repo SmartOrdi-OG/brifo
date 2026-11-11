@@ -31,14 +31,24 @@ export function normalizeState(raw: Record<string, unknown>): RestorableState {
       type: c.type ?? 'child',
     })),
     letters: (raw.letters as StoredLetter[]) ?? [],
-    payments: ((raw.payments as (Omit<Payment, 'updatedAt'> & { updatedAt?: string })[]) ?? []).map((p) => ({
+    /* A date the model could not find arrives here as null or undefined, and
+     * every screen that reads one calls a string method on it. Settle both
+     * shapes into null once, on the way in, so a device already holding a
+     * broken record is healed by opening the app rather than by clearing it. */
+    payments: ((raw.payments as (Omit<Payment, 'updatedAt' | 'dueDate'> & { updatedAt?: string; dueDate?: unknown })[]) ?? []).map((p) => ({
       ...p,
+      dueDate: typeof p.dueDate === 'string' && p.dueDate ? p.dueDate : null,
       updatedAt: p.updatedAt ?? p.createdAt,
     })),
-    events: ((raw.events as (Omit<CalendarEvent, 'updatedAt'> & { updatedAt?: string })[]) ?? []).map((e) => ({
-      ...e,
-      updatedAt: e.updatedAt ?? e.createdAt,
-    })),
+    /* An event with no date is not a reminder, a calendar row or anything
+     * else the app can do with it — it is a crash waiting for whichever
+     * screen sorts first. Dropped rather than carried. */
+    events: ((raw.events as (Omit<CalendarEvent, 'updatedAt'> & { updatedAt?: string })[]) ?? [])
+      .filter((e) => typeof e.date === 'string' && e.date)
+      .map((e) => ({
+        ...e,
+        updatedAt: e.updatedAt ?? e.createdAt,
+      })),
     todos: ((raw.todos as (Omit<TodoItem, 'updatedAt'> & { updatedAt?: string })[]) ?? []).map((t) => ({
       ...t,
       updatedAt: t.updatedAt ?? t.createdAt,
