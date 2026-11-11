@@ -12,7 +12,7 @@
  * which someone checks tomorrow's appointment before going to bed.
  */
 import { describe, it, expect } from 'vitest';
-import { isUpcoming, localDateKey, localTimeKey } from '../src/lib/eventTime';
+import { endOfWeekKey, isUpcoming, localDateKey, localTimeKey } from '../src/lib/eventTime';
 
 /** A local wall-clock moment, whatever the test machine's timezone. */
 const at = (y: number, m: number, d: number, hh = 0, mm = 0) => new Date(y, m - 1, d, hh, mm);
@@ -79,5 +79,48 @@ describe('the day key follows the device, not UTC', () => {
     // lets every comparison in this file be a string comparison at all.
     expect(localDateKey(at(2026, 1, 5))).toBe('2026-01-05');
     expect(localTimeKey(at(2026, 1, 5, 9, 5))).toBe('09:05');
+  });
+});
+
+describe('"this week" ends on Sunday', () => {
+  /* Reported from the app: on Wednesday 11 November the home screen said
+   * "you have one appointment this week" about an appointment on the 18th.
+   * The window was `today + 7 days`, inclusive at both ends — eight days
+   * wide, sliding with the date, and never the week the user was in. */
+
+  it('ends on the Sunday of the current week, not seven days out', () => {
+    // Wed 11 Nov 2026 → Sun 15 Nov.
+    expect(endOfWeekKey(at(2026, 11, 11))).toBe('2026-11-15');
+  });
+
+  it('leaves next Wednesday out', () => {
+    const today = localDateKey(at(2026, 11, 11));
+    const weekEnd = endOfWeekKey(at(2026, 11, 11));
+    const nextWeek = '2026-11-18';
+    expect(nextWeek >= today && nextWeek <= weekEnd).toBe(false);
+  });
+
+  it('keeps an appointment later in the same week', () => {
+    const today = localDateKey(at(2026, 11, 11));
+    const weekEnd = endOfWeekKey(at(2026, 11, 11));
+    for (const date of ['2026-11-11', '2026-11-13', '2026-11-15']) {
+      expect(date >= today && date <= weekEnd, date).toBe(true);
+    }
+  });
+
+  it('treats Sunday as the last day of its own week, not the first of the next', () => {
+    // Weeks run Monday to Sunday here, as the calendar screen draws them.
+    // Read the other way, Sunday would get a whole extra week.
+    expect(endOfWeekKey(at(2026, 11, 15))).toBe('2026-11-15');
+  });
+
+  it('gives Monday the whole week', () => {
+    expect(endOfWeekKey(at(2026, 11, 16))).toBe('2026-11-22');
+  });
+
+  it('crosses a month end without leaving the month', () => {
+    // Sat 28 Nov 2026 → Sun 29 Nov; Mon 30 Nov → Sun 6 Dec.
+    expect(endOfWeekKey(at(2026, 11, 28))).toBe('2026-11-29');
+    expect(endOfWeekKey(at(2026, 11, 30))).toBe('2026-12-06');
   });
 });

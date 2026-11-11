@@ -34,6 +34,23 @@ export function localTimeKey(now: Date = new Date()): string {
   return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 }
 
+/** The last day of the week `now` falls in.
+ *
+ * Weeks run Monday to Sunday — how Austria counts them, and how the calendar
+ * screen already draws them.
+ *
+ * The home screen used to say "this week" about `today + 7 days`, which is
+ * neither: it is a rolling window, it is 8 days wide because both ends were
+ * inclusive, and on a Wednesday it called next Wednesday "this week". A
+ * parent reading "you have one appointment this week" went looking for one
+ * that was not there. */
+export function endOfWeekKey(now: Date = new Date()): string {
+  const daysToSunday = now.getDay() === 0 ? 0 : 7 - now.getDay();
+  const end = new Date(now);
+  end.setDate(end.getDate() + daysToSunday);
+  return localDateKey(end);
+}
+
 /** Is this event still ahead of `now`?
  *
  * A timed event stops being upcoming the minute its time passes — no grace
