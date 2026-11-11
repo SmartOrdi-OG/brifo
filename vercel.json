@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/favicon.ico", "destination": "/icons/icon-192-v3.png", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/api/push-public-key", "destination": "/api/push?action=public-key" },
     { "source": "/api/push-subscribe", "destination": "/api/push?action=subscribe" },
