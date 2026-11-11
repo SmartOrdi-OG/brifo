@@ -106,12 +106,16 @@ export function Result() {
               <div className="deadlines">
                 {result.payments.map((p, i) => (
                   <div className="dl soon" key={i}>
-                    <span className="when nums">{p.due_date}</span>
+                    {/* A letter often names a sum with no day to pay it by
+                        ("at the school office"). The amount is still worth
+                        showing; an empty date line and a button that would put
+                        nothing on a calendar are not. */}
+                    {p.due_date && <span className="when nums">{p.due_date}</span>}
                     <h4>{bidi(p.reason)}</h4>
                     <p className="nums">
                       {p.amount} {p.currency}
                     </p>
-                    <AddToCalendarButton title={p.reason} date={p.due_date} />
+                    {p.due_date && <AddToCalendarButton title={p.reason} date={p.due_date} />}
                   </div>
                 ))}
               </div>

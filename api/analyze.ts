@@ -7,6 +7,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { checkEntitlement } from '../src/server/entitlement.js';
 import { describeError } from '../src/server/errors.js';
+import { checkAnalysis } from '../src/server/analysisSchema.js';
 
 const MODEL = 'claude-opus-4-8';
 
@@ -147,22 +148,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    // Normalize against LetterAnalysis's shape (src/types/analysis.ts) so a
-    // field the model omits can't crash the frontend downstream (that's
-    // exactly what happened when this route's response was missing `payments`).
-    const sender = parsed.sender;
-    res.status(200).json({
-      summary: typeof parsed.summary === 'string' ? parsed.summary : '',
-      sender: typeof sender === 'string' && sender.trim() ? sender.trim() : null,
-      action_required: !!parsed.action_required,
-      actions: Array.isArray(parsed.actions) ? parsed.actions : [],
-      deadlines: Array.isArray(parsed.deadlines) ? parsed.deadlines : [],
-      needs_reply: !!parsed.needs_reply,
-      urgency: ['high', 'medium', 'low'].includes(String(parsed.urgency)) ? parsed.urgency : 'low',
-      detected_child_name: parsed.detected_child_name ?? null,
-      detected_child_class: parsed.detected_child_class ?? null,
-      payments: Array.isArray(parsed.payments) ? parsed.payments : [],
-    });
+    // Checked item by item, not just field by field. The version this
+    // replaced confirmed that payments and deadlines were arrays and never
+    // looked inside them, so a payment with no due_date reached the device,
+    // was saved there, and crashed the home screen at every launch from then
+    // on. See src/server/analysisSchema.ts.
+    res.status(200).json(checkAnalysis(parsed));
   } catch (err) {
     console.error('[api/analyze] request failed:', describeError(err));
     res.status(500).json({ error: 'analysis failed' });
