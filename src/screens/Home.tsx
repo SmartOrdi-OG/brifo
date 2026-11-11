@@ -10,6 +10,7 @@ import { appointmentCount } from '../context/translations';
 import { useData } from '../context/DataContext';
 import { useBidiText } from '../lib/bidiText';
 import { colorsForChildId, dotBackground } from '../lib/childColors';
+import { endOfWeekKey, localDateKey } from '../lib/eventTime';
 import './Home.css';
 
 export function Home() {
@@ -18,7 +19,7 @@ export function Home() {
   const bidi = useBidiText();
   const { children, letters, payments, events, eventsForChild, deleteLetter, deleteEvent } = useData();
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateKey();
   const monthPrefix = today.slice(0, 7);
 
   const monthlyTotal = payments
@@ -46,8 +47,12 @@ export function Home() {
   // had just opened the app and had nothing in it at all. The first sentence a
   // new user read was false. It now describes what is actually there, and on
   // an empty account says what to do first instead of inventing a week.
-  const weekAhead = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const eventsThisWeek = events.filter((e) => e.date >= today && e.date <= weekAhead).length;
+  // "This week" means the week we are in, ending on Sunday — not today plus
+  // seven days. That window was a day wider than a week (both ends inclusive)
+  // and slid with the date, so on a Wednesday it counted next Wednesday and
+  // the line promised an appointment that was still a week away.
+  const weekEnd = endOfWeekKey();
+  const eventsThisWeek = events.filter((e) => e.date >= today && e.date <= weekEnd).length;
   const subtitle =
     children.length === 0
       ? t('greeting_subtitle_new')
