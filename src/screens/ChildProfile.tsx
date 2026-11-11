@@ -42,7 +42,11 @@ export function ChildProfile() {
   }
 
   const letters = lettersForChild(id).slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  const payments = paymentsForChild(id).slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  // Undated payments sort last: there is no day to place them on, and they
+  // are not more urgent than the ones with a deadline.
+  const payments = paymentsForChild(id)
+    .slice()
+    .sort((a, b) => (a.dueDate ?? '\uffff').localeCompare(b.dueDate ?? '\uffff'));
   const unpaidPayments = payments.filter((p) => !p.paid);
   const paidPayments = payments.filter((p) => p.paid);
   const today = new Date().toISOString().slice(0, 10);
@@ -99,7 +103,8 @@ export function ChildProfile() {
                     <CheckCircle2 size={16} strokeWidth={2.5} /> {t('payment_mark_paid')}
                   </span>
                 </button>
-                <AddToCalendarButton title={p.reason} date={p.dueDate} compact />
+                {/* Nothing to add to a calendar without a date. */}
+                {p.dueDate && <AddToCalendarButton title={p.reason} date={p.dueDate} compact />}
               </div>
             </div>
           ))}

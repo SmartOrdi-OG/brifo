@@ -23,7 +23,9 @@ export function Home() {
   const monthPrefix = today.slice(0, 7);
 
   const monthlyTotal = payments
-    .filter((p) => !p.paid && p.dueDate.startsWith(monthPrefix))
+    // A payment with no stated deadline is owed, but not owed *this month*,
+    // so it stays out of the month's total rather than crashing it.
+    .filter((p) => !p.paid && p.dueDate?.startsWith(monthPrefix))
     .reduce((sum, p) => sum + p.amount, 0);
 
   const upcomingEvents = events
