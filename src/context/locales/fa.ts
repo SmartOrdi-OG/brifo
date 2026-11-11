@@ -11,7 +11,7 @@ export const fa: TranslationTable = {
   greeting_title_named: "سلام، خانواده {name}",
   greeting_title_generic: 'سلام',
   greeting_subtitle_new: "اول یک عضو خانواده اضافه کن، بعد اولین نامه را عکس بگیر.",
-  greeting_subtitle_clear: "این هفته قراری نداری — همه چیز مرتبه.",
+  greeting_subtitle_clear: "این هفته قراری نداری.",
   greeting_subtitle_count: "این هفته {phrase} داری.",
 
   scan_title: 'از هر نامه‌ای عکس بگیر',

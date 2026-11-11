@@ -10,7 +10,7 @@ export const ar = {
   greeting_title_named: 'أهلاً بأسرة {name}',
   greeting_title_generic: 'أهلاً',
   greeting_subtitle_new: 'ابدأ بإضافة أول فرد من العائلة، ثم صوّر أول رسالة.',
-  greeting_subtitle_clear: 'لا توجد مواعيد هذا الأسبوع — كل شيء تحت السيطرة.',
+  greeting_subtitle_clear: 'لا توجد مواعيد هذا الأسبوع.',
   greeting_subtitle_count: 'لديك {phrase} هذا الأسبوع.',
 
   scan_title: 'صوّر أي رسالة',

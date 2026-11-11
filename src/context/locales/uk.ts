@@ -11,7 +11,7 @@ export const uk: TranslationTable = {
   greeting_title_named: "Привіт, родино {name}",
   greeting_title_generic: 'Привіт',
   greeting_subtitle_new: "Почніть з додавання члена сім’ї, потім сфотографуйте перший лист.",
-  greeting_subtitle_clear: "Цього тижня зустрічей немає — усе під контролем.",
+  greeting_subtitle_clear: "Цього тижня зустрічей немає.",
   greeting_subtitle_count: "Цього тижня у вас {phrase}.",
 
   scan_title: 'Сфотографуйте будь-який лист',

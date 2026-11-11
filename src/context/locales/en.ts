@@ -11,7 +11,7 @@ export const en: TranslationTable = {
   greeting_title_named: "Hi, {name}'s family",
   greeting_title_generic: 'Hi there',
   greeting_subtitle_new: "Start by adding a family member, then photograph your first letter.",
-  greeting_subtitle_clear: "No appointments this week — nothing to catch up on.",
+  greeting_subtitle_clear: "No appointments this week.",
   greeting_subtitle_count: "You have {phrase} this week.",
 
   scan_title: 'Photograph any letter',
