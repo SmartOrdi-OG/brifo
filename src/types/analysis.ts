@@ -7,7 +7,10 @@ export interface LetterPayment {
   amount: number;
   currency: string;
   reason: string;
-  due_date: string;
+  /** Null when the letter names a sum but no day to pay it by, which is
+   * ordinary. It was typed `string` and was not one; see
+   * src/server/analysisSchema.ts for what the server now guarantees. */
+  due_date: string | null;
 }
 
 export interface LetterAnalysis {
