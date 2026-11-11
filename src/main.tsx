@@ -9,6 +9,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
 import { TelegramChrome } from './components/TelegramChrome'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { enableServiceWorkerAutoReload } from './lib/swAutoReload'
 import { installErrorReporting } from './lib/reportError'
 
@@ -20,20 +21,24 @@ enableServiceWorkerAutoReload()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        {/* Above the gates on purpose — see TelegramChrome's own note. */}
-        <TelegramChrome />
-        <LanguageProvider>
-          <AuthProvider>
-            <SubscriptionProvider>
-              <DataProvider>
-                <App />
-              </DataProvider>
-            </SubscriptionProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    {/* Outside every provider: a provider is as able to throw as a screen is,
+        and a boundary inside them could not catch that. */}
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ThemeProvider>
+          {/* Above the gates on purpose — see TelegramChrome's own note. */}
+          <TelegramChrome />
+          <LanguageProvider>
+            <AuthProvider>
+              <SubscriptionProvider>
+                <DataProvider>
+                  <App />
+                </DataProvider>
+              </SubscriptionProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </StrictMode>,
 )
