@@ -18,7 +18,50 @@
          fixed light bar there that ignores our dark-mode toggle at runtime. -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="description" content="Brifo — يساعد الأهل الناطقين بالعربي في النمسا على فهم رسائل المدرسة" />
+
+    <!-- Search and link previews. The app itself renders client-side, so these
+         tags (plus the JSON-LD and the <noscript> text below) are what search
+         engines and share previews see. Keep them in step with the Play listing. -->
+    <meta
+      name="description"
+      content="Brifo erklärt Briefe in deiner Sprache, erinnert an Fristen und Termine und hilft beim Antworten auf Deutsch. Understand letters, never miss a deadline."
+    />
+    <link rel="canonical" href="https://mybrifo.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Brifo" />
+    <meta property="og:url" content="https://mybrifo.com/" />
+    <meta property="og:title" content="Brifo – Briefe verstehen. Fristen nie verpassen." />
+    <meta
+      property="og:description"
+      content="Brifo erklärt Briefe in deiner Sprache, erinnert an Fristen und hilft beim Antworten auf Deutsch. Jetzt auf Google Play."
+    />
+    <meta property="og:image" content="https://mybrifo.com/icons/apple-touch-icon-v3.png" />
+    <meta property="og:locale" content="de_AT" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="ar_AR" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Brifo – Briefe verstehen. Fristen nie verpassen." />
+    <meta
+      name="twitter:description"
+      content="Understand letters in your language, never miss a deadline, reply in German."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Brifo",
+        "alternateName": "بريفو",
+        "url": "https://mybrifo.com/",
+        "operatingSystem": "Android, Web",
+        "applicationCategory": "ProductivityApplication",
+        "inLanguage": ["de", "en", "ar", "tr", "fa", "uk"],
+        "description": "Brifo erklärt Briefe in deiner Sprache, erinnert an Fristen und Termine und hilft beim Antworten auf Deutsch.",
+        "installUrl": "https://play.google.com/store/apps/details?id=com.mybrifo.twa",
+        "sameAs": ["https://play.google.com/store/apps/details?id=com.mybrifo.twa"],
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "publisher": { "@type": "Organization", "name": "SmartOrdi OG", "url": "https://smartordiog.eu/" }
+      }
+    </script>
 
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <!-- Versioned filename: iOS caches the home-screen icon per URL and holds
@@ -29,7 +72,7 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon-v3.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
-    <title>Brifo — بريفو</title>
+    <title>Brifo – Briefe verstehen. Fristen nie verpassen. | بريفو</title>
 
     <!-- Language and direction before the first paint. React sets these too
          (LanguageContext), but not until it has mounted — long enough for a
@@ -75,6 +118,19 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Shown only without JavaScript (and read by crawlers that skip it). -->
+    <noscript>
+      <h1>Brifo – Briefe verstehen. Fristen nie verpassen.</h1>
+      <p>
+        Brifo erklärt Briefe in deiner Sprache, erinnert an Fristen und Termine und hilft
+        dir, auf Deutsch zu antworten.
+      </p>
+      <p>Understand letters in your language, never miss a deadline, and reply in German.</p>
+      <p>
+        <a href="https://play.google.com/store/apps/details?id=com.mybrifo.twa">Brifo auf Google Play</a>
+        · Ein Produkt der <a href="https://smartordiog.eu/">SmartOrdi OG</a>, Linz.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
