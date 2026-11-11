@@ -8,6 +8,47 @@
  *
  * Reloading when control passes to a new worker closes that gap.
  */
+/** How many automatic reloads one browsing session may do, and over how long.
+ *
+ * The in-page `reloading` flag only survives until the reload it triggers, so
+ * on its own it guards nothing: every fresh page attaches a fresh listener
+ * with the flag back at false. If a worker keeps handing over — several
+ * deploys landing in a row, an install that never settles, storage that will
+ * not persist what the page just wrote — the page reloads, reloads again, and
+ * the user watches a white screen flash with no way to stop it. Nothing the
+ * user can reach from there helps, because nothing stays on screen long
+ * enough to touch.
+ *
+ * Three is more than any real update needs and few enough to be over in a
+ * second or two. Past that the page simply stays on the version it has, which
+ * is old but usable; the next real navigation picks the new one up. */
+const MAX_RELOADS = 3;
+const WINDOW_MS = 60_000;
+const RELOAD_LOG_KEY = 'brifo_sw_reloads';
+
+/** Exported under this name for tests/whiteScreen.test.tsx only: the guard is
+ * the whole point of this file and is worth pinning, but nothing else should
+ * call it. */
+export const __mayReloadAgainForTests = (): boolean => mayReloadAgain();
+
+function mayReloadAgain(): boolean {
+  try {
+    const now = Date.now();
+    const raw = sessionStorage.getItem(RELOAD_LOG_KEY);
+    const recent = (JSON.parse(raw ?? '[]') as number[]).filter((at) => now - at < WINDOW_MS);
+    if (recent.length >= MAX_RELOADS) {
+      console.warn('[sw] stopped auto-reloading: the worker kept handing over');
+      return false;
+    }
+    sessionStorage.setItem(RELOAD_LOG_KEY, JSON.stringify([...recent, now]));
+    return true;
+  } catch {
+    // No sessionStorage (private mode, storage disabled) means no way to
+    // count, and an uncounted reload is the loop this guard exists for.
+    return false;
+  }
+}
+
 export function enableServiceWorkerAutoReload(): void {
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return;
 
@@ -21,6 +62,7 @@ export function enableServiceWorkerAutoReload(): void {
   let reloading = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (reloading) return;
+    if (!mayReloadAgain()) return;
     reloading = true;
     window.location.reload();
   });
