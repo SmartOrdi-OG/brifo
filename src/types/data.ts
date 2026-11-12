@@ -14,6 +14,15 @@ export interface Child {
   consentGiven: boolean;
   consentDate: string;
   createdAt: string;
+  /** Bumped on every edit (see DataContext's updateChild).
+   *
+   * Not decoration: lib/mergeState picks the winner between this device and
+   * the cloud copy by `updatedAt ?? createdAt`. Without it a rename on one
+   * phone ties with the stale record on the other — both sides keep their own
+   * version and push it back up, so the two parents' phones disagree about
+   * the child's name forever. Optional only because records written before
+   * this field existed don't carry one; lib/backup fills it in on the way in. */
+  updatedAt?: string;
 }
 
 /** Special pseudo-id for letters/events that apply to the whole family rather than one child. */

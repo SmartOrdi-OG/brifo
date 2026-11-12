@@ -73,6 +73,15 @@ interface NewChildInput {
   consentGiven: boolean;
 }
 
+/** What an edit may change. Pointedly not consentGiven/consentDate: those
+ * record a decision the user made at a moment in time, not a detail. */
+export interface EditableChildFields {
+  name: string;
+  type: FamilyMemberType;
+  schoolClass: string;
+  school?: string;
+}
+
 interface ManualEventDetails {
   time?: string;
   provider?: string;
@@ -89,6 +98,7 @@ interface DataContextValue {
   rating: AppRating | null;
   tombstones: Tombstone[];
   addChild: (input: NewChildInput) => Child;
+  updateChild: (childId: string, updates: EditableChildFields) => void;
   deleteChild: (childId: string) => void;
   addLetter: (childId: string, analysis: LetterAnalysis, photo?: LetterPhoto) => StoredLetter;
   deleteLetter: (letterId: string) => void;
@@ -175,9 +185,36 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       consentGiven: input.consentGiven,
       consentDate: new Date().toISOString(),
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     setState((prev) => ({ ...prev, children: [...prev.children, child] }));
     return child;
+  }
+
+  /** Corrects a member's details after the fact.
+   *
+   * The name is the one field the app can get wrong on its own: it is read
+   * off a German letter, and a name that arrives transliterated can be the
+   * wrong name outright. Consent is deliberately not re-asked — it was given
+   * when the profile was created, and fixing a spelling does not withdraw it. */
+  function updateChild(childId: string, updates: EditableChildFields) {
+    setState((prev) => ({
+      ...prev,
+      children: prev.children.map((c) =>
+        c.id === childId
+          ? {
+              ...c,
+              ...updates,
+              // Only a child has a class or a school. Switching a profile to
+              // "adult" without clearing them leaves a 3B hanging off a
+              // grown-up, invisible in the form that is meant to edit it.
+              schoolClass: updates.type === 'child' ? updates.schoolClass : '',
+              school: updates.type === 'child' ? updates.school : undefined,
+              updatedAt: new Date().toISOString(),
+            }
+          : c,
+      ),
+    }));
   }
 
   function tombstone(id: string): Tombstone {
@@ -387,6 +424,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         rating: state.rating,
         tombstones: state.tombstones,
         addChild,
+        updateChild,
         deleteChild,
         addLetter,
         deleteLetter,

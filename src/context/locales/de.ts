@@ -170,6 +170,8 @@ export const de: TranslationTable = {
   member_type_label: 'Typ',
   member_type_child: 'Kind',
   member_type_adult: 'Erwachsene(r)',
+  child_edit: 'Angaben bearbeiten',
+  child_actions: 'Profiloptionen',
   child_delete: 'Profil und alle Daten löschen',
   child_delete_confirm: 'Profil und alle Daten wurden gelöscht',
   child_profile_letters: 'Briefe',

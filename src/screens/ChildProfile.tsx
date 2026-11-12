@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail, Trash2 } from 'lucide-react';
+import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail, Trash2, Pencil } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
+import { ChildForm } from '../components/ChildForm';
 import { RowMenu } from '../components/RowMenu';
 import { prefillFromLetter } from '../lib/replyPrefill';
 import { useLanguage } from '../context/LanguageContext';
@@ -15,8 +16,10 @@ export function ChildProfile() {
   const { t } = useLanguage();
   const bidi = useBidiText();
   const navigate = useNavigate();
-  const { children, lettersForChild, paymentsForChild, eventsForChild, deleteChild, deleteLetter, markPaymentPaid } = useData();
+  const { children, lettersForChild, paymentsForChild, eventsForChild, deleteChild, updateChild, deleteLetter, markPaymentPaid } =
+    useData();
   const [deleted, setDeleted] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const child = children.find((c) => c.id === id);
 
@@ -64,15 +67,48 @@ export function ChildProfile() {
 
   return (
     <FlowLayout title={child.name}>
-      <div className="child-header card">
-        <div className="child-avatar" style={{ background: child.color }}>
-          {child.name.slice(0, 1)}
+      {/* The name is the one field the app fills in by itself, off a German
+          letter, so it is the one it can get outright wrong — a transliterated
+          "Alaa" came back as the male "علاء". Editing lives behind the same ⋮
+          as every other row action rather than as a visible button: correcting
+          a name is rare, and the header is not a control. */}
+      {editing ? (
+        <div className="card" style={{ padding: 16 }}>
+          <ChildForm
+            mode="edit"
+            initialName={child.name}
+            initialClass={child.schoolClass}
+            initialSchool={child.school ?? ''}
+            initialType={child.type}
+            onSave={(values) => {
+              updateChild(id, values);
+              setEditing(false);
+            }}
+            onCancel={() => setEditing(false)}
+          />
         </div>
-        <div>
-          <h2>{bidi(child.name)}</h2>
-          <p>{bidi([child.schoolClass, child.school].filter(Boolean).join(' · '))}</p>
+      ) : (
+        <div className="child-header card">
+          <div className="child-avatar" style={{ background: child.color }}>
+            {child.name.slice(0, 1)}
+          </div>
+          <div className="child-header-text">
+            <h2>{bidi(child.name)}</h2>
+            <p>{bidi([child.schoolClass, child.school].filter(Boolean).join(' · '))}</p>
+          </div>
+          <RowMenu
+            items={[
+              {
+                key: 'edit',
+                label: t('child_edit'),
+                icon: <Pencil size={16} strokeWidth={2} />,
+                onSelect: () => setEditing(true),
+              },
+            ]}
+            label={t('child_actions')}
+          />
         </div>
-      </div>
+      )}
 
       <div className="sec">
         <h3>{t('child_profile_payments')}</h3>

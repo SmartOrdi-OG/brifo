@@ -14,22 +14,42 @@ export interface ChildFormValues {
 interface ChildFormProps {
   initialName?: string;
   initialClass?: string;
+  initialSchool?: string;
   initialType?: FamilyMemberType;
   onSave: (values: ChildFormValues) => void;
+  /** Shown as a second button only when given — creating has nothing to go back to. */
+  onCancel?: () => void;
   saveLabel?: string;
+  /** 'edit' drops the consent checkbox.
+   *
+   * Consent was given when the profile was created and is stored on the
+   * record; asking for it again to correct a spelling would imply it had
+   * lapsed, and an unticked box would block the user from fixing their own
+   * child's name — which is the whole point of the edit. */
+  mode?: 'create' | 'edit';
 }
 
-export function ChildForm({ initialName = '', initialClass = '', initialType = 'child', onSave, saveLabel }: ChildFormProps) {
+export function ChildForm({
+  initialName = '',
+  initialClass = '',
+  initialSchool = '',
+  initialType = 'child',
+  onSave,
+  onCancel,
+  saveLabel,
+  mode = 'create',
+}: ChildFormProps) {
   const { t } = useLanguage();
   const [type, setType] = useState<FamilyMemberType>(initialType);
   const [name, setName] = useState(initialName);
   const [schoolClass, setSchoolClass] = useState(initialClass);
-  const [school, setSchool] = useState('');
+  const [school, setSchool] = useState(initialSchool);
   const [consent, setConsent] = useState(false);
   const [touched, setTouched] = useState(false);
 
+  const editing = mode === 'edit';
   const nameValid = name.trim().length > 0;
-  const canSave = nameValid && consent;
+  const canSave = nameValid && (editing || consent);
 
   function submit() {
     setTouched(true);
@@ -76,15 +96,24 @@ export function ChildForm({ initialName = '', initialClass = '', initialType = '
         </>
       )}
 
-      <label className="consent-row">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-        <span>{t('child_consent_label')}</span>
-      </label>
-      {touched && !consent && <p className="field-error">{t('child_consent_required')}</p>}
+      {!editing && (
+        <>
+          <label className="consent-row">
+            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+            <span>{t('child_consent_label')}</span>
+          </label>
+          {touched && !consent && <p className="field-error">{t('child_consent_required')}</p>}
+        </>
+      )}
 
       <button className="scan-btn primary child-save-btn" onClick={submit}>
         {saveLabel ?? t('save')}
       </button>
+      {onCancel && (
+        <button className="scan-btn child-cancel-btn" onClick={onCancel}>
+          {t('cancel')}
+        </button>
+      )}
     </div>
   );
 }

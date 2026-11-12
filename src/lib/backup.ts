@@ -26,9 +26,10 @@ interface BackupPayload extends RestorableState {
  * `type ?? 'child'` for children, generalized to every field added since. */
 export function normalizeState(raw: Record<string, unknown>): RestorableState {
   return {
-    children: ((raw.children as (Omit<Child, 'type'> & { type?: Child['type'] })[]) ?? []).map((c) => ({
+    children: ((raw.children as (Omit<Child, 'type'> & { type?: Child['type']; updatedAt?: string })[]) ?? []).map((c) => ({
       ...c,
       type: c.type ?? 'child',
+      updatedAt: c.updatedAt ?? c.createdAt,
     })),
     letters: (raw.letters as StoredLetter[]) ?? [],
     /* A date the model could not find arrives here as null or undefined, and
