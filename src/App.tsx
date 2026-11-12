@@ -21,6 +21,7 @@ import { AccountDeletion } from './screens/AccountDeletion';
 import { Admin } from './screens/Admin';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
 import { AuthGate } from './components/AuthGate';
+import { SplashScreen } from './components/SplashScreen';
 import { PremiumGate } from './components/PremiumGate';
 import { SensitiveConsentGate } from './components/SensitiveConsentGate';
 import { useLanguage } from './context/LanguageContext';
@@ -91,7 +92,11 @@ function App() {
   // was adding no protection here, only a dependency on the thing under test.
   const bypassesGate = GATE_FREE_PATHS.includes(location.pathname);
 
-  if (authLoading) return null;
+  // Not `null`. Working out whether there is a session means a round trip to
+  // Supabase, and rendering nothing until it answers leaves the screen blank
+  // for exactly as long as the connection is slow — which reads as a broken
+  // app, not a loading one.
+  if (authLoading) return <SplashScreen />;
   if (!consented && !bypassesGate) {
     return <PrivacyConsentGate onAccept={() => setConsented(true)} />;
   }
