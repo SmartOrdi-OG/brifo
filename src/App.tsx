@@ -32,6 +32,7 @@ import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy, syncConsentToServer, syncSensitiveConsentToServer } from './lib/consent';
 import { captureReferralCodeFromUrl } from './lib/referral';
 import { GATE_FREE_PATHS } from './lib/gateFreePaths';
+import { splashRemainingMs } from './lib/splashTiming';
 
 function App() {
   const { t, lang } = useLanguage();
@@ -39,6 +40,15 @@ function App() {
   const { session, loading: authLoading, passwordPromptPending, syncUserLanguage } = useAuth();
   const location = useLocation();
   const [consented, setConsented] = useState(hasAcceptedPrivacyPolicy());
+  // On a phone that already has the bundle cached there is nothing to wait
+  // for, and the splash would flash for a single frame — which reads as a
+  // glitch, not as the app opening. See lib/splashTiming.
+  const [splashFloorMet, setSplashFloorMet] = useState(() => splashRemainingMs(Date.now()) === 0);
+  useEffect(() => {
+    if (splashFloorMet) return;
+    const id = setTimeout(() => setSplashFloorMet(true), splashRemainingMs(Date.now()));
+    return () => clearTimeout(id);
+  }, [splashFloorMet]);
   const remindables = [
     ...events,
     ...todos
@@ -92,11 +102,16 @@ function App() {
   // was adding no protection here, only a dependency on the thing under test.
   const bypassesGate = GATE_FREE_PATHS.includes(location.pathname);
 
-  // Not `null`. Working out whether there is a session means a round trip to
-  // Supabase, and rendering nothing until it answers leaves the screen blank
-  // for exactly as long as the connection is slow — which reads as a broken
-  // app, not a loading one.
-  if (authLoading) return <SplashScreen />;
+  // Not `null`. Working out whether there is a session can mean a round trip
+  // to Supabase, and rendering nothing until it answers leaves the screen
+  // blank for exactly as long as the connection is slow — which reads as a
+  // broken app, not a loading one.
+  //
+  // The floor is skipped on the gate-free paths: the privacy policy, the
+  // Impressum and the AGB are public pages that search engines crawl daily,
+  // and holding their content back for the sake of a brand moment serves
+  // nobody who asked for them.
+  if (authLoading || (!splashFloorMet && !bypassesGate)) return <SplashScreen />;
   if (!consented && !bypassesGate) {
     return <PrivacyConsentGate onAccept={() => setConsented(true)} />;
   }
