@@ -5,6 +5,8 @@ import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { RatingStars } from '../components/RatingStars';
 import { LanguagePicker } from '../components/LanguagePicker';
+import { AddToHomeScreenHint } from '../components/AddToHomeScreenHint';
+import { currentNotificationBlock } from '../lib/notificationBlock';
 import { eraseEverything, type EraseOutcome } from '../lib/eraseData';
 import { hasSensitiveConsent, withdrawSensitiveConsent } from '../lib/consent';
 import { useLanguage } from '../context/LanguageContext';
@@ -304,6 +306,12 @@ export function Settings() {
               </p>
             )}
           </>
+        ) : /* An iPhone in a Safari tab is not an unsupported device — Apple
+               allows web notifications only from the Home Screen, so there is
+               something to do rather than nothing to say. See
+               lib/notificationBlock. */
+        currentNotificationBlock() === 'add-to-home-screen' ? (
+          <AddToHomeScreenHint />
         ) : (
           <p style={{ fontSize: 13, color: 'var(--muted)' }}>{t('reminders_unsupported')}</p>
         )}
