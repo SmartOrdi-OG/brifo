@@ -59,7 +59,20 @@ function buildSystemPrompt(lang: unknown): string {
     'detected_child_name/detected_child_class, otherwise use null. ' +
     'Put the name of the organisation that sent the letter in "sender" exactly as printed ' +
     '(the school, clinic, office or company), or null if it is not stated. ' +
-    `Write the summary and all text fields in ${target}.`
+    // A name is identity, and transliterating one is not translating it: the
+    // German "Alaa" came back as "علاء", which is a different, male name than
+    // the girl it belonged to. It also quietly breaks the app — the parent
+    // types the name in Latin letters when creating the profile, and
+    // findMatchingChild compares the two as strings, so an Arabic-script name
+    // from the letter matches nothing and every letter looks like a new child.
+    // And a street or a doctor rendered in another alphabet cannot be typed
+    // into a map or read back over the phone, which is what the parent
+    // actually has to do with it.
+    'Leave every proper noun exactly as printed in the letter, in its original spelling and alphabet: ' +
+    "people's names (the child's included), street addresses, place names, institutions and companies. " +
+    'Never translate or transliterate them into another alphabet. This applies inside the summary, the ' +
+    'actions and the deadlines as well as in the dedicated fields. ' +
+    `Write the summary and all other text in ${target}.`
   );
 }
 

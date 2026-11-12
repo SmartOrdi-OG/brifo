@@ -170,6 +170,8 @@ export const uk: TranslationTable = {
   member_type_label: 'Тип',
   member_type_child: 'Дитина',
   member_type_adult: 'Дорослий',
+  child_edit: 'Редагувати дані',
+  child_actions: 'Опції профілю',
   child_delete: 'Видалити профіль і всі його дані',
   child_delete_confirm: 'Профіль і всі його дані видалено',
   child_profile_letters: 'Листи',

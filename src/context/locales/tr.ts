@@ -170,6 +170,8 @@ export const tr: TranslationTable = {
   member_type_label: 'Tür',
   member_type_child: 'Çocuk',
   member_type_adult: 'Yetişkin',
+  child_edit: 'Bilgileri düzenle',
+  child_actions: 'Profil seçenekleri',
   child_delete: 'Profili ve tüm verilerini sil',
   child_delete_confirm: 'Profil ve tüm verileri silindi',
   child_profile_letters: 'Mektuplar',

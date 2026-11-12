@@ -169,6 +169,8 @@ export const ar = {
   member_type_label: 'النوع',
   member_type_child: 'طفل',
   member_type_adult: 'بالغ',
+  child_edit: 'تعديل البيانات',
+  child_actions: 'خيارات الملف',
   child_delete: 'حذف الملف وكل بياناته',
   child_delete_confirm: 'تم حذف الملف وكل بياناته',
   child_profile_letters: 'الرسائل',

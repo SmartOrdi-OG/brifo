@@ -18,9 +18,18 @@
   flex-shrink: 0;
 }
 
+/* Takes the slack so the ⋮ sits at the far end of the card. min-width: 0
+   because a flex item defaults to its content's width — without it a long
+   name refuses to wrap and pushes the menu off the edge instead. */
+.child-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .child-header h2 {
   font-size: 18px;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .child-header p {

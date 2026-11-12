@@ -170,6 +170,8 @@ export const fa: TranslationTable = {
   member_type_label: 'نوع',
   member_type_child: 'فرزند',
   member_type_adult: 'بزرگسال',
+  child_edit: 'ویرایش اطلاعات',
+  child_actions: 'گزینه‌های پروفایل',
   child_delete: 'حذف پروفایل و همه اطلاعاتش',
   child_delete_confirm: 'پروفایل و همه اطلاعاتش حذف شد',
   child_profile_letters: 'نامه‌ها',

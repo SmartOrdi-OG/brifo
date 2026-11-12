@@ -90,6 +90,28 @@ describe('POST /api/analyze', () => {
     expect(body.deadlines).toEqual([{ date: '2026-11-18', what: 'لقاء الأهل' }]);
   });
 
+  it('tells the model to leave names in the alphabet they were printed in', async () => {
+    // A customer's name, Alaa, came back as "علاء" — a different, male name.
+    // The prompt had asked for "all text fields" in the reader's language and
+    // said nothing about proper nouns, so transliterating one was the
+    // instruction working as written. It also breaks findMatchingChild, which
+    // compares the detected name against the one the parent typed in Latin
+    // letters, so every letter looked like it belonged to a new child.
+    const fetchMock = respondWith(modelOutput);
+    vi.stubGlobal('fetch', fetchMock);
+    const { res } = fakeRes();
+
+    await handler(
+      { method: 'POST', body: { image: 'aGk=', mediaType: 'image/jpeg', lang: 'ar' } } as never,
+      res as never,
+    );
+
+    const [, init] = fetchMock.mock.calls[0] as unknown as [string, { body: string }];
+    const body = JSON.parse(init.body) as { system: string };
+    expect(body.system).toMatch(/never translate or transliterate/i);
+    expect(body.system).toMatch(/proper noun/i);
+  });
+
   it('answers 200 with an empty analysis rather than letting junk through', async () => {
     // The model is not deterministic; one bad run must not reach the device.
     vi.stubGlobal('fetch', respondWith({ summary: 7, payments: 'none', deadlines: [{}] }));
