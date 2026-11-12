@@ -1,0 +1,40 @@
+.splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: var(--bg);
+  color: var(--text);
+  /* Above everything, including the bottom nav, while it is up. */
+  z-index: 100;
+}
+
+.splash-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  /* The track is the brand blue at low opacity rather than a grey, so the
+     ring reads as one colour turning, not two colours competing. */
+  border: 3px solid color-mix(in srgb, var(--blue) 22%, transparent);
+  border-top-color: var(--blue);
+  animation: splash-spin 0.7s linear infinite;
+}
+
+/* A spinner is motion for its own sake, and for a reader who finds movement
+   painful it is the worst kind: centred and unavoidable. Honour the system
+   setting by holding the ring still — it still reads as a progress indicator,
+   it simply does not turn. */
+@media (prefers-reduced-motion: reduce) {
+  .splash-spinner {
+    animation: none;
+  }
+}
+
+@keyframes splash-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
