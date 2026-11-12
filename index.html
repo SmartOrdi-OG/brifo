@@ -86,6 +86,11 @@
          step. -->
     <script>
       (function () {
+        // Outside the try: this is stamped before the bundle is even
+        // requested, so the splash's minimum visible time
+        // (src/lib/splashTiming.ts) is measured from what the user actually
+        // saw. It must still be stamped when storage below throws.
+        window.__splashStart = Date.now();
         try {
           var stored = localStorage.getItem('brifo_lang');
           var lang = ['ar', 'de', 'tr', 'fa', 'en', 'uk'].indexOf(stored) >= 0 ? stored : 'en';
