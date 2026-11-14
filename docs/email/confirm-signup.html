@@ -1,46 +1,4 @@
-<!-- The sign-in code email, as pasted into the Body of Supabase →
-     Authentication → Emails → "Magic link or OTP". The Subject field is a
-     separate box there and is not part of this file.
-
-     Kept here because it is part of the product even though it is configured
-     in a dashboard: a template that lives only in a web form has no history,
-     no review and no copy if the form is ever cleared.
-
-     ── Why it branches ──────────────────────────────────────────────────────
-     AuthContext sends the reader's language with the sign-in request
-     (`data: { language: lang }`), which arrives here as .Data.language, one
-     of ar/de/tr/fa/en/uk. Accounts created before that was sent have no value
-     and fall through to the English default branch.
-
-     Note for anyone editing this: Go parses template tags inside HTML
-     comments too, so a comment that quotes one is not a comment — it is an
-     action, and a stray else or end here fails the whole template. Describe
-     them in words.
-
-     Only the sentences branch, not the layout. Six whole copies of the markup
-     would mean six places to fix every time anything moves, and five of them
-     would be forgotten.
-
-     ── Why it looks like a company ──────────────────────────────────────────
-     Yahoo filed a customer's code as spam. Authentication was not the problem
-     — SPF, DKIM and DMARC all pass — and the message was accepted; Yahoo then
-     had to decide where to put it, and the old template gave it nothing to
-     decide with: five bare tags, no <html>, no logo, no sender name, no
-     company, no address. "Here is your code, ignore this if it wasn't you" is
-     also the exact shape of a phishing mail, so a filter that cannot separate
-     the two by content falls back on asking who sent it.
-
-     The footer is therefore both the evidence a filter looks for and what
-     § 5 ECG asks of commercial mail in Austria. It stays in German in every
-     language: a Firmenbuch entry is a legal identifier, not a phrase.
-
-     Written the way email has to be written rather than the way the app is:
-     tables instead of flexbox, inline styles instead of a stylesheet, and an
-     absolute URL for the logo, because a mail client has no CSS file and no
-     idea what site this came from.
-
-     The Token placeholder below is where Supabase substitutes the code.
-     Removing it sends an empty email. -->
+<!-- Brifo sign-in code email. Notes and how to check a change: docs/email/README.md -->
 <!doctype html>
 <html lang="{{if eq .Data.language "ar"}}ar{{else if eq .Data.language "de"}}de{{else if eq .Data.language "tr"}}tr{{else if eq .Data.language "fa"}}fa{{else if eq .Data.language "uk"}}uk{{else}}en{{end}}"
       dir="{{if or (eq .Data.language "ar") (eq .Data.language "fa")}}rtl{{else}}ltr{{end}}">
