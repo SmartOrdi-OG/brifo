@@ -1,0 +1,81 @@
+<!-- The sign-in code email, as pasted into Supabase → Authentication →
+     Email Templates. Kept here because it is part of the product even though
+     it is configured in a dashboard: a template that lives only in a web form
+     has no history, no review and no copy if the form is ever cleared.
+
+     Written the way email has to be written rather than the way the app is:
+     tables instead of flexbox, inline styles instead of a stylesheet, and an
+     absolute URL for the logo, because a mail client has no CSS file and no
+     idea what site this came from.
+
+     Why it looks like this at all: the previous template was five bare tags
+     with no branding, no sender identity and no footer. "Here is your code,
+     ignore this if it wasn't you" is also the exact shape of a phishing mail,
+     so a filter that cannot tell them apart by content falls back on asking
+     who sent it — and a three-week-old domain with nothing in the message to
+     show a real company behind it is the easy call to make. Yahoo made it.
+
+     {{ .Token }} is Supabase's placeholder for the code. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Brifo code</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f5f6fb;">
+    <!-- Repeated on the table because several clients drop a <body> style. -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f6fb;padding:28px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background:#ffffff;border-radius:16px;padding:32px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+            <!-- Sender identity, before anything else is read. -->
+            <tr>
+              <td align="center" style="padding-bottom:24px;">
+                <img src="https://mybrifo.com/icons/icon-192-v3.png" width="52" height="52" alt="Brifo"
+                     style="display:block;border:0;border-radius:14px;" />
+                <div style="font-size:21px;font-weight:800;color:#1c1d3a;padding-top:10px;letter-spacing:-0.3px;">Brifo</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="font-size:17px;font-weight:700;color:#1c1d3a;padding-bottom:6px;">Welcome to Brifo</td>
+            </tr>
+            <tr>
+              <td style="font-size:15px;line-height:1.55;color:#4a4b6a;padding-bottom:20px;">
+                Here is your confirmation code. Enter it on the Brifo screen you already have open — you do not need to click anything in this email.
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" style="padding-bottom:22px;">
+                <div style="display:inline-block;background:#f5f6fb;border:1px solid #e3e5f2;border-radius:12px;padding:16px 26px;font-size:30px;font-weight:800;letter-spacing:7px;color:#1c1d3a;">{{ .Token }}</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="font-size:13.5px;line-height:1.55;color:#6b6c87;padding-bottom:22px;">
+                The code is valid for a short time. If you did not try to sign in to Brifo, you can ignore this email — nobody can use the code without it.
+              </td>
+            </tr>
+
+            <!-- The part that was missing, and the part a filter looks for:
+                 evidence that a real, identifiable company sent this. It is
+                 also what § 5 ECG requires of commercial mail in Austria. -->
+            <tr>
+              <td style="border-top:1px solid #e3e5f2;padding-top:18px;font-size:12px;line-height:1.6;color:#8a8ba6;">
+                Brifo — understand German letters in your own language.<br />
+                <a href="https://mybrifo.com" style="color:#3b82f6;text-decoration:none;">mybrifo.com</a><br /><br />
+                Smartordi OG · Steingasse 6A, Linz, Österreich<br />
+                Firmenbuchnummer FN 675586 i · Landesgericht Linz<br />
+                <a href="mailto:team@smartordi.eu" style="color:#8a8ba6;text-decoration:underline;">team@smartordi.eu</a>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
