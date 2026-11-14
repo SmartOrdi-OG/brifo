@@ -49,6 +49,7 @@ export const en: TranslationTable = {
   auth_check_email: 'We sent a link to your email — open it and tap the link to sign in.',
   auth_enter_code: 'We sent a 6-digit code to {email} — enter it here (not from the email) to sign in.',
   auth_code_placeholder: '000000',
+  auth_code_spam_hint: 'Code not arrived? Please also check your spam folder.',
   auth_verify_code: 'Verify code',
   auth_use_different_email: 'Use a different email',
   auth_code_required: 'Enter the code sent to your email',

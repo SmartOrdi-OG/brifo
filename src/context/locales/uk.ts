@@ -49,6 +49,7 @@ export const uk: TranslationTable = {
   auth_check_email: 'Ми надіслали посилання на вашу пошту — відкрийте його та натисніть на посилання, щоб увійти.',
   auth_enter_code: 'Ми надіслали 6-значний код на {email} — введіть його тут (не з листа), щоб увійти.',
   auth_code_placeholder: '000000',
+  auth_code_spam_hint: 'Код не надійшов? Перевірте, будь ласка, і теку «Спам».',
   auth_verify_code: 'Підтвердити код',
   auth_use_different_email: 'Використати іншу пошту',
   auth_code_required: 'Введіть код, надісланий на вашу пошту',

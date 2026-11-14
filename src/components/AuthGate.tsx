@@ -303,6 +303,16 @@ export function AuthGate() {
             <button type="submit" disabled={loading} style={buttonStyle}>
               {t('auth_verify_code')}
             </button>
+            {/* A Yahoo user reported never getting her code. The send log said
+                delivered — Yahoo had accepted it and filed it under Spam, which
+                a young sending domain should expect. Nothing on this screen
+                suggested looking there, and someone who cannot find the code
+                cannot get into the app at all: this is the first wall a new
+                user meets, and the ones who do not get past it leave without
+                saying so. */}
+            <p style={{ color: 'var(--muted)', fontSize: 12.5, lineHeight: 1.5, textAlign: 'center' }}>
+              {t('auth_code_spam_hint')}
+            </p>
             <button
               type="button"
               onClick={() => {
