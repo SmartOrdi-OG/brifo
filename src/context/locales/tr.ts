@@ -49,6 +49,7 @@ export const tr: TranslationTable = {
   auth_check_email: 'E-postana bir bağlantı gönderdik — e-postanı aç ve giriş yapmak için bağlantıya tıkla.',
   auth_enter_code: '{email} adresine 6 haneli bir kod gönderdik — giriş yapmak için buraya gir (e-postaya değil, bu uygulamaya).',
   auth_code_placeholder: '000000',
+  auth_code_spam_hint: 'Kod gelmedi mi? Lütfen spam klasörünü de kontrol edin.',
   auth_verify_code: 'Kodu onayla',
   auth_use_different_email: 'Başka bir e-posta kullan',
   auth_code_required: 'E-postana gelen kodu gir',

@@ -49,6 +49,7 @@ export const fa: TranslationTable = {
   auth_check_email: 'لینکی به ایمیلت فرستادیم — ایمیلت رو باز کن و روی لینک بزن تا وارد شوی.',
   auth_enter_code: 'کدی ۶ رقمی به {email} فرستادیم — همین‌جا واردش کن (نه از ایمیل) تا وارد شوی.',
   auth_code_placeholder: '000000',
+  auth_code_spam_hint: 'کد نرسید؟ لطفاً پوشه هرزنامه (Spam) را هم بررسی کنید.',
   auth_verify_code: 'تأیید کد',
   auth_use_different_email: 'استفاده از ایمیل دیگر',
   auth_code_required: 'کدی که به ایمیلت رسیده رو وارد کن',

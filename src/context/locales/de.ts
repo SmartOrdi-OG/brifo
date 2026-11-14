@@ -49,6 +49,7 @@ export const de: TranslationTable = {
   auth_check_email: 'Wir haben dir einen Link geschickt — öffne deine E-Mails und klick drauf, um dich anzumelden.',
   auth_enter_code: 'Wir haben einen 6-stelligen Code an {email} geschickt — gib ihn hier ein (in dieser App, nicht in der E-Mail), um dich anzumelden.',
   auth_code_placeholder: '000000',
+  auth_code_spam_hint: 'Code nicht angekommen? Bitte auch im Spam-Ordner nachsehen.',
   auth_verify_code: 'Code bestätigen',
   auth_use_different_email: 'Andere E-Mail verwenden',
   auth_code_required: 'Gib den Code ein, den du per E-Mail bekommen hast',
