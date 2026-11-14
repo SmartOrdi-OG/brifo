@@ -1,34 +1,64 @@
-<!-- The sign-in code email, as pasted into Supabase → Authentication →
-     Email Templates. Kept here because it is part of the product even though
-     it is configured in a dashboard: a template that lives only in a web form
-     has no history, no review and no copy if the form is ever cleared.
+<!-- The sign-in code email, as pasted into the Body of Supabase →
+     Authentication → Emails → "Magic link or OTP". The Subject field is a
+     separate box there and is not part of this file.
+
+     Kept here because it is part of the product even though it is configured
+     in a dashboard: a template that lives only in a web form has no history,
+     no review and no copy if the form is ever cleared.
+
+     ── Why it branches ──────────────────────────────────────────────────────
+     AuthContext sends the reader's language with the sign-in request
+     (`data: { language: lang }`), which arrives here as .Data.language, one
+     of ar/de/tr/fa/en/uk. Accounts created before that was sent have no value
+     and fall through to the English default branch.
+
+     Note for anyone editing this: Go parses template tags inside HTML
+     comments too, so a comment that quotes one is not a comment — it is an
+     action, and a stray else or end here fails the whole template. Describe
+     them in words.
+
+     Only the sentences branch, not the layout. Six whole copies of the markup
+     would mean six places to fix every time anything moves, and five of them
+     would be forgotten.
+
+     ── Why it looks like a company ──────────────────────────────────────────
+     Yahoo filed a customer's code as spam. Authentication was not the problem
+     — SPF, DKIM and DMARC all pass — and the message was accepted; Yahoo then
+     had to decide where to put it, and the old template gave it nothing to
+     decide with: five bare tags, no <html>, no logo, no sender name, no
+     company, no address. "Here is your code, ignore this if it wasn't you" is
+     also the exact shape of a phishing mail, so a filter that cannot separate
+     the two by content falls back on asking who sent it.
+
+     The footer is therefore both the evidence a filter looks for and what
+     § 5 ECG asks of commercial mail in Austria. It stays in German in every
+     language: a Firmenbuch entry is a legal identifier, not a phrase.
 
      Written the way email has to be written rather than the way the app is:
      tables instead of flexbox, inline styles instead of a stylesheet, and an
      absolute URL for the logo, because a mail client has no CSS file and no
      idea what site this came from.
 
-     Why it looks like this at all: the previous template was five bare tags
-     with no branding, no sender identity and no footer. "Here is your code,
-     ignore this if it wasn't you" is also the exact shape of a phishing mail,
-     so a filter that cannot tell them apart by content falls back on asking
-     who sent it — and a three-week-old domain with nothing in the message to
-     show a real company behind it is the easy call to make. Yahoo made it.
-
-     {{ .Token }} is Supabase's placeholder for the code. -->
+     The Token placeholder below is where Supabase substitutes the code.
+     Removing it sends an empty email. -->
 <!doctype html>
-<html lang="en">
+<html lang="{{if eq .Data.language "ar"}}ar{{else if eq .Data.language "de"}}de{{else if eq .Data.language "tr"}}tr{{else if eq .Data.language "fa"}}fa{{else if eq .Data.language "uk"}}uk{{else}}en{{end}}"
+      dir="{{if or (eq .Data.language "ar") (eq .Data.language "fa")}}rtl{{else}}ltr{{end}}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Your Brifo code</title>
+    <title>Brifo</title>
   </head>
   <body style="margin:0;padding:0;background:#f5f6fb;">
     <!-- Repeated on the table because several clients drop a <body> style. -->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f6fb;padding:28px 12px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background:#ffffff;border-radius:16px;padding:32px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+          <!-- dir again here: a few clients keep the <html> attribute and a
+               few do not, and the one that drops it would left-align Arabic. -->
+          <table role="presentation" dir="{{if or (eq .Data.language "ar") (eq .Data.language "fa")}}rtl{{else}}ltr{{end}}"
+                 width="100%" cellpadding="0" cellspacing="0" border="0"
+                 style="max-width:480px;background:#ffffff;border-radius:16px;padding:32px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
 
             <!-- Sender identity, before anything else is read. -->
             <tr>
@@ -40,36 +70,64 @@
             </tr>
 
             <tr>
-              <td style="font-size:17px;font-weight:700;color:#1c1d3a;padding-bottom:6px;">Welcome to Brifo</td>
+              <td style="font-size:17px;font-weight:700;color:#1c1d3a;padding-bottom:6px;">
+                {{if eq .Data.language "ar"}}أهلاً بك في Brifo
+                {{else if eq .Data.language "de"}}Willkommen bei Brifo
+                {{else if eq .Data.language "tr"}}Brifo'ya hoş geldiniz
+                {{else if eq .Data.language "fa"}}به Brifo خوش آمدید
+                {{else if eq .Data.language "uk"}}Вітаємо у Brifo
+                {{else}}Welcome to Brifo{{end}}
+              </td>
             </tr>
             <tr>
               <td style="font-size:15px;line-height:1.55;color:#4a4b6a;padding-bottom:20px;">
-                Here is your confirmation code. Enter it on the Brifo screen you already have open — you do not need to click anything in this email.
+                {{if eq .Data.language "ar"}}هذا رمز التأكيد. أدخله في شاشة Brifo المفتوحة أمامك — لا حاجة للضغط على أي شيء في هذه الرسالة.
+                {{else if eq .Data.language "de"}}Hier ist dein Bestätigungscode. Gib ihn auf dem Brifo-Bildschirm ein, den du geöffnet hast — in dieser E-Mail musst du nichts anklicken.
+                {{else if eq .Data.language "tr"}}Doğrulama kodunuz burada. Açık olan Brifo ekranına girin — bu e-postada hiçbir şeye tıklamanıza gerek yok.
+                {{else if eq .Data.language "fa"}}این کد تأیید شماست. آن را در همان صفحه Brifo که باز است وارد کنید — لازم نیست روی چیزی در این ایمیل کلیک کنید.
+                {{else if eq .Data.language "uk"}}Ось ваш код підтвердження. Введіть його на відкритому екрані Brifo — у цьому листі нічого натискати не потрібно.
+                {{else}}Here is your confirmation code. Enter it on the Brifo screen you already have open — you do not need to click anything in this email.{{end}}
               </td>
             </tr>
 
+            <!-- Latin digits and ltr even in Arabic and Persian: the code is
+                 typed left to right into the app, and a right-to-left run
+                 around it is how a pasted code comes out reversed. -->
             <tr>
               <td align="center" style="padding-bottom:22px;">
-                <div style="display:inline-block;background:#f5f6fb;border:1px solid #e3e5f2;border-radius:12px;padding:16px 26px;font-size:30px;font-weight:800;letter-spacing:7px;color:#1c1d3a;">{{ .Token }}</div>
+                <div dir="ltr" style="display:inline-block;background:#f5f6fb;border:1px solid #e3e5f2;border-radius:12px;padding:16px 26px;font-size:30px;font-weight:800;letter-spacing:7px;color:#1c1d3a;">{{ .Token }}</div>
               </td>
             </tr>
 
             <tr>
               <td style="font-size:13.5px;line-height:1.55;color:#6b6c87;padding-bottom:22px;">
-                The code is valid for a short time. If you did not try to sign in to Brifo, you can ignore this email — nobody can use the code without it.
+                {{if eq .Data.language "ar"}}الرمز صالح لفترة قصيرة. إذا لم تحاول تسجيل الدخول إلى Brifo، يمكن تجاهل هذه الرسالة.
+                {{else if eq .Data.language "de"}}Der Code gilt nur kurze Zeit. Wenn du dich nicht bei Brifo anmelden wolltest, kannst du diese E-Mail ignorieren.
+                {{else if eq .Data.language "tr"}}Kod kısa bir süre geçerlidir. Brifo'ya giriş yapmayı denemediyseniz bu e-postayı yok sayabilirsiniz.
+                {{else if eq .Data.language "fa"}}این کد فقط مدت کوتاهی اعتبار دارد. اگر شما قصد ورود به Brifo را نداشتید، می‌توانید این ایمیل را نادیده بگیرید.
+                {{else if eq .Data.language "uk"}}Код дійсний недовго. Якщо ви не намагалися увійти до Brifo, цей лист можна проігнорувати.
+                {{else}}The code is valid for a short time. If you did not try to sign in to Brifo, you can ignore this email.{{end}}
               </td>
             </tr>
 
             <!-- The part that was missing, and the part a filter looks for:
-                 evidence that a real, identifiable company sent this. It is
-                 also what § 5 ECG requires of commercial mail in Austria. -->
+                 evidence that a real, identifiable company sent this. -->
             <tr>
               <td style="border-top:1px solid #e3e5f2;padding-top:18px;font-size:12px;line-height:1.6;color:#8a8ba6;">
-                Brifo — understand German letters in your own language.<br />
-                <a href="https://mybrifo.com" style="color:#3b82f6;text-decoration:none;">mybrifo.com</a><br /><br />
-                Smartordi OG · Steingasse 6A, Linz, Österreich<br />
-                Firmenbuchnummer FN 675586 i · Landesgericht Linz<br />
-                <a href="mailto:team@smartordi.eu" style="color:#8a8ba6;text-decoration:underline;">team@smartordi.eu</a>
+                {{if eq .Data.language "ar"}}Brifo — افهم الرسائل الألمانية بلغتك.
+                {{else if eq .Data.language "de"}}Brifo — deutsche Briefe in deiner Sprache verstehen.
+                {{else if eq .Data.language "tr"}}Brifo — Almanca mektupları kendi dilinizde anlayın.
+                {{else if eq .Data.language "fa"}}Brifo — نامه‌های آلمانی را به زبان خودتان بفهمید.
+                {{else if eq .Data.language "uk"}}Brifo — розумійте німецькі листи своєю мовою.
+                {{else}}Brifo — understand German letters in your own language.{{end}}
+                <br />
+                <a dir="ltr" href="https://mybrifo.com" style="color:#3b82f6;text-decoration:none;">mybrifo.com</a>
+                <br /><br />
+                <span dir="ltr" style="display:inline-block;">
+                  Smartordi OG · Steingasse 6A, Linz, Österreich<br />
+                  Firmenbuchnummer FN 675586 i · Landesgericht Linz<br />
+                  <a href="mailto:team@smartordi.eu" style="color:#8a8ba6;text-decoration:underline;">team@smartordi.eu</a>
+                </span>
               </td>
             </tr>
 
