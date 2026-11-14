@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { Home } from './screens/Home';
 import { Onboarding } from './screens/Onboarding';
 import { Scan } from './screens/Scan';
@@ -120,48 +121,51 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/" element={<Home />} />
-      <Route
-        path="/scan"
-        element={
-          <PremiumGate>
-            <SensitiveConsentGate>
-              <Scan />
-            </SensitiveConsentGate>
-          </PremiumGate>
-        }
-      />
-      <Route path="/result" element={<Result />} />
-      <Route
-        path="/reply"
-        element={
-          <PremiumGate>
-            <SensitiveConsentGate>
-              <Reply />
-            </SensitiveConsentGate>
-          </PremiumGate>
-        }
-      />
-      <Route path="/calendar" element={<Calendar />} />
-      <Route path="/guide" element={<Guide />} />
-      <Route path="/guide/:id" element={<GuideArticle />} />
-      <Route path="/paywall" element={<Paywall />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/child/new" element={<ChildNew />} />
-      <Route path="/child/:id" element={<ChildProfile />} />
-      <Route path="/todo" element={<Todo />} />
-      <Route path="/search" element={<Search />} />
-      <Route path="/datenschutz" element={<Datenschutz />} />
-      <Route path="/impressum" element={<Impressum />} />
-      <Route path="/agb" element={<AGB />} />
-      <Route path="/account-deletion" element={<AccountDeletion />} />
-      <Route path="/admin" element={<Admin />} />
-      {/* A stray/mistyped/stale URL otherwise renders nothing at all — React
-          Router doesn't fall back to anything without an explicit wildcard. */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <Analytics />
+      <Routes>
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/scan"
+          element={
+            <PremiumGate>
+              <SensitiveConsentGate>
+                <Scan />
+              </SensitiveConsentGate>
+            </PremiumGate>
+          }
+        />
+        <Route path="/result" element={<Result />} />
+        <Route
+          path="/reply"
+          element={
+            <PremiumGate>
+              <SensitiveConsentGate>
+                <Reply />
+              </SensitiveConsentGate>
+            </PremiumGate>
+          }
+        />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/guide" element={<Guide />} />
+        <Route path="/guide/:id" element={<GuideArticle />} />
+        <Route path="/paywall" element={<Paywall />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/child/new" element={<ChildNew />} />
+        <Route path="/child/:id" element={<ChildProfile />} />
+        <Route path="/todo" element={<Todo />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/datenschutz" element={<Datenschutz />} />
+        <Route path="/impressum" element={<Impressum />} />
+        <Route path="/agb" element={<AGB />} />
+        <Route path="/account-deletion" element={<AccountDeletion />} />
+        <Route path="/admin" element={<Admin />} />
+        {/* A stray/mistyped/stale URL otherwise renders nothing at all — React
+            Router doesn't fall back to anything without an explicit wildcard. */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 
