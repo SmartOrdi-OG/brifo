@@ -80,6 +80,23 @@ describe('the gendered overrides', () => {
   });
 });
 
+describe('the sign-in code sentence', () => {
+  it('claims no particular number of digits, in any language', () => {
+    // It used to promise "a 6-digit code" in all six. The length is a setting
+    // in the Supabase dashboard, not a value in this repo, and it was already
+    // 8 — so a user hunting for six digits found eight and had every reason to
+    // think she had the wrong email, at the one moment the app most needs to
+    // be believed. Any number written here is a promise about something this
+    // codebase does not control, so the rule is that there is no number: no
+    // Latin, Arabic-Indic or Persian digit may appear in the sentence at all.
+    for (const lang of LANGS) {
+      expect(translations[lang].auth_enter_code, `${lang} names a digit count`).not.toMatch(
+        /[0-9٠-٩۰-۹]/,
+      );
+    }
+  });
+});
+
 describe('text direction', () => {
   it('is right-to-left for exactly Arabic and Persian', () => {
     // Getting this wrong mirrors the entire layout, so it is worth pinning
