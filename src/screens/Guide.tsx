@@ -4,6 +4,7 @@ import { Header } from '../components/Header';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
 import { getGuideArticles } from '../data/guideArticles';
+import { useCountry } from '../context/CountryContext';
 import { GUIDE_ARTICLE_ICONS } from '../data/guideIcons';
 import { isolateBidiRuns } from '../lib/bidiText';
 import './Guide.css';
@@ -11,7 +12,8 @@ import './Guide.css';
 export function Guide() {
   const { t, lang, gender } = useLanguage();
   const navigate = useNavigate();
-  const articles = getGuideArticles(lang, gender);
+  const { country } = useCountry();
+  const articles = getGuideArticles(lang, country, gender);
 
   return (
     <TabLayout>

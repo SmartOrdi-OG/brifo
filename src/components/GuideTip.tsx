@@ -3,6 +3,7 @@ import { Lightbulb } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
 import { getGuideArticles } from '../data/guideArticles';
+import { useCountry } from '../context/CountryContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
 import './GuideTip.css';
@@ -41,7 +42,8 @@ export function GuideTipCard({ articleId }: { articleId: string }) {
   const navigate = useNavigate();
   const { t, lang, gender } = useLanguage();
 
-  const article = getGuideArticles(lang, gender).find((a) => a.id === articleId);
+  const { country } = useCountry();
+  const article = getGuideArticles(lang, country, gender).find((a) => a.id === articleId);
   if (!article) return null;
 
   const rtl = isRtlLang(lang);

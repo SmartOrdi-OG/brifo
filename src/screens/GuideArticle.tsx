@@ -5,6 +5,7 @@ import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { isRtlLang } from '../context/translations';
 import { getGuideArticles } from '../data/guideArticles';
+import { useCountry } from '../context/CountryContext';
 import { GUIDE_ARTICLE_ICONS } from '../data/guideIcons';
 import { isolateBidiRuns } from '../lib/bidiText';
 import './GuideArticle.css';
@@ -30,7 +31,8 @@ function withEmphasis(text: string, rtl: boolean): ReactNode[] {
 export function GuideArticle() {
   const { id } = useParams<{ id: string }>();
   const { lang, gender } = useLanguage();
-  const article = getGuideArticles(lang, gender).find((a) => a.id === id);
+  const { country } = useCountry();
+  const article = getGuideArticles(lang, country, gender).find((a) => a.id === id);
 
   if (!article) {
     return (

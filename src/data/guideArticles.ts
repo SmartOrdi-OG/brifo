@@ -1,4 +1,5 @@
 import type { Gender, Lang } from '../context/translations';
+import type { Country } from '../lib/country';
 
 /** Every article, in the order the Ratgeber lists them.
  *
@@ -33,6 +34,47 @@ export const GUIDE_ARTICLE_IDS = [
 ] as const;
 
 export type GuideArticleId = (typeof GUIDE_ARTICLE_IDS)[number];
+
+/** Which countries each article is written for.
+ *
+ * Kept as one small table rather than a field on all 132 article objects:
+ * the articles are stored once per language, so a per-article field would
+ * have to be repeated six times and would drift the first time someone edited
+ * only one copy.
+ *
+ * Every one of these is Austrian — in substance, not only in vocabulary. The
+ * official-letter article explains RSa/RSb and sends the reader to the
+ * Arbeiterkammer; the grading article teaches a scale on which 5 is a fail,
+ * which in Germany it is not. None of them can be shown to a German reader as
+ * they stand, so none of them lists 'de'.
+ *
+ * A new article has to name its countries here or the build fails, which is
+ * the point: the failure to design against is not a missing German article,
+ * it is a German reader quietly being shown an Austrian one. */
+export const ARTICLE_COUNTRIES: Record<GuideArticleId, readonly Country[]> = {
+  'school-types': ['at'],
+  'grading-system': ['at'],
+  sprechstunde: ['at'],
+  'parent-rights': ['at'],
+  fruehwarnung: ['at'],
+  enrollment: ['at'],
+  deutschfoerderklasse: ['at'],
+  'school-holidays': ['at'],
+  'school-costs': ['at'],
+  nachmittagsbetreuung: ['at'],
+  elternverein: ['at'],
+  uebertritt: ['at'],
+  'rechnung-mahnung': ['at'],
+  termine: ['at'],
+  behoerdenbrief: ['at'],
+  familienbeihilfe: ['at'],
+  meldezettel: ['at'],
+  'ecard-oegk': ['at'],
+  'ams-briefe': ['at'],
+  aufenthaltstitel: ['at'],
+  kindergarten: ['at'],
+  arbeitnehmerveranlagung: ['at'],
+};
 
 export interface GuideArticle {
   id: GuideArticleId;
@@ -1891,7 +1933,11 @@ const arFeminineOverrides: Partial<
   },
 };
 
-export function getGuideArticles(lang: Lang, gender?: Gender | null): GuideArticle[] {
+export function getGuideArticles(lang: Lang, country: Country, gender?: Gender | null): GuideArticle[] {
+  return allArticlesFor(lang, gender).filter((article) => ARTICLE_COUNTRIES[article.id].includes(country));
+}
+
+function allArticlesFor(lang: Lang, gender?: Gender | null): GuideArticle[] {
   if (lang === 'de') return de;
   if (lang === 'tr') return tr;
   if (lang === 'fa') return fa;
