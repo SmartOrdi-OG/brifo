@@ -13,6 +13,7 @@
  * session, and a failed report is swallowed rather than thrown. */
 
 import { isAndroidTwa } from './platform';
+import { isNativeIos } from './native';
 import { isTelegramMiniApp } from './telegramWebApp';
 import { isWorthReporting } from './errorRelevance';
 
@@ -55,6 +56,7 @@ export function scrubErrorText(text: string): string {
 function platformName(): string {
   if (isTelegramMiniApp) return 'telegram';
   if (isAndroidTwa) return 'twa';
+  if (isNativeIos) return 'ios';
   return 'browser';
 }
 
