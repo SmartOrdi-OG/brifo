@@ -25,6 +25,8 @@ import {
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { submitRatingToServer } from '../lib/ratings';
 import { startBillingPortal } from '../lib/subscription';
+import { sellsNothingInApp } from '../lib/platform';
+import { isNativeApp } from '../lib/native';
 import { referralLinkFor, REFERRAL_BONUS_DAYS } from '../lib/referral';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
@@ -59,7 +61,9 @@ export function Settings() {
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
-  const [pushActive, setPushActive] = useState(pushEnabled());
+  // In the iOS build reminders are scheduled on the device, which works with
+  // the app closed just like web push does — so it counts as "push active".
+  const [pushActive, setPushActive] = useState(isNativeApp ? remindersEnabled() : pushEnabled());
   const [stars, setStars] = useState(rating?.stars ?? 0);
   const [comment, setComment] = useState(rating?.comment ?? '');
   const [ratingSaved, setRatingSaved] = useState(false);
@@ -100,6 +104,10 @@ export function Settings() {
     setRemindersDenied(!granted);
     if (!granted) return;
 
+    if (isNativeApp) {
+      setPushActive(true);
+      return;
+    }
     const subscribed = await subscribeToPush();
     setPushActive(subscribed);
     if (subscribed) await syncPushReminders(upcomingSyncEvents(), REMINDER_OFFSETS, lang);
@@ -181,7 +189,8 @@ export function Settings() {
           <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }} className="nums">
             {session.user.email}
           </p>
-          {subscriptionActive && (
+          {/* Stripe's billing portal: not in the iOS build (see sellsNothingInApp). */}
+          {subscriptionActive && !sellsNothingInApp && (
             <button
               className="scan-btn"
               style={{ width: '100%', marginBottom: 10 }}

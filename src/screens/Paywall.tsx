@@ -7,7 +7,8 @@ import { isRtlLang, type TranslationKey } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
-import { isAndroidTwa, openOutsideAndroidTwa } from '../lib/platform';
+import { isAndroidTwa, openOutsideAndroidTwa, sellsNothingInApp } from '../lib/platform';
+import { NATIVE_PAYWALL_NOTE } from '../lib/nativeStrings';
 import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
@@ -72,6 +73,30 @@ export function Paywall() {
       return;
     }
     window.location.href = url;
+  }
+
+  // iOS App Store build: no Stripe and no pointer to the website (see
+  // sellsNothingInApp). Shows what the subscription includes and that the
+  // rest stays free, nothing that could read as a way to buy elsewhere.
+  if (sellsNothingInApp && !active) {
+    return (
+      <FlowLayout title={t('screen_paywall')}>
+        <div className="card paywall-card">
+          <p className="paywall-value">{tx('paywall_value_line')}</p>
+          <p className="paywall-includes-title">{t('paywall_includes_title')}</p>
+          <ul className="paywall-features">
+            {FEATURES.map((key) => (
+              <li className="paywall-feature" key={key}>
+                <Check size={17} strokeWidth={2.75} aria-hidden />
+                <span>{tx(key)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="paywall-free-note">{tx('paywall_free_note')}</p>
+          <p className="paywall-note muted">{bidi(NATIVE_PAYWALL_NOTE[lang])}</p>
+        </div>
+      </FlowLayout>
+    );
   }
 
   return (

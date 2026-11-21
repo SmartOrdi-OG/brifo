@@ -6,6 +6,7 @@ import { getStashedReferralCode, clearStashedReferralCode } from '../lib/referra
 import { redeemReferral } from '../lib/subscription';
 import { claimDeviceData, clearAccountData } from '../lib/accountSwitch';
 import { unsubscribeThisDevice } from '../lib/eraseData';
+import { API_ORIGIN, isNativeApp } from '../lib/native';
 
 const NEWLY_CREATED_WINDOW_MS = 5 * 60 * 1000;
 
@@ -81,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) return { error: 'not configured' };
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin, data: { language: lang } },
+      options: { emailRedirectTo: isNativeApp ? API_ORIGIN : window.location.origin, data: { language: lang } },
     });
     return { error: error?.message ?? null };
   }
