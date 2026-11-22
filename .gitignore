@@ -27,3 +27,6 @@ dev-dist
 *.sw?
 .vercel
 .env*
+
+# iOS project is generated on the Mac by scripts/ios-setup.mjs
+ios/

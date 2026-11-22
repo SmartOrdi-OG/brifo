@@ -4,6 +4,8 @@ export interface SubscriptionStatus {
   active: boolean;
   currentPeriodEnd: string | null;
   bonusTrialDays: number;
+  /** Set when the subscription was bought in the iOS app (App Store). */
+  store?: 'app_store';
 }
 
 export async function fetchSubscriptionStatus(): Promise<SubscriptionStatus | null> {

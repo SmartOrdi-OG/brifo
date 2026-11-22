@@ -5,6 +5,7 @@ import { getUserFromRequest } from '../src/server/auth.js';
 import { isComplimentaryEmail } from '../src/server/freeAccounts.js';
 import { getBonusTrialDays, redeemReferral } from '../src/server/referral.js';
 import { ConfigError } from '../src/server/errors.js';
+import { getAppStoreEntitlement } from '../src/server/revenuecat.js';
 
 // Consolidates create-checkout-session/subscription-status into one function
 // — see push.ts for why (Vercel's Hobby plan caps a deployment at 12
@@ -94,6 +95,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           route: '/api/subscription-status',
           platform: 'server',
         });
+      }
+      if (!status.active) {
+        // Bought in the iOS app (App Store via RevenueCat) rather than on the web.
+        const appStore = await getAppStoreEntitlement(user.id);
+        if (appStore.active) {
+          res.status(200).json({ active: true, currentPeriodEnd: appStore.expiresAt, bonusTrialDays, store: 'app_store' });
+          return;
+        }
       }
       res.status(200).json({ ...status, bonusTrialDays });
     } catch (err) {

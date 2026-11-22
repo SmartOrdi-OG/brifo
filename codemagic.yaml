@@ -1,0 +1,61 @@
+# Codemagic cloud build for the iOS App Store app (Capacitor).
+# Builds on Codemagic's Macs, so no local Xcode is needed. Started by hand
+# from the Codemagic UI; uploads the signed build to App Store Connect, where
+# it shows up in TestFlight.
+#
+# Needs, in Codemagic:
+#   - Developer Portal integration named "Brifo ASC" (App Store Connect API key)
+#   - environment group "brifo_ios" with:
+#       VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY  (public web config)
+#       VITE_REVENUECAT_IOS_KEY                    (RevenueCat public Apple
+#                                                    SDK key, appl_…)
+#       CERTIFICATE_PRIVATE_KEY                    (secret, RSA key for the
+#                                                    distribution certificate)
+workflows:
+  ios-testflight:
+    name: Brifo iOS → TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: Brifo ASC
+    environment:
+      groups:
+        - brifo_ios
+      vars:
+        BUNDLE_ID: com.mybrifo.app
+        APP_STORE_APPLE_ID: 6837802069
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+      node: 24
+      xcode: latest
+    cache:
+      cache_paths:
+        - $HOME/.npm
+    scripts:
+      - name: Install dependencies
+        script: npm ci
+      - name: Generate the iOS project (web build, Capacitor sync, icon, splash)
+        script: npm run ios:setup
+      - name: Set build number
+        script: |
+          LATEST=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          LATEST_TF=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          [ "$LATEST_TF" -gt "$LATEST" ] 2>/dev/null && LATEST=$LATEST_TF
+          NEXT=$((LATEST + 1))
+          echo "Build number: $NEXT"
+          sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*;/CURRENT_PROJECT_VERSION = $NEXT;/g" "$XCODE_PROJECT/project.pbxproj"
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --project "$XCODE_PROJECT"
+      - name: Build signed IPA
+        script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false

@@ -28,6 +28,8 @@ import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
 import { useAuth } from './context/AuthContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
+import { useNativeReminders } from './lib/nativeReminders';
+import { remindersEnabled } from './lib/reminders';
 import { usePushSync } from './lib/usePushSync';
 import { hasAcceptedPrivacyPolicy, syncConsentToServer, syncSensitiveConsentToServer } from './lib/consent';
 import { captureReferralCodeFromUrl } from './lib/referral';
@@ -63,6 +65,7 @@ function App() {
     t('reminders_body_soon'),
   );
   usePushSync(remindables, lang);
+  useNativeReminders(remindables, remindersEnabled(), t('reminders_body_day_before'));
 
   useEffect(() => {
     if (session) {

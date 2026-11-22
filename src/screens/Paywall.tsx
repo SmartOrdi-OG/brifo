@@ -7,7 +7,9 @@ import { isRtlLang, type TranslationKey } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
-import { isAndroidTwa, openOutsideAndroidTwa } from '../lib/platform';
+import { isAndroidTwa, openOutsideAndroidTwa, sellsNothingInApp } from '../lib/platform';
+import { APPLE_EULA_URL, IOS_PAYWALL } from '../lib/nativeStrings';
+import { iapAvailable, loadMonthlyOffer, manageSubscription, purchase, restore, type MonthlyOffer } from '../lib/iap';
 import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
@@ -74,11 +76,22 @@ export function Paywall() {
     window.location.href = url;
   }
 
+  // iOS App Store build: Apple In-App Purchase through RevenueCat, never
+  // Stripe and never a pointer to the website (Guideline 3.1.1 / 3.1.3).
+  if (sellsNothingInApp && !active) return <IosPaywall />;
+
   return (
     <FlowLayout title={t('screen_paywall')}>
       <div className="card paywall-card">
         {active ? (
-          <p className="paywall-active">{t('paywall_already_active')}</p>
+          <>
+            <p className="paywall-active">{t('paywall_already_active')}</p>
+            {sellsNothingInApp && (
+              <button className="scan-btn" onClick={manageSubscription}>
+                {IOS_PAYWALL[lang].manage}
+              </button>
+            )}
+          </>
         ) : (
           <>
             <p className="paywall-value">{tx('paywall_value_line')}</p>
@@ -160,6 +173,120 @@ export function Paywall() {
             {checkoutResult === 'cancelled' && <p className="paywall-note muted">{t('paywall_checkout_cancelled')}</p>}
           </>
         )}
+      </div>
+    </FlowLayout>
+  );
+}
+
+function IosPaywall() {
+  const { t, lang } = useLanguage();
+  const navigate = useNavigate();
+  const { refresh } = useSubscription();
+  const s = IOS_PAYWALL[lang];
+  const rtl = isRtlLang(lang);
+  const bidi = (text: string) => (rtl ? isolateBidiRuns(text) : text);
+  const [offer, setOffer] = useState<MonthlyOffer | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadMonthlyOffer()
+      .then((o) => {
+        if (cancelled) return;
+        if (o) setOffer(o);
+        else setLoadFailed(true);
+      })
+      .catch(() => !cancelled && setLoadFailed(true));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // The server confirms with RevenueCat, which can trail the purchase by a
+  // moment; ask a few times instead of trusting one refresh.
+  function refreshSoon() {
+    let n = 0;
+    const iv = setInterval(() => {
+      n += 1;
+      refresh();
+      if (n >= 5) clearInterval(iv);
+    }, 1500);
+    refresh();
+  }
+
+  async function onSubscribe() {
+    if (!offer) return;
+    setBusy(true);
+    setMessage(null);
+    const outcome = await purchase(offer.pkg);
+    setBusy(false);
+    if (outcome === 'subscribed') refreshSoon();
+    else if (outcome === 'failed') setMessage(s.error);
+  }
+
+  async function onRestore() {
+    setBusy(true);
+    setMessage(null);
+    const ok = await restore();
+    setBusy(false);
+    setMessage(ok ? s.restored : s.nothingToRestore);
+    if (ok) refreshSoon();
+  }
+
+  return (
+    <FlowLayout title={t('screen_paywall')}>
+      <div className="card paywall-card">
+        <p className="paywall-value">{bidi(t('paywall_value_line'))}</p>
+
+        {offer ? (
+          <>
+            {offer.trialDays > 0 && (
+              <p className="paywall-trial left">{bidi(s.trial.replace('{days}', String(offer.trialDays)))}</p>
+            )}
+            <p className="paywall-price">{bidi(s.then.replace('{price}', offer.price))}</p>
+          </>
+        ) : (
+          !loadFailed && <p className="paywall-note muted">…</p>
+        )}
+
+        <p className="paywall-includes-title">{t('paywall_includes_title')}</p>
+        <ul className="paywall-features">
+          {FEATURES.map((key) => (
+            <li className="paywall-feature" key={key}>
+              <Check size={17} strokeWidth={2.75} aria-hidden />
+              <span>{bidi(t(key))}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="paywall-free-note">{bidi(t('paywall_free_note'))}</p>
+
+        {iapAvailable && offer && (
+          <button className="scan-btn primary paywall-subscribe" disabled={busy} onClick={onSubscribe}>
+            {offer.trialDays > 0 ? s.subscribe : s.subscribeNoTrial}
+          </button>
+        )}
+        {loadFailed && <p className="paywall-note error">{s.unavailable}</p>}
+        {message && <p className="paywall-note muted">{message}</p>}
+
+        <p className="paywall-note muted" style={{ fontSize: 12 }}>
+          {s.disclosure}
+        </p>
+
+        <button className="scan-btn" disabled={busy} onClick={onRestore}>
+          {s.restore}
+        </button>
+
+        <p className="paywall-note muted" style={{ textAlign: 'center' }}>
+          <a href={APPLE_EULA_URL} target="_blank" rel="noreferrer">
+            {s.terms}
+          </a>
+          {' · '}
+          <span className="paywall-consent-link" onClick={() => navigate('/datenschutz')}>
+            {s.privacy}
+          </span>
+        </p>
       </div>
     </FlowLayout>
   );

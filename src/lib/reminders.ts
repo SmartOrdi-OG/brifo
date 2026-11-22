@@ -4,6 +4,8 @@
  * avoid double notifications; it only fires when push subscription isn't
  * active (unsupported browser, subscribe failure, etc). */
 import { pushEnabled } from './push';
+import { isNativeApp } from './native';
+import { requestNativeNotificationPermission } from './nativeReminders';
 
 const ENABLED_KEY = 'brifo_reminders_enabled';
 const NOTIFIED_KEY = 'brifo_reminders_notified';
@@ -40,14 +42,23 @@ export const REMINDER_LEAD_MINUTES = 26 * 60;
 export const REMINDER_OFFSETS = [REMINDER_LEAD_MINUTES];
 
 export function notificationsSupported(): boolean {
+  // The iOS build has no Notification API but schedules reminders natively
+  // (see lib/nativeReminders).
+  if (isNativeApp) return true;
   return typeof window !== 'undefined' && 'Notification' in window;
 }
 
 export function remindersEnabled(): boolean {
+  if (isNativeApp) return localStorage.getItem(ENABLED_KEY) === '1';
   return notificationsSupported() && Notification.permission === 'granted' && localStorage.getItem(ENABLED_KEY) === '1';
 }
 
 export async function enableReminders(): Promise<boolean> {
+  if (isNativeApp) {
+    const granted = await requestNativeNotificationPermission();
+    localStorage.setItem(ENABLED_KEY, granted ? '1' : '0');
+    return granted;
+  }
   if (!notificationsSupported()) return false;
   const permission = await Notification.requestPermission();
   const granted = permission === 'granted';
@@ -89,7 +100,8 @@ export interface ReminderCandidate {
 /** Fires a local notification for each (event, offset) pair that's newly due
  * and hasn't fired yet. */
 export function notifyDueReminders(candidates: ReminderCandidate[], bodyForOffset: (actualMinutesLeft: number) => string): void {
-  if (!remindersEnabled() || pushEnabled()) return;
+  // Native builds schedule ahead instead (lib/nativeReminders).
+  if (isNativeApp || !remindersEnabled() || pushEnabled()) return;
   const notified = readNotifiedIds();
   let changed = false;
 

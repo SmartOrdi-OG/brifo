@@ -12,6 +12,11 @@ import { TelegramChrome } from './components/TelegramChrome'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { enableServiceWorkerAutoReload } from './lib/swAutoReload'
 import { installErrorReporting } from './lib/reportError'
+import { installNativeApiBase } from './lib/native'
+
+// First of all: in the iOS app, relative /api/ calls must reach the real
+// backend before anything (error reporting included) makes one.
+installNativeApiBase()
 
 // Before the first render, so a fault during start-up is reported too — that
 // is the one that takes the screen blank with nothing on it to report from.

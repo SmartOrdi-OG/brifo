@@ -1,4 +1,5 @@
 import { isTelegramMiniApp } from './telegramWebApp';
+import { isNativeIos } from './native';
 
 const TWA_REFERRER_PREFIX = 'android-app://';
 const STORAGE_KEY = 'brifo:is-android-twa';
@@ -52,6 +53,14 @@ export const isAndroidTwa = detectAndPersist();
  * rules. One flag so the paywall states the rule once rather than growing a
  * condition per store. */
 export const hidesInAppPurchase = isAndroidTwa || isTelegramMiniApp;
+
+/** The iOS App Store build may neither take Stripe payments nor send the
+ * user to the website to subscribe (App Store Review Guideline 3.1.1 / 3.1.3
+ * anti-steering). It sells through Apple In-App Purchase instead (RevenueCat,
+ * src/lib/iap.ts): every Stripe entry point (checkout, billing portal) is
+ * hidden and the paywall shows the App Store offer. Web subscribers keep full
+ * access — the server checks the account, not the platform. */
+export const sellsNothingInApp = isNativeIos;
 
 /** Sends the user to `url` in a real Chrome tab instead of this TWA.
  *
