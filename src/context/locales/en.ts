@@ -44,6 +44,9 @@ export const en: TranslationTable = {
   auth_pricing_note: 'Brifo is free (guide, calendar, tasks, reminders). Photographing and analyzing letters with AI, and generating replies, require a subscription after a 7-day free trial — €2.90/month or €20/year, cancel anytime.',
   auth_tagline: 'Photograph any German letter — and understand it in your language in seconds',
   auth_price_line: '7 days free · then €2.90/month · cancel anytime',
+  /** iOS: the App Store shows the price in the buyer's own currency, so the
+   * sign-in screen does not repeat a euro figure that may not match it. */
+  auth_price_line_ios: '7 days free · cancel anytime',
   auth_email_placeholder: 'Your email',
   auth_send_link: 'Send code',
   auth_check_email: 'We sent a link to your email — open it and tap the link to sign in.',

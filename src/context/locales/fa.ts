@@ -44,6 +44,9 @@ export const fa: TranslationTable = {
   auth_pricing_note: 'Brifo رایگان است (راهنما، تقویم، کارها، یادآوری‌ها). عکس‌برداری و تحلیل نامه‌ها با هوش مصنوعی، و تولید پاسخ، بعد از ۷ روز آزمایشی رایگان نیاز به اشتراک دارد — ۲.۹۰ یورو در ماه یا ۲۰ یورو در سال، هر وقت خواستی می‌تونی لغو کنی.',
   auth_tagline: 'از هر نامه آلمانی عکس بگیر — و در چند ثانیه به زبان خودت بفهمش',
   auth_price_line: '۷ روز رایگان · سپس ۲.۹۰ یورو در ماه · لغو در هر زمان',
+  /** iOS: the App Store shows the price in the buyer's own currency, so the
+   * sign-in screen does not repeat a euro figure that may not match it. */
+  auth_price_line_ios: '۷ روز رایگان · لغو در هر زمان',
   auth_email_placeholder: 'ایمیلت',
   auth_send_link: 'ارسال کد',
   auth_check_email: 'لینکی به ایمیلت فرستادیم — ایمیلت رو باز کن و روی لینک بزن تا وارد شوی.',
