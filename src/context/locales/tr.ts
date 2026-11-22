@@ -44,6 +44,9 @@ export const tr: TranslationTable = {
   auth_pricing_note: 'Brifo ücretsizdir (rehber, takvim, görevler, hatırlatmalar). Mektupları fotoğraflayıp yapay zekayla analiz etmek ve cevap yazdırmak, 7 günlük ücretsiz deneme sonrası abonelik gerektirir — aylık 2,90 € veya yıllık 20 €, istediğin zaman iptal edebilirsin.',
   auth_tagline: 'Herhangi bir Almanca mektubu fotoğrafla — saniyeler içinde kendi dilinde anla',
   auth_price_line: '7 gün ücretsiz · sonrasında ayda 2,90 € · istediğin zaman iptal',
+  /** iOS: the App Store shows the price in the buyer's own currency, so the
+   * sign-in screen does not repeat a euro figure that may not match it. */
+  auth_price_line_ios: '7 gün ücretsiz · istediğin zaman iptal',
   auth_email_placeholder: 'E-postan',
   auth_send_link: 'Kod gönder',
   auth_check_email: 'E-postana bir bağlantı gönderdik — e-postanı aç ve giriş yapmak için bağlantıya tıkla.',

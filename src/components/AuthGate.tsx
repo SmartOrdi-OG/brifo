@@ -6,6 +6,7 @@ import { isRtlLang } from '../context/translations';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { LanguagePicker } from './LanguagePicker';
 import { BrifoWordmark } from './BrifoWordmark';
+import { isNativeIos } from '../lib/native';
 import type { TranslationKey } from '../context/translations';
 import './AuthGate.css';
 
@@ -230,7 +231,7 @@ export function AuthGate() {
     // On success, passwordPromptPending flips off and App renders past this gate.
   }
 
-  const tx = (key: 'auth_tagline' | 'auth_price_line') =>
+  const tx = (key: 'auth_tagline' | 'auth_price_line' | 'auth_price_line_ios') =>
     isRtlLang(lang) ? isolateBidiRuns(t(key)) : t(key);
 
   return (
@@ -398,7 +399,10 @@ export function AuthGate() {
         {/* Under the form, not above it: what it costs used to be the first
             thing on the page after the hero, before anything explained what
             the app is or asked for an email. */}
-        {configured ? <p className="auth-price">{tx('auth_price_line')}</p> : null}
+        {/* iOS: no euro figure here. The App Store sets the price per country and
+            shows it on the subscription screen; a fixed number here could
+            contradict it, which App Review treats as misleading. */}
+        {configured ? <p className="auth-price">{tx(isNativeIos ? 'auth_price_line_ios' : 'auth_price_line')}</p> : null}
 
         {/* In the flow beneath the card rather than pinned to the bottom of
             the screen. Pinned, it left ~90px of empty background between the

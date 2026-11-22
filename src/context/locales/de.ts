@@ -44,6 +44,9 @@ export const de: TranslationTable = {
   auth_pricing_note: 'Brifo ist kostenlos (Ratgeber, Kalender, Aufgaben, Erinnerungen). Das Fotografieren und KI-Analysieren von Briefen sowie das Verfassen von Antworten erfordert nach 7 Tagen kostenloser Testphase ein Abo — 2,90 €/Monat oder 20 €/Jahr, jederzeit kündbar.',
   auth_tagline: 'Fotografiere jeden deutschen Brief — und verstehe ihn in Sekunden in deiner Sprache',
   auth_price_line: '7 Tage gratis testen · danach 2,90 €/Monat · jederzeit kündbar',
+  /** iOS: the App Store shows the price in the buyer's own currency, so the
+   * sign-in screen does not repeat a euro figure that may not match it. */
+  auth_price_line_ios: '7 Tage gratis testen · jederzeit kündbar',
   auth_email_placeholder: 'Deine E-Mail',
   auth_send_link: 'Code senden',
   auth_check_email: 'Wir haben dir einen Link geschickt — öffne deine E-Mails und klick drauf, um dich anzumelden.',

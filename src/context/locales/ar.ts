@@ -43,6 +43,9 @@ export const ar = {
   auth_pricing_note: 'Brifo مجاني (الدليل، التقويم، المهام، التذكيرات). أما تصوير الرسائل وتحليلها بالذكاء الاصطناعي، وتوليد الردود، فيحتاج اشتراكًا بعد 7 أيام تجربة مجانية — 2.90 € شهريًا أو 20 € سنويًا، ويمكنك الإلغاء في أي وقت.',
   auth_tagline: 'صوّر أي رسالة ألمانية — وافهمها بلغتك خلال ثوانٍ',
   auth_price_line: 'تجربة مجانية 7 أيام · ثم 2.90 € شهريًا · إلغاء في أي وقت',
+  /** iOS: the App Store shows the price in the buyer's own currency, so the
+   * sign-in screen does not repeat a euro figure that may not match it. */
+  auth_price_line_ios: 'تجربة مجانية 7 أيام · إلغاء في أي وقت',
   auth_email_placeholder: 'بريدك الإلكتروني',
   auth_send_link: 'إرسال الرمز',
   auth_check_email: 'أرسلنا لك رابطًا إلى بريدك الإلكتروني — افتح الرسالة واضغط على الرابط لتسجيل الدخول.',
