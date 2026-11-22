@@ -23,6 +23,7 @@ import { isComplimentaryEmail } from './freeAccounts.js';
 import { getBonusTrialDays } from './referral.js';
 import { subscriptionKey, isActiveStatus, type StoredSubscription } from './stripeKeys.js';
 import { hasSensitiveConsent } from './consent.js';
+import { getAppStoreEntitlement } from './revenuecat.js';
 
 /** Must match TRIAL_DAYS in src/lib/trial.ts. Repeated rather than imported
  * because that file is browser-side ESM and this tree compiles as CommonJS;
@@ -99,7 +100,10 @@ export async function checkEntitlement(req: RequestLike, feature: Feature): Prom
 
   if (!isComplimentaryEmail(user.email)) {
     const subscription = await kvGet<StoredSubscription>(subscriptionKey(user.id));
-    const subscribed = !!subscription && isActiveStatus(subscription.status);
+    // Stripe (web) first; the App Store only when that says no, so web
+    // subscribers never wait on a second lookup.
+    const subscribed =
+      (!!subscription && isActiveStatus(subscription.status)) || (await getAppStoreEntitlement(user.id)).active;
 
     if (!subscribed) {
       const bonusDays = await getBonusTrialDays(user.id);

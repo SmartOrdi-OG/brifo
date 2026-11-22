@@ -56,11 +56,10 @@ export const hidesInAppPurchase = isAndroidTwa || isTelegramMiniApp;
 
 /** The iOS App Store build may neither take Stripe payments nor send the
  * user to the website to subscribe (App Store Review Guideline 3.1.1 / 3.1.3
- * anti-steering). Until in-app purchase is wired up, it sells nothing:
- * the paywall explains the subscription isn't offered in the app yet and
- * every Stripe entry point (checkout, billing portal) is hidden. Existing
- * subscribers keep full access — the server checks the account, not the
- * platform. */
+ * anti-steering). It sells through Apple In-App Purchase instead (RevenueCat,
+ * src/lib/iap.ts): every Stripe entry point (checkout, billing portal) is
+ * hidden and the paywall shows the App Store offer. Web subscribers keep full
+ * access — the server checks the account, not the platform. */
 export const sellsNothingInApp = isNativeIos;
 
 /** Sends the user to `url` in a real Chrome tab instead of this TWA.

@@ -7,6 +7,8 @@
 #   - Developer Portal integration named "Brifo ASC" (App Store Connect API key)
 #   - environment group "brifo_ios" with:
 #       VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY  (public web config)
+#       VITE_REVENUECAT_IOS_KEY                    (RevenueCat public Apple
+#                                                    SDK key, appl_…)
 #       CERTIFICATE_PRIVATE_KEY                    (secret, RSA key for the
 #                                                    distribution certificate)
 workflows:

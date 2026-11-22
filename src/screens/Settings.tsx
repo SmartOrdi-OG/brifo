@@ -26,6 +26,7 @@ import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, t
 import { submitRatingToServer } from '../lib/ratings';
 import { startBillingPortal } from '../lib/subscription';
 import { sellsNothingInApp } from '../lib/platform';
+import { manageSubscription } from '../lib/iap';
 import { isNativeApp } from '../lib/native';
 import { referralLinkFor, REFERRAL_BONUS_DAYS } from '../lib/referral';
 import { useAuth } from '../context/AuthContext';
@@ -198,6 +199,12 @@ export function Settings() {
               disabled={portalLoading}
             >
               {portalLoading ? t('settings_manage_subscription_loading') : t('settings_manage_subscription')}
+            </button>
+          )}
+          {/* iOS: subscriptions bought through Apple are managed in the App Store. */}
+          {subscriptionActive && sellsNothingInApp && (
+            <button className="scan-btn" style={{ width: '100%', marginBottom: 10 }} onClick={manageSubscription}>
+              {t('settings_manage_subscription')}
             </button>
           )}
           {portalError && <p style={{ fontSize: 12.5, color: 'var(--red)', fontWeight: 700, marginBottom: 10 }}>{t('settings_manage_subscription_error')}</p>}

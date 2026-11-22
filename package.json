@@ -18,6 +18,7 @@
     "@capacitor/core": "^7.6.10",
     "@capacitor/ios": "^7.6.10",
     "@capacitor/local-notifications": "^7.0.7",
+    "@revenuecat/purchases-capacitor": "11.3.3",
     "@supabase/supabase-js": "^2.110.8",
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",

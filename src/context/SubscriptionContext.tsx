@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { useAuth } from './AuthContext';
 import { fetchSubscriptionStatus } from '../lib/subscription';
 import { isTrialExpired, trialDaysLeft } from '../lib/trial';
+import { iapLogIn, iapLogOut } from '../lib/iap';
 
 interface SubscriptionContextValue {
   /** True while the first status fetch for the current session is in flight. */
@@ -23,6 +24,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [bonusDays, setBonusDays] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // iOS: tie App Store purchases to this account (no-op on every other build).
+  const userId = session?.user.id ?? null;
+  useEffect(() => {
+    if (userId) void iapLogIn(userId).catch((err) => console.error('[iap] login failed:', err));
+    else void iapLogOut();
+  }, [userId]);
 
   useEffect(() => {
     if (!session) {
