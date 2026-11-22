@@ -25,7 +25,7 @@ import {
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { submitRatingToServer } from '../lib/ratings';
 import { startBillingPortal } from '../lib/subscription';
-import { sellsNothingInApp } from '../lib/platform';
+import { sellsNothingInApp, hidesInAppPurchase } from '../lib/platform';
 import { manageSubscription } from '../lib/iap';
 import { isNativeApp } from '../lib/native';
 import { referralLinkFor, REFERRAL_BONUS_DAYS } from '../lib/referral';
@@ -52,7 +52,7 @@ export function Settings() {
   const { theme, setTheme } = useTheme();
   const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
   const { session, signOut } = useAuth();
-  const { active: subscriptionActive, bonusTrialDays } = useSubscription();
+  const { active: subscriptionActive, loading: subscriptionLoading, bonusTrialDays } = useSubscription();
   const [referralCopied, setReferralCopied] = useState(false);
   /** Erasure is two taps: the first arms it, the second does it. */
   const [eraseArmed, setEraseArmed] = useState(false);
@@ -190,6 +190,15 @@ export function Settings() {
           <p style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }} className="nums">
             {session.user.email}
           </p>
+          {/* A way to subscribe before the free week runs out. Without it the
+              paywall only appeared once the trial had expired, so App Review
+              (on a fresh demo account) could not find the in-app purchase.
+              Not on Google Play or Telegram, which may not sell in-app. */}
+          {!subscriptionLoading && !subscriptionActive && !hidesInAppPurchase && (
+            <button className="scan-btn" style={{ width: '100%', marginBottom: 10 }} onClick={() => navigate('/paywall')}>
+              {t('screen_paywall')}
+            </button>
+          )}
           {/* Stripe's billing portal: not in the iOS build (see sellsNothingInApp). */}
           {subscriptionActive && !sellsNothingInApp && (
             <button
