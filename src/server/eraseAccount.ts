@@ -14,6 +14,7 @@
 
 import { kvDel, kvGet } from './kv.js';
 import { subscriptionKey, customerKey, isActiveStatus, type StoredSubscription } from './stripeKeys.js';
+import { deleteAppStoreSubscriber } from './revenuecat.js';
 
 export type EraseResult =
   | { ok: true; deleted: string[]; accountDeleted: boolean }
@@ -80,6 +81,12 @@ export async function eraseAccountData(userId: string): Promise<EraseResult> {
 
   const keys = [...personalKeys(userId), subscriptionKey(userId), customerKey(userId)];
   for (const key of keys) await kvDel(key);
+
+  // Purchases made in the iOS app are recorded at RevenueCat under the same
+  // id. An App Store subscription is not a reason to refuse: Apple bills it
+  // and the person cancels it in their Apple ID settings, as the privacy
+  // policy says (point 10). Only the copy kept for us is removed here.
+  await deleteAppStoreSubscriber(userId);
 
   // The data goes first and the login last, never the other way round.
   // Deleting the login invalidates the access token this request arrived
