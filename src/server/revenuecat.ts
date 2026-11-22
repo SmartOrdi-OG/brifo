@@ -51,3 +51,26 @@ export async function getAppStoreEntitlement(userId: string): Promise<AppStoreEn
     return { active: false, expiresAt: null };
   }
 }
+
+/** Removes this account's purchase history from RevenueCat, as part of
+ * erasing the account (src/server/eraseAccount.ts). Apple keeps its own
+ * receipts as an independent controller; this only clears the copy held for
+ * us. Returns whether nothing is left there: a missing key or a network
+ * failure is logged and reported as false, never thrown, for the same reason
+ * the Supabase login deletion does — the rest of the erasure already ran. */
+export async function deleteAppStoreSubscriber(userId: string): Promise<boolean> {
+  const key = process.env.REVENUECAT_SECRET_KEY;
+  if (!key) return true; // never configured, so RevenueCat holds nothing for us
+  try {
+    const res = await fetch(API + encodeURIComponent(userId), {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${key}`, Accept: 'application/json' },
+    });
+    if (res.ok || res.status === 404) return true;
+    console.error(`[revenuecat] subscriber delete returned ${res.status}`);
+    return false;
+  } catch (err) {
+    console.error('[revenuecat] subscriber delete failed:', err);
+    return false;
+  }
+}
