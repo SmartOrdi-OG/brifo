@@ -323,6 +323,7 @@ export const en: TranslationTable = {
   admin_config_stripe_key: 'Payment (Stripe)',
   admin_config_stripe_webhook: 'Recording subscriptions',
   admin_config_kv: 'Database (reminders and subscriptions)',
+  admin_config_users: 'Users',
   admin_config_supabase: 'Sign-in',
   admin_config_anthropic: 'Reading letters',
   admin_config_vapid: 'Reminder notifications',

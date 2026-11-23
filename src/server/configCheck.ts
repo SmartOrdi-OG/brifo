@@ -209,8 +209,78 @@ function errText(err: unknown): string {
 
 /** Runs every check. The independent ones run together: this is one admin
  * request, and three sequential network round-trips make it feel broken. */
+/** How many accounts exist, and how many finished signing up.
+ *
+ * Not a health check — nothing here can be "broken" — but it answers the
+ * question the operator actually opens this screen with, and it is the one
+ * number no other screen shows. The split matters more than the total: an
+ * account that was created and never confirmed is someone who asked for a
+ * code and did not get in, which is the failure the spam-folder hint exists
+ * to stop. A rising unconfirmed count is that hint not working.
+ *
+ * Counted by paging rather than by trusting an x-total-count header, which
+ * GoTrue does not document and has changed before. At this size it is one
+ * request; the page cap stops a pathological loop rather than a real one. */
+async function checkUsers(): Promise<ConfigCheck> {
+  const url = process.env.VITE_SUPABASE_URL?.trim();
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!url || !serviceRoleKey) {
+    return {
+      id: 'users',
+      status: 'warn',
+      detail: 'SUPABASE_SERVICE_ROLE_KEY not set — accounts cannot be counted',
+    };
+  }
+
+  const PER_PAGE = 1000;
+  const MAX_PAGES = 20;
+  let total = 0;
+  let confirmed = 0;
+
+  try {
+    for (let page = 1; page <= MAX_PAGES; page += 1) {
+      const res = await fetch(
+        `${url.replace(/\/$/, '')}/auth/v1/admin/users?page=${page}&per_page=${PER_PAGE}`,
+        {
+          headers: { apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}` },
+          signal: AbortSignal.timeout(8000),
+        },
+      );
+      if (!res.ok) {
+        return { id: 'users', status: 'warn', detail: `admin list returned ${res.status}` };
+      }
+      const body = (await res.json()) as { users?: { confirmed_at?: string | null; email_confirmed_at?: string | null }[] };
+      const users = body.users ?? [];
+      total += users.length;
+      // Either field counts: older projects fill confirmed_at, newer ones
+      // email_confirmed_at, and a project that has lived through an upgrade
+      // has rows of both kinds.
+      confirmed += users.filter((u) => u.confirmed_at || u.email_confirmed_at).length;
+      if (users.length < PER_PAGE) break;
+    }
+  } catch (err) {
+    return {
+      id: 'users',
+      status: 'warn',
+      detail: `could not reach the admin API: ${err instanceof Error ? err.message : 'unknown error'}`,
+    };
+  }
+
+  const pending = total - confirmed;
+  const detail =
+    pending > 0
+      ? `${total} accounts — ${confirmed} confirmed, ${pending} never confirmed`
+      : `${total} accounts, all confirmed`;
+  return { id: 'users', status: 'ok', detail };
+}
+
 export async function checkConfig(): Promise<ConfigCheck[]> {
-  const [kv, supabase, stripe] = await Promise.all([checkKv(), checkSupabase(), checkStripe()]);
+  const [kv, supabase, stripe, users] = await Promise.all([
+    checkKv(),
+    checkSupabase(),
+    checkStripe(),
+    checkUsers(),
+  ]);
 
   const anthropic: ConfigCheck = has('ANTHROPIC_API_KEY')
     ? // Deliberately not called: every call costs money, and a key that is
@@ -240,6 +310,7 @@ export async function checkConfig(): Promise<ConfigCheck[]> {
       };
 
   return [
+    users,
     ...stripe,
     kv,
     supabase,

@@ -323,6 +323,7 @@ export const fa: TranslationTable = {
   admin_config_stripe_key: 'پرداخت (Stripe)',
   admin_config_stripe_webhook: 'ثبت اشتراک‌ها',
   admin_config_kv: 'پایگاه داده (یادآوری‌ها و اشتراک‌ها)',
+  admin_config_users: 'تعداد کاربران',
   admin_config_supabase: 'ورود',
   admin_config_anthropic: 'خواندن نامه‌ها',
   admin_config_vapid: 'اعلان‌های یادآوری',
