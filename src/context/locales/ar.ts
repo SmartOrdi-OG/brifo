@@ -322,6 +322,7 @@ export const ar = {
   admin_config_stripe_key: 'الدفع (Stripe)',
   admin_config_stripe_webhook: 'تسجيل الاشتراكات',
   admin_config_kv: 'قاعدة البيانات (التذكيرات والاشتراكات)',
+  admin_config_users: 'عدد المستخدمين',
   admin_config_supabase: 'تسجيل الدخول',
   admin_config_anthropic: 'قراءة الرسائل',
   admin_config_vapid: 'إشعارات التذكير',

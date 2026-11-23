@@ -323,6 +323,7 @@ export const tr: TranslationTable = {
   admin_config_stripe_key: 'Ödeme (Stripe)',
   admin_config_stripe_webhook: 'Abonelik kaydı',
   admin_config_kv: 'Veritabanı (hatırlatmalar ve abonelikler)',
+  admin_config_users: 'Kullanıcı sayısı',
   admin_config_supabase: 'Giriş',
   admin_config_anthropic: 'Mektup okuma',
   admin_config_vapid: 'Hatırlatma bildirimleri',

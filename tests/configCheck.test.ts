@@ -31,6 +31,7 @@ const WATCHED = [
   'TELEGRAM_WEBHOOK_SECRET',
   'ANTHROPIC_API_KEY',
   'CRON_SECRET',
+  'SUPABASE_SERVICE_ROLE_KEY',
   'VERCEL_GIT_COMMIT_SHA',
 ];
 
@@ -347,5 +348,65 @@ describe('never leaking what it is checking', () => {
     // twice and hide whatever it collided with.
     const ids = (await checkConfig()).map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe('the account count', () => {
+  /** Two pages' worth would need 1001 users; one page is the real shape. */
+  const usersResponse = (users: unknown[]) =>
+    vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ users }) }));
+
+  function withSupabase() {
+    process.env.VITE_SUPABASE_URL = 'https://example.supabase.co';
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-role-key-value';
+  }
+
+  it('says why it cannot count rather than reporting zero', async () => {
+    // Zero accounts and "I was not allowed to look" are different facts, and
+    // the second one read as the first would look like the app had lost
+    // every user overnight.
+    process.env.VITE_SUPABASE_URL = 'https://example.supabase.co';
+    const users = find(await checkConfig(), 'users');
+    expect(users.status).toBe('warn');
+    expect(users.detail).toMatch(/SUPABASE_SERVICE_ROLE_KEY/);
+    expect(users.detail).not.toMatch(/\b0 accounts\b/);
+  });
+
+  it('separates the people who got in from the ones who never did', async () => {
+    // An unconfirmed account is someone who asked for a code and did not
+    // arrive — the failure the spam-folder hint exists to prevent. A bare
+    // total hides exactly that.
+    withSupabase();
+    vi.stubGlobal(
+      'fetch',
+      usersResponse([
+        { email_confirmed_at: '2026-11-01T00:00:00Z' },
+        { confirmed_at: '2026-11-02T00:00:00Z' },
+        { email_confirmed_at: null, confirmed_at: null },
+      ]),
+    );
+    const users = find(await checkConfig(), 'users');
+    expect(users.status).toBe('ok');
+    expect(users.detail).toContain('3 accounts');
+    expect(users.detail).toContain('2 confirmed');
+    expect(users.detail).toContain('1 never confirmed');
+  });
+
+  it('does not mention stragglers when there are none', async () => {
+    withSupabase();
+    vi.stubGlobal('fetch', usersResponse([{ email_confirmed_at: '2026-11-01T00:00:00Z' }]));
+    expect(find(await checkConfig(), 'users').detail).toBe('1 accounts, all confirmed');
+  });
+
+  it('warns instead of throwing when the admin API refuses', async () => {
+    // It runs beside every other check: an exception here would take the
+    // whole screen down, including the checks that were about to report the
+    // problem the operator came to find.
+    withSupabase();
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 403, json: async () => ({}) })));
+    const users = find(await checkConfig(), 'users');
+    expect(users.status).toBe('warn');
+    expect(users.detail).toContain('403');
+    expect(users.detail).not.toContain('service-role-key-value');
   });
 });

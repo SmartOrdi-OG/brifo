@@ -323,6 +323,7 @@ export const de: TranslationTable = {
   admin_config_stripe_key: 'Zahlung (Stripe)',
   admin_config_stripe_webhook: 'Abos erfassen',
   admin_config_kv: 'Datenbank (Erinnerungen und Abos)',
+  admin_config_users: 'Nutzerzahl',
   admin_config_supabase: 'Anmeldung',
   admin_config_anthropic: 'Briefe lesen',
   admin_config_vapid: 'Push-Benachrichtigungen',

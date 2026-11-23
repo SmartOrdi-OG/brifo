@@ -323,6 +323,7 @@ export const uk: TranslationTable = {
   admin_config_stripe_key: 'Оплата (Stripe)',
   admin_config_stripe_webhook: 'Запис підписок',
   admin_config_kv: 'База даних (нагадування та підписки)',
+  admin_config_users: 'Кількість користувачів',
   admin_config_supabase: 'Вхід',
   admin_config_anthropic: 'Читання листів',
   admin_config_vapid: 'Push-нагадування',
