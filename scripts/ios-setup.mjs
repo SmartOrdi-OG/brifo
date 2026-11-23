@@ -44,6 +44,14 @@ for (const [key, value] of Object.entries(entries)) {
 }
 writeFileSync(plistPath, plist);
 
+// iPhone only. Brifo's layout is built for a phone; as a universal app App
+// Store Connect also demands 13-inch iPad screenshots and review would judge
+// the phone layout stretched across an iPad. An iPhone-only app still runs on
+// iPads in compatibility mode.
+const pbxPath = 'ios/App/App.xcodeproj/project.pbxproj';
+const pbx = readFileSync(pbxPath, 'utf8');
+writeFileSync(pbxPath, pbx.replace(/TARGETED_DEVICE_FAMILY = "?1,2"?;/g, 'TARGETED_DEVICE_FAMILY = 1;'));
+
 // App icon (1024 px, no alpha channel — App Store rejects transparency) and
 // the launch screen, both rendered from SVG so no binaries live in the repo.
 const sharp = 'npx --yes sharp-cli@5';
