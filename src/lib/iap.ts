@@ -50,13 +50,49 @@ export interface MonthlyOffer {
   trialDays: number;
 }
 
-export async function loadMonthlyOffer(): Promise<MonthlyOffer | null> {
-  if (!iapAvailable) return null;
+/** Why the last loadMonthlyOffer() came back empty — shown in small print on
+ * the paywall while the App Store product is being set up, so a failure can
+ * be traced to RevenueCat or StoreKit without a debugger. */
+export let offerDiagnostic: string | null = null;
+
+/** The paywall can mount before SubscriptionContext has logged in to
+ * RevenueCat; wait briefly for that instead of calling an unconfigured SDK. */
+async function waitUntilConfigured(timeoutMs = 8000): Promise<boolean> {
+  const start = Date.now();
+  while (!configured && Date.now() - start < timeoutMs) {
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  if (!configured) return false;
   await configured;
-  const offerings = await Purchases.getOfferings();
+  return true;
+}
+
+export async function loadMonthlyOffer(): Promise<MonthlyOffer | null> {
+  offerDiagnostic = null;
+  if (!iapAvailable) {
+    offerDiagnostic = 'iap-unavailable';
+    return null;
+  }
+  if (!(await waitUntilConfigured())) {
+    offerDiagnostic = 'not-configured';
+    return null;
+  }
+  let offerings;
+  try {
+    offerings = await Purchases.getOfferings();
+  } catch (err) {
+    const e = err as { code?: string | number; message?: string; underlyingErrorMessage?: string; readableErrorCode?: string };
+    offerDiagnostic = ['getOfferings', e.code, e.readableErrorCode, e.message, e.underlyingErrorMessage].filter(Boolean).join(' · ');
+    throw err;
+  }
   const current = offerings.current;
   const pkg = current?.monthly ?? current?.availablePackages[0] ?? null;
-  if (!pkg) return null;
+  if (!pkg) {
+    offerDiagnostic = current
+      ? `offering ${current.identifier}: 0 packages from StoreKit`
+      : `no current offering (${Object.keys(offerings.all ?? {}).length} offerings)`;
+    return null;
+  }
   const intro = pkg.product.introPrice;
   let trialDays = 0;
   if (intro && intro.price === 0) {

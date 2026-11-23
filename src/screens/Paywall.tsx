@@ -9,7 +9,7 @@ import { useSubscription } from '../context/SubscriptionContext';
 import { startCheckout } from '../lib/subscription';
 import { isAndroidTwa, openOutsideAndroidTwa, sellsNothingInApp } from '../lib/platform';
 import { APPLE_EULA_URL, IOS_PAYWALL } from '../lib/nativeStrings';
-import { iapAvailable, loadMonthlyOffer, manageSubscription, purchase, restore, type MonthlyOffer } from '../lib/iap';
+import { iapAvailable, loadMonthlyOffer, manageSubscription, offerDiagnostic, purchase, restore, type MonthlyOffer } from '../lib/iap';
 import { isTelegramMiniApp, openOutsideTelegram } from '../lib/telegramWebApp';
 import './Paywall.css';
 
@@ -268,6 +268,13 @@ function IosPaywall() {
           </button>
         )}
         {loadFailed && <p className="paywall-note error">{s.unavailable}</p>}
+        {/* Temporary, while the App Store product is being set up: the reason
+            the offer did not load. Remove before App Review. */}
+        {loadFailed && offerDiagnostic && (
+          <p className="paywall-note muted" dir="ltr" style={{ fontSize: 11, wordBreak: 'break-word' }}>
+            {offerDiagnostic}
+          </p>
+        )}
         {message && <p className="paywall-note muted">{message}</p>}
 
         <p className="paywall-note muted" style={{ fontSize: 12 }}>
