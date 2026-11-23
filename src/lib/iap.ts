@@ -12,7 +12,10 @@ import { INTRO_ELIGIBILITY_STATUS, Purchases, PURCHASES_ERROR_CODE, type Purchas
 import { isNativeIos } from './native';
 
 export const ENTITLEMENT_ID = 'brifo_premium';
-const API_KEY = import.meta.env.VITE_REVENUECAT_IOS_KEY as string | undefined;
+// Trimmed: a key pasted into the CI variable with a trailing newline was
+// rejected by RevenueCat as "Invalid API Key" (code 11), and the paywall
+// could not load the App Store product.
+const API_KEY = (import.meta.env.VITE_REVENUECAT_IOS_KEY as string | undefined)?.trim() || undefined;
 
 /** Whether in-app purchase can be offered at all in this build. */
 export const iapAvailable = isNativeIos && !!API_KEY;
@@ -50,9 +53,21 @@ export interface MonthlyOffer {
   trialDays: number;
 }
 
+/** The paywall can mount before SubscriptionContext has logged in to
+ * RevenueCat; wait briefly for that instead of calling an unconfigured SDK. */
+async function waitUntilConfigured(timeoutMs = 8000): Promise<boolean> {
+  const start = Date.now();
+  while (!configured && Date.now() - start < timeoutMs) {
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  if (!configured) return false;
+  await configured;
+  return true;
+}
+
 export async function loadMonthlyOffer(): Promise<MonthlyOffer | null> {
   if (!iapAvailable) return null;
-  await configured;
+  if (!(await waitUntilConfigured())) return null;
   const offerings = await Purchases.getOfferings();
   const current = offerings.current;
   const pkg = current?.monthly ?? current?.availablePackages[0] ?? null;
